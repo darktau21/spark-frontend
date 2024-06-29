@@ -1,0 +1,61 @@
+version: '3'
+
+volumes:
+  static:
+  media:
+
+networks:
+  internal:
+    driver: bridge
+
+services:
+  vue_app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - '5173:5173'
+    volumes:
+      - /app/node_modules
+      - ./:/app
+    networks:
+      - internal
+    depends_on:
+      - backend
+  redis:
+    image: redis:alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    networks:
+      - internal
+  backend:
+    image: d2avids/iskra:latest
+    env_file: .env
+    restart: always
+    ports:
+      - '8080:8080'
+    depends_on:
+      - redis
+    volumes:
+      - ./logs:/app/logs
+      - ./backend:/app
+      - static:/backend_static/static
+      - media:/app/media
+    networks:
+      - internal
+    environment:
+      - GUNICORN_CMD_ARGS=--timeout 360
+  celery_worker:
+    image: d2avids/iskra:latest
+    restart: always
+    env_file: .env
+    command: celery -A backend worker --loglevel=info
+    volumes:
+      - ./logs:/app/logs
+      - ./backend:/app
+      - media:/app/media
+    depends_on:
+      - backend
+    networks:
+      - internal

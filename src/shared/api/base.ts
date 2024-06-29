@@ -1,12 +1,15 @@
 import axios from 'axios';
 
-import { API_BASE_URL } from '../config';
+import { env } from '../config';
 
-export const api = axios
-  .create({
-    baseURL: API_BASE_URL,
-  })
-  .interceptors.request.use((config) => {
-    config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
-    return config;
-  });
+export const api = axios.create({
+  baseURL: env.API_BASE_URL,
+});
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});

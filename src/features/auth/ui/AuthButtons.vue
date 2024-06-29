@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { UiButton } from '@/shared/ui';
+import { routeNames } from '@/shared/lib';
+import { UiNavLink } from '@/shared/ui';
 </script>
 
 <template>
   <div class="auth-buttons">
-    <UiButton>Вход</UiButton>
-    <UiButton>Регистрация</UiButton>
+    <UiNavLink :to="{ name: routeNames.login }" variant="primary">Вход</UiNavLink>
+    <UiNavLink :to="{ name: routeNames.register }" variant="secondary">Регистрация</UiNavLink>
   </div>
 </template>
 

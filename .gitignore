@@ -28,3 +28,9 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+.env
+__pycache__
+/backend/media
+
+dependency-graph.svg

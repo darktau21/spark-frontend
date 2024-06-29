@@ -1,14 +1,14 @@
 <template>
-  <h1 v-if="variant === 'h1'" class="text-2xl font-bold">
+  <h1 v-if="variant === 'h1'" class="heading h1">
     <slot />
   </h1>
-  <h2 v-if="variant === 'h2'" class="text-xl font-bold">
+  <h2 v-if="variant === 'h2'" class="heading h2">
     <slot />
   </h2>
-  <h3 v-if="variant === 'h3'" class="text-lg font-bold">
+  <h3 v-if="variant === 'h3'" class="heading h3">
     <slot />
   </h3>
-  <h4 v-if="variant === 'h4'" class="text-base font-bold">
+  <h4 v-if="variant === 'h4'" class="heading h4">
     <slot />
   </h4>
 </template>
@@ -24,4 +24,7 @@ withDefaults(
 );
 </script>
 
-<style scoped></style>
+<style scoped>
+.heading {
+}
+</style>
