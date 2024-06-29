@@ -23,6 +23,9 @@ export default [
     plugins: {
       'typescript-eslint': tsLint,
     },
+    rules: {
+      'perfectionist/sort-vue-attributes': 'off',
+    },
   },
   eslintConfigPrettier,
 ];
