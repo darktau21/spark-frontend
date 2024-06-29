@@ -13,7 +13,7 @@
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: stretch;
+  align-items: center;
   padding: 1.8rem 0;
 }
 </style>

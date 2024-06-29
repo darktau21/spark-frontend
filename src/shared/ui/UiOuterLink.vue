@@ -1,18 +1,16 @@
 <template>
-  <button :class="['button', variant, error && 'error']">
+  <a :class="['button', variant]" rel="noopener noreferrer" target="_blank">
     <slot />
-  </button>
+  </a>
 </template>
 
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    error?: boolean;
     variant?: 'primary' | 'secondary' | 'tertiary';
   }>(),
   {
-    error: false,
-    variant: 'primary',
+    variant: 'tertiary',
   }
 );
 </script>
@@ -22,73 +20,64 @@ withDefaults(
   --color-default: rgb(255, 255, 255);
   --color-hover: rgb(255, 255, 255);
   --color-active: rgb(255, 255, 255);
-  --color-error: rgb(255, 255, 255);
-  --color-disabled: rgb(255, 255, 255);
 
   --bg-color-default: rgb(151, 71, 255);
   --bg-color-hover: rgb(94, 0, 215);
   --bg-color-active: rgb(68, 15, 136);
-  --bg-color-error: rgb(254, 25, 25);
-  --bg-color-disabled: rgb(202, 202, 202);
 
   --border-default: none;
   --border-hover: none;
   --border-active: none;
-  --border-error: none;
-  --border-disabled: none;
 
   --font-size: 1.8rem;
   --font-weight: 600;
+
+  --padding: 1.2rem 2rem;
 }
 
 .secondary {
   --color-default: rgb(151, 71, 255);
   --color-hover: rgb(94, 0, 215);
   --color-active: rgb(68, 15, 136);
-  --color-error: rgb(254, 25, 25);
-  --color-disabled: rgb(202, 202, 202);
 
   --bg-color-default: transparent;
   --bg-color-hover: transparent;
   --bg-color-active: transparent;
-  --bg-color-error: transparent;
-  --bg-color-disabled: transparent;
 
   --border-default: 1px solid rgb(151, 71, 255);
   --border-hover: 1px solid rgb(94, 0, 215);
   --border-active: 1px solid rgb(68, 15, 136);
-  --border-error: 1px solid rgb(254, 25, 25);
-  --border-disabled: 1px solid rgb(202, 202, 202);
 
   --font-size: 1.8rem;
   --font-weight: 600;
+
+  --padding: 1.2rem 2rem;
 }
 
 .tertiary {
-  --color-default: rgb(151, 71, 255);
-  --color-hover: rgb(94, 0, 215);
-  --color-active: rgb(68, 15, 136);
-  --color-error: rgb(254, 25, 25);
-  --color-disabled: rgb(202, 202, 202);
+  --color-default: rgb(0, 0, 0);
+  --color-hover: rgb(151, 71, 255);
+  --color-active: rgb(94, 0, 215);
 
   --bg-color-default: transparent;
   --bg-color-hover: transparent;
   --bg-color-active: transparent;
-  --bg-color-error: transparent;
-  --bg-color-disabled: transparent;
 
   --border-default: none;
   --border-hover: none;
   --border-active: none;
-  --border-error: none;
-  --border-disabled: none;
 
   --font-size: 1.8rem;
   --font-weight: 600;
+
+  --padding: 1rem 1rem 1rem 0.4rem;
 }
 
 .button {
-  padding: 1.2rem 2rem;
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  padding: var(--padding);
   transition:
     background 0.15s ease-in-out,
     color 0.15s ease-in-out;
@@ -109,21 +98,10 @@ withDefaults(
   }
 }
 
-.button:active {
+.button:active,
+.active {
   background: var(--bg-color-active);
   color: var(--color-active);
   border: var(--border-active);
-}
-
-.button:disabled {
-  background: var(--bg-color-disabled);
-  color: var(--color-disabled);
-  border: var(--border-disabled);
-}
-
-.button.error {
-  background: var(--bg-color-error);
-  color: var(--color-error);
-  border: var(--border-error);
 }
 </style>
