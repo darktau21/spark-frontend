@@ -1,2 +1,11 @@
-export const API_BASE_URL = 'http://localhost:3000/api';
-export const AUTH_TOKEN_KEY = 'auth_token';
+import { z } from 'zod';
+
+const envSchema = z.object({
+  API_BASE_URL: z.string(),
+  AUTH_TOKEN_KEY: z.string(),
+});
+
+const fromViteEnv = (env: Record<string, unknown>) =>
+  Object.fromEntries(Object.entries(env).map(([key, value]) => [key.replace('VITE_', ''), value]));
+
+export const env = envSchema.parse(fromViteEnv(import.meta.env));
