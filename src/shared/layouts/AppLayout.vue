@@ -6,7 +6,7 @@
     <main class="container main">
       <slot />
     </main>
-    <footer class="container">
+    <footer class="container footer">
       <slot name="footer" />
     </footer>
   </div>
@@ -18,9 +18,15 @@
   flex-direction: column;
   align-items: stretch;
   height: 100vh;
+  min-width: 320px;
 }
 
 .main {
   flex: 1 0;
+  position: relative;
+}
+
+.footer {
+  background-color: rgb(202, 202, 202);
 }
 </style>

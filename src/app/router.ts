@@ -12,6 +12,21 @@ const routes: Readonly<RouteRecordRaw[]> = [
     name: routeNames.login,
     path: '/login',
   },
+  {
+    component: () => import('@/pages/RegistrationPage.vue'),
+    name: routeNames.register,
+    path: '/register',
+  },
+  {
+    component: () => import('@/pages/AccountPage.vue'),
+    name: routeNames.account,
+    path: '/account',
+  },
+  {
+    component: () => import('@/pages/TestPage.vue'),
+    name: routeNames.test,
+    path: '/test',
+  },
 ];
 
 export const router = createRouter({
