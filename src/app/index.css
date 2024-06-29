@@ -9,13 +9,25 @@
   font-size: 62.5%;
 }
 
+@media screen and (max-width: 40em) {
+  :root {
+    font-size: 56%;
+  }
+}
+
+@media screen and (max-width: 30em) {
+  :root {
+    font-size: 50%;
+  }
+}
+
 body {
   font-family: 'Nunito Sans', Arial, Helvetica, sans-serif;
   font-size: 1.6rem;
 }
 
 .container {
-  --padding-inline: 1rem;
+  --padding-inline: 1.5rem;
   --content-max-width: 900px;
   --breakout-max-width: 1200px;
   --breakout-size: calc((var(--breakout-max-width) - var(--content-max-width)) / 2);
@@ -30,6 +42,18 @@ body {
     minmax(var(--padding-inline), 1fr) [full-width-end];
 }
 
-.container > * {
+.container > :not(.breakout, .full-width),
+.full-width > :not(.breakout, .full-width) {
   grid-column: content;
+}
+
+.container > .breakout {
+  grid-column: breakout;
+}
+
+.container > .full-width {
+  grid-column: full-width;
+
+  display: grid;
+  grid-template-columns: inherit;
 }
