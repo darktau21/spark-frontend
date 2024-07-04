@@ -21,6 +21,10 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: 'Nunito Sans', Arial, Helvetica, sans-serif;
   font-size: 1.6rem;
@@ -28,7 +32,7 @@ body {
 
 .container {
   --padding-inline: 1.5rem;
-  --content-max-width: 900px;
+  --content-max-width: 1024px;
   --breakout-max-width: 1200px;
   --breakout-size: calc((var(--breakout-max-width) - var(--content-max-width)) / 2);
 

@@ -25,6 +25,27 @@ withDefaults(
 </script>
 
 <style scoped>
+.h1 {
+  --font-size: 2.8rem;
+  --font-weight: 700;
+}
+.h2 {
+  --font-size: 2.4rem;
+  --font-weight: 700;
+}
+.h3 {
+  --font-size: 1.8rem;
+  --font-weight: 700;
+}
+.h4 {
+  --font-size: 1.6rem;
+  --font-weight: 700;
+}
 .heading {
+  font-size: var(--font-size);
+  font-weight: var(--font-weight);
+  padding: 0;
+  margin: 0;
+  line-height: 1.25;
 }
 </style>

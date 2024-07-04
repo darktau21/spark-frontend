@@ -1,5 +1,5 @@
 <template>
-  <button :class="['button', variant, error && 'error']">
+  <button :disabled :class="['button', variant, error && 'error']">
     <slot />
   </button>
 </template>
@@ -7,10 +7,12 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
+    disabled?: boolean;
     error?: boolean;
     variant?: 'primary' | 'secondary' | 'tertiary';
   }>(),
   {
+    disabled: false,
     error: false,
     variant: 'primary',
   }
@@ -99,6 +101,9 @@ withDefaults(
   color: var(--color-default);
   font-size: var(--font-size);
   font-weight: var(--font-weight);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (hover: hover) {
@@ -119,6 +124,7 @@ withDefaults(
   background: var(--bg-color-disabled);
   color: var(--color-disabled);
   border: var(--border-disabled);
+  cursor: not-allowed;
 }
 
 .button.error {

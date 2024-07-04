@@ -11,12 +11,12 @@
 .fade-leave-active {
   transition: opacity 0.5s ease;
   transform-origin: top;
-  position: absolute;
   width: 100%;
 }
 
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+  position: absolute;
 }
 </style>

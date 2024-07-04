@@ -9,24 +9,19 @@
 </template>
 
 <script setup lang="ts">
-import { authApi } from '@/shared/api';
+import { useAccount } from '@/entities/account/model/useAccount';
+import { accountApi } from '@/shared/api';
+import { api } from '@/shared/api/base';
 import { AppLayout } from '@/shared/layouts';
 import { AppFooter } from '@/widgets/AppFooter';
 import { AppHeader } from '@/widgets/AppHeader';
 import { RouterOutlet } from '@/widgets/RouterOutlet';
 import { onMounted } from 'vue';
 
-onMounted(async () => {
+onMounted(() => {
   try {
-    const response = await authApi.register({
-      email: 'test@test.com',
-      first_name: 'Test',
-      last_name: 'Test',
-      password: 'test',
-      patronymic: 'Test',
-      re_password: 'test',
-    });
-    console.log(response);
+    const data = accountApi.getMe();
+    console.log(data);
   } catch (error) {
     console.error(error);
   }

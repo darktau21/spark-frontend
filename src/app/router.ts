@@ -32,4 +32,5 @@ const routes: Readonly<RouteRecordRaw[]> = [
 export const router = createRouter({
   history: createWebHistory('/'),
   routes,
+  scrollBehavior: () => ({ left: 0, top: 0 }),
 });
