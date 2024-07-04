@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 const envSchema = z.object({
   API_BASE_URL: z.string(),
-  AUTH_TOKEN_KEY: z.string(),
   BASE_URL: z.string(),
   DEV: z.boolean(),
   MODE: z.enum(['development', 'production']),
