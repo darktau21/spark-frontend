@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const accountSchema = z.object({
-  email: z.string().email({ message: 'Невалидный email' }),
+  email: z.string({ message: 'Обязательное поле' }).email({ message: 'Невалидный email' }),
   first_name: z
     .string({ message: 'Обязательное поле' })
     .min(3, { message: 'Имя должно быть не менее 3 символов' })
@@ -12,9 +12,12 @@ export const accountSchema = z.object({
     .min(3, { message: 'Фамилия должна быть не менее 3 символов' })
     .max(30, { message: 'Фамилия должна быть не более 30 символов' }),
   patronymic: z
-    .string({ message: 'Обязательное поле' })
+    .string()
     .min(3, { message: 'Отчество должно быть не менее 3 символов' })
-    .max(30, { message: 'Отчество должно быть не более 30 символов' }),
+    .max(30, { message: 'Отчество должно быть не более 30 символов' })
+    .nullable(),
+  // TODO: switch optional to nullable
+  avatar: z.string().url().optional(),
 });
 
 export type AccountSchema = z.infer<typeof accountSchema>;
@@ -49,7 +52,10 @@ export type RegisterResponse = z.infer<typeof registerResponse>;
 
 export const loginPayload = z.object({
   email: z.string({ message: 'Обязательное поле' }).email({ message: 'Невалидный email' }),
-  password: z.string({ message: 'Обязательное поле' }),
+  password: z
+    .string({ message: 'Обязательное поле' })
+    .min(8, { message: 'Пароль должен быть не менее 8 символов' })
+    .max(32, { message: 'Пароль должен быть не более 32 символов' }),
 });
 
 export type LoginPayload = z.infer<typeof loginPayload>;

@@ -1,5 +1,5 @@
 <template>
-  <button :disabled :class="['button', variant, error && 'error']">
+  <button :disabled :class="['button', variant, error && 'error', active && 'active']">
     <slot />
   </button>
 </template>
@@ -9,12 +9,14 @@ withDefaults(
   defineProps<{
     disabled?: boolean;
     error?: boolean;
-    variant?: 'primary' | 'secondary' | 'tertiary';
+    variant?: 'primary' | 'secondary' | 'tertiary' | 'tertiary-light';
+    active?: boolean;
   }>(),
   {
     disabled: false,
     error: false,
     variant: 'primary',
+    active: false,
   }
 );
 </script>
@@ -41,6 +43,8 @@ withDefaults(
 
   --font-size: 1.8rem;
   --font-weight: 600;
+
+  --padding: 1.2rem 2rem;
 }
 
 .secondary {
@@ -64,6 +68,8 @@ withDefaults(
 
   --font-size: 1.8rem;
   --font-weight: 600;
+
+  --padding: 1.2rem 2rem;
 }
 
 .tertiary {
@@ -87,10 +93,37 @@ withDefaults(
 
   --font-size: 1.8rem;
   --font-weight: 600;
+
+  --padding: 0.5rem;
+}
+
+.tertiary-light {
+  --color-default: rgb(0, 0, 0);
+  --color-hover: rgb(179, 107, 255);
+  --color-active: rgb(151, 71, 255);
+  --color-error: rgb(254, 25, 25);
+  --color-disabled: rgb(202, 202, 202);
+
+  --bg-color-default: transparent;
+  --bg-color-hover: transparent;
+  --bg-color-active: transparent;
+  --bg-color-error: transparent;
+  --bg-color-disabled: transparent;
+
+  --border-default: none;
+  --border-hover: none;
+  --border-active: none;
+  --border-error: none;
+  --border-disabled: none;
+
+  --font-size: 1.8rem;
+  --font-weight: 600;
+
+  --padding: 0.5rem;
 }
 
 .button {
-  padding: 1.2rem 2rem;
+  padding: var(--padding);
   transition:
     background 0.15s ease-in-out,
     color 0.15s ease-in-out;
@@ -114,7 +147,8 @@ withDefaults(
   }
 }
 
-.button:active {
+.button:active,
+.button.active {
   background: var(--bg-color-active);
   color: var(--color-active);
   border: var(--border-active);

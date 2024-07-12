@@ -11,11 +11,17 @@ const props = defineProps<{
 }>();
 defineEmits(['update:modelValue']);
 const iconName = computed(() => (props.modelValue ? 'checkbox-checked' : 'checkbox'));
+
+const handleKeyboardFocus = (event: KeyboardEvent) => {
+  if ((event.code === 'Enter' || event.code === 'Space') && event.target instanceof HTMLElement) {
+    event.target.click();
+  }
+};
 </script>
 
 <template>
   <div class="wrapper">
-    <label class="label">
+    <label class="label" tabindex="0" @keydown="handleKeyboardFocus">
       <input
         class="checkbox"
         type="checkbox"

@@ -1,1 +1,2 @@
-export { useRegister } from './useRegister';
+export { useAccount } from './useAccount';
+export { CURRENT_USER_KEY } from './const';

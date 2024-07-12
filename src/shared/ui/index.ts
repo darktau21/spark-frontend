@@ -11,6 +11,10 @@ import UiOuterLink from './UiOuterLink.vue';
 import UiParagraph from './UiParagraph.vue';
 import UiPasswordInput from './UiPasswordInput.vue';
 import UiTwoSidesBlock from './UiTwoSidesBlock.vue';
+import UiSkeleton from './UiSkeleton.vue';
+import UiNavMenu from './UiNavMenu.vue';
+import UiMenuButton from './UiMenuButton.vue';
+import UiPanel from './UiPanel.vue';
 
 export {
   UiButton,
@@ -26,4 +30,8 @@ export {
   UiParagraph,
   UiPasswordInput,
   UiTwoSidesBlock,
+  UiSkeleton,
+  UiNavMenu,
+  UiMenuButton,
+  UiPanel,
 };

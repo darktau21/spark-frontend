@@ -3,7 +3,7 @@
     <UiTwoSidesBlock>
       <template #right>
         <div class="form-wrapper">
-          <UiHeading>Авторизация</UiHeading>
+          <UiHeading align="center">Авторизация</UiHeading>
           <LoginForm />
         </div>
       </template>
@@ -28,10 +28,16 @@ import { UiHeading, UiTwoSidesBlock } from '@/shared/ui';
 }
 
 .form-wrapper {
-  padding: 3rem;
+  padding: 3rem 15%;
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  align-items: center;
+  align-items: stretch;
+}
+
+@media screen and (max-width: 50rem) {
+  .form-wrapper {
+    padding: 3rem 1.5rem;
+  }
 }
 </style>

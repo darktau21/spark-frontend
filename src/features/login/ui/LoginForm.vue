@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useLogin } from '@/entities/account/model/useLogin';
+import { useAccount } from '@/entities/account';
 import { accountApi } from '@/shared/api';
 import { UiButton, UiInput, UiPasswordInput } from '@/shared/ui';
 import { toTypedSchema } from '@vee-validate/zod';
@@ -7,18 +7,22 @@ import { useForm } from 'vee-validate';
 import { computed } from 'vue';
 
 const validationSchema = toTypedSchema(accountApi.loginPayload);
-const { errors, handleSubmit, meta } = useForm<accountApi.LoginPayload>({
+const { errors, handleSubmit, meta, defineField } = useForm<accountApi.LoginPayload>({
   validationSchema,
 });
-const { isError: isQueryError, isPending, mutate } = useLogin();
+
+const [email, emailAttrs] = defineField('email', { validateOnChange: true });
+const [password, passwordAttrs] = defineField('password', { validateOnChange: true });
+
+const account = useAccount();
 const isSubmitAllowed = computed(() => {
-  return !isPending.value && Object.keys(errors.value).length === 0 && meta.value.valid;
+  return !account.isLoading.login && Object.keys(errors.value).length === 0 && meta.value.valid;
 });
 
-const isError = computed(() => isQueryError.value || Object.keys(errors.value).length > 0);
+const isError = computed(() => Object.keys(errors.value).length > 0);
 
 const onSubmit = handleSubmit(async (values) => {
-  mutate(values);
+  await account.login(values);
 });
 </script>
 
@@ -30,7 +34,9 @@ const onSubmit = handleSubmit(async (values) => {
       name="email"
       placeholder="Email"
       label="Введите адрес эл. почты"
-      :disabled="isPending"
+      :disabled="account.isLoading.login"
+      v-bind="emailAttrs"
+      v-model="email"
     />
     <UiPasswordInput
       id="password"
@@ -38,7 +44,9 @@ const onSubmit = handleSubmit(async (values) => {
       name="password"
       placeholder="Не менее 8 символов"
       label="Пароль"
-      :disabled="isPending"
+      :disabled="account.isLoading.login"
+      v-bind="passwordAttrs"
+      v-model="password"
     />
     <UiButton :disabled="!isSubmitAllowed" :error="isError" class="button" type="submit">
       Зарегистрироваться
@@ -50,6 +58,7 @@ const onSubmit = handleSubmit(async (values) => {
 .form {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   gap: 1.6rem;
 }
 .button {

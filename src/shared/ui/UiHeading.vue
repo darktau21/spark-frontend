@@ -1,27 +1,39 @@
 <template>
-  <h1 v-if="variant === 'h1'" class="heading h1">
+  <h1 v-bind="$attrs" v-if="variant === 'h1'" :class="['heading h1', alignClasses]">
     <slot />
   </h1>
-  <h2 v-if="variant === 'h2'" class="heading h2">
+  <h2 v-bind="$attrs" v-if="variant === 'h2'" :class="['heading h2', alignClasses]">
     <slot />
   </h2>
-  <h3 v-if="variant === 'h3'" class="heading h3">
+  <h3 v-bind="$attrs" v-if="variant === 'h3'" :class="['heading h3', alignClasses]">
     <slot />
   </h3>
-  <h4 v-if="variant === 'h4'" class="heading h4">
+  <h4 v-bind="$attrs" v-if="variant === 'h4'" :class="['heading h4', alignClasses]">
     <slot />
   </h4>
 </template>
 
 <script setup lang="ts">
-withDefaults(
+import { computed } from 'vue';
+
+const props = withDefaults(
   defineProps<{
     variant?: 'h1' | 'h2' | 'h3' | 'h4';
+    align?: 'center' | 'left' | 'right';
   }>(),
   {
     variant: 'h1',
+    align: 'left',
   }
 );
+
+const alignClasses = computed(() => {
+  return {
+    'align-center': props.align === 'center',
+    'align-left': props.align === 'left',
+    'align-right': props.align === 'right',
+  };
+});
 </script>
 
 <style scoped>
@@ -47,5 +59,15 @@ withDefaults(
   padding: 0;
   margin: 0;
   line-height: 1.25;
+}
+
+.align-center {
+  text-align: center;
+}
+.align-left {
+  text-align: left;
+}
+.align-right {
+  text-align: right;
 }
 </style>

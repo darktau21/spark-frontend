@@ -73,7 +73,7 @@ withDefaults(
   --font-size: 1.8rem;
   --font-weight: 600;
 
-  --padding: 1rem 1rem 1rem 0.4rem;
+  --padding: 0.5rem;
 }
 
 .tertiary::before {

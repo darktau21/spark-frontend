@@ -1,4 +1,4 @@
-import { ZodSchema, z } from 'zod';
+import { z } from 'zod';
 
 const storageSchema = z.object({
   authToken: z.string(),
@@ -6,35 +6,26 @@ const storageSchema = z.object({
 });
 
 type StorageSchema = z.infer<typeof storageSchema>;
-
-const STORAGE_KEY = 'auth_storage';
+type StorageSchemaKey = keyof StorageSchema;
 
 class LocalStorage {
-  private getStorage(): StorageSchema | null {
-    const storage = localStorage.getItem(STORAGE_KEY);
-    if (!storage) {
-      return null;
-    }
-    const parsed = storageSchema.safeParse(JSON.parse(storage));
-    if (parsed.success) {
-      return parsed.data;
+  public get<K extends StorageSchemaKey>(key: K): StorageSchema[K] | null {
+    const item = localStorage.getItem(key);
+    if (item === null) return null;
+
+    const value = storageSchema.shape[key].safeParse(JSON.parse(item));
+    if (value.success) {
+      return value.data as StorageSchema[K];
     }
     return null;
   }
 
-  public get<K extends keyof StorageSchema>(key: K): StorageSchema[K] | null {
-    const storage = this.getStorage();
-    return storage ? storage[key] : null;
+  public set<K extends StorageSchemaKey>(key: K, value: StorageSchema[K]): void {
+    localStorage.setItem(key, JSON.stringify(value));
   }
 
-  public set<K extends keyof StorageSchema>(key: K, value: StorageSchema[K]): void {
-    const storage: StorageSchema = this.getStorage() ?? {
-      authToken: '',
-      rememberMe: false,
-    };
-
-    storage[key] = value;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(storage));
+  public remove<K extends StorageSchemaKey>(key: K): void {
+    localStorage.removeItem(key);
   }
 }
 

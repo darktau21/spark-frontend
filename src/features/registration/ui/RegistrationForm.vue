@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useRegister } from '@/entities/account/model';
+import { useAccount } from '@/entities/account';
 import { accountApi } from '@/shared/api';
 import { UiButton, UiCheckBox, UiInput, UiParagraph, UiPasswordInput } from '@/shared/ui';
 import { toTypedSchema } from '@vee-validate/zod';
@@ -7,24 +7,32 @@ import { useForm } from 'vee-validate';
 import { computed, ref } from 'vue';
 
 const validationSchema = toTypedSchema(accountApi.registerPayload);
-const { errors, handleSubmit, meta } = useForm<accountApi.RegisterPayload>({
+const { errors, handleSubmit, meta, defineField } = useForm<accountApi.RegisterPayload>({
   validationSchema,
 });
-const { isError: isQueryError, isPending, mutate } = useRegister();
+
+const [firstName, firstNameAttrs] = defineField('first_name');
+const [lastName, lastNameAttrs] = defineField('last_name');
+const [patronymic, patronymicAttrs] = defineField('patronymic');
+const [email, emailAttrs] = defineField('email');
+const [password, passwordAttrs] = defineField('password');
+const [rePassword, rePasswordAttrs] = defineField('re_password');
+
+const account = useAccount();
 const isAgreementChecked = ref(false);
 const isSubmitAllowed = computed(() => {
   return (
-    !isPending.value &&
+    !account.isLoading.register &&
     Object.keys(errors.value).length === 0 &&
     meta.value.valid &&
     isAgreementChecked.value
   );
 });
 
-const isError = computed(() => isQueryError.value || Object.keys(errors.value).length > 0);
+const isError = computed(() => Object.keys(errors.value).length > 0);
 
 const onSubmit = handleSubmit(async (values) => {
-  mutate(values);
+  await account.register(values);
 });
 </script>
 
@@ -36,7 +44,9 @@ const onSubmit = handleSubmit(async (values) => {
       name="first_name"
       placeholder="Не более 30 символов"
       label="Имя"
-      :disabled="isPending"
+      :disabled="account.isLoading.register"
+      v-bind="firstNameAttrs"
+      v-model="firstName"
     />
     <UiInput
       id="last_name"
@@ -44,7 +54,9 @@ const onSubmit = handleSubmit(async (values) => {
       name="last_name"
       placeholder="Не более 30 символов"
       label="Фамилия"
-      :disabled="isPending"
+      :disabled="account.isLoading.register"
+      v-bind="lastNameAttrs"
+      v-model="lastName"
     />
     <UiInput
       id="patronymic"
@@ -52,7 +64,9 @@ const onSubmit = handleSubmit(async (values) => {
       name="patronymic"
       placeholder="Не более 30 символов"
       label="Отчество"
-      :disabled="isPending"
+      :disabled="account.isLoading.register"
+      v-bind="patronymicAttrs"
+      v-model="patronymic"
     />
     <UiInput
       id="email"
@@ -60,7 +74,9 @@ const onSubmit = handleSubmit(async (values) => {
       name="email"
       placeholder="Email"
       label="Введите адрес эл. почты"
-      :disabled="isPending"
+      :disabled="account.isLoading.register"
+      v-bind="emailAttrs"
+      v-model="email"
     />
     <UiPasswordInput
       id="password"
@@ -68,14 +84,18 @@ const onSubmit = handleSubmit(async (values) => {
       name="password"
       placeholder="Не менее 8 символов"
       label="Пароль"
-      :disabled="isPending"
+      :disabled="account.isLoading.register"
+      v-bind="passwordAttrs"
+      v-model="password"
     />
     <UiPasswordInput
       id="re_password"
       autocomplete="new-password"
       name="re_password"
       label="Повторите пароль"
-      :disabled="isPending"
+      :disabled="account.isLoading.register"
+      v-bind="rePasswordAttrs"
+      v-model="rePassword"
     />
     <UiCheckBox id="agreement" name="agreement" v-model="isAgreementChecked">
       <UiParagraph variant="p2">
@@ -92,6 +112,7 @@ const onSubmit = handleSubmit(async (values) => {
 .form {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   gap: 1.6rem;
 }
 .button {

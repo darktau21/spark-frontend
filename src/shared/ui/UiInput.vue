@@ -6,6 +6,7 @@
     <div class="input-wrapper">
       <input
         v-bind="$attrs"
+        v-model="model"
         :id
         :name
         :value="inputValue"
@@ -16,7 +17,9 @@
         @blur="handleBlur"
         @change="handleChange"
       />
-      <slot />
+      <span v-if="isSlotProvided" class="tail-icon">
+        <slot />
+      </span>
     </div>
     <div class="error">
       <UiParagraph v-show="!isValid" variant="p3">
@@ -37,6 +40,8 @@ defineOptions({
   inheritAttrs: false,
 });
 
+const model = defineModel();
+
 const props = defineProps<{
   id: string;
   label?: string;
@@ -55,6 +60,7 @@ const {
   value: inputValue,
 } = useField(name, undefined, {
   initialValue: props.value,
+  validateOnValueUpdate: true,
 });
 const isValid = computed(() => !errorMessage.value);
 </script>
@@ -64,6 +70,7 @@ const isValid = computed(() => !errorMessage.value);
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  min-width: 28ch;
 }
 
 .input-wrapper {
@@ -77,7 +84,6 @@ const isValid = computed(() => !errorMessage.value);
   font-size: 1.6rem;
   border: none;
   outline: none;
-  min-width: 28ch;
   color: rgb(0, 0, 0);
   transition: 0.3s ease-in-out;
   width: 100%;
@@ -115,5 +121,17 @@ const isValid = computed(() => !errorMessage.value);
   height: 1.6rem;
   margin-top: 0.8rem;
   color: rgb(255, 0, 0);
+}
+
+.with-slot {
+  padding-right: 6rem;
+}
+
+.tail-icon {
+  padding: 0;
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
 }
 </style>

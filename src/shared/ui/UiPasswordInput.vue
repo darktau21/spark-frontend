@@ -32,16 +32,7 @@ const eyeIcon = computed(() => (isPasswordVisible.value ? 'eye-opened' : 'eye-cl
 </script>
 
 <style scoped>
-.input {
-  padding-right: 10rem;
-}
-
 .button {
-  padding: 0;
   color: rgb(21, 21, 21);
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
 }
 </style>
