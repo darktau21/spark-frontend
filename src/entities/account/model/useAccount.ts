@@ -58,7 +58,7 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
       await accountApi.register(registerData);
       toast.success('Вы успешно зарегистрировались');
       await refetchData();
-      router.push({ name: routeNames.account });
+      router.push({ name: routeNames.login });
     } catch (error) {
       const parse = useAxiosErrorToast('Ошибка регистрации');
       parse(error);
