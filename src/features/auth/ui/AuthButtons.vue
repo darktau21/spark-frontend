@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { AccountAvatar, AccountMenu, useAccount } from '@/entities/account';
+import { LogoutButton } from '@/features/logout';
 import { routeNames } from '@/shared/lib';
 import { UiNavLink } from '@/shared/ui';
 
@@ -12,11 +13,16 @@ const account = useAccount();
     <UiNavLink :to="{ name: routeNames.register }" variant="secondary">Регистрация</UiNavLink>
   </div>
   <AccountMenu v-else>
-    <AccountAvatar
-      :is-loading="account.isLoading.data"
-      :avatar="account.data?.avatar"
-      :name="account.data?.first_name"
-    />
+    <template #account>
+      <AccountAvatar
+        :is-loading="account.isLoading.data"
+        :avatar="account.data?.avatar"
+        :name="account.data?.first_name"
+      />
+    </template>
+    <template #logout>
+      <LogoutButton />
+    </template>
   </AccountMenu>
 </template>
 

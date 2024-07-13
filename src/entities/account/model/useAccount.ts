@@ -68,7 +68,15 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
     }
   };
 
+  const logout = async () => {
+    await accountApi.logout();
+    storage.remove('authToken');
+    data.value = null;
+    isAuthorized.value = false;
+    router.push({ name: routeNames.login });
+  };
+
   onMounted(refetchData);
 
-  return { data, login, register, isLoading, isAuthorized, refetchData };
+  return { data, login, register, isLoading, isAuthorized, refetchData, logout };
 });

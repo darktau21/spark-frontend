@@ -48,6 +48,7 @@ defineProps<{
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
   cursor: pointer;
+  z-index: 10;
 }
 
 .header {

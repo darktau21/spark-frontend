@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { RegistrationForm } from '@/features/registration/ui';
+import { RegistrationForm } from '@/features/registration';
 import { UiHeading, UiTwoSidesBlock } from '@/shared/ui';
 </script>
 

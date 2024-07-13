@@ -7,7 +7,7 @@ import { UiButton, UiMenuButton, UiNavLink, UiPanel } from '@/shared/ui';
   <UiMenuButton>
     <template #button="{ toggleMenu, isOpen }">
       <UiButton variant="tertiary-light" @click="toggleMenu" :active="isOpen">
-        <slot />
+        <slot name="account" />
       </UiButton>
     </template>
     <template #menu="{ toggleMenu }">
@@ -16,7 +16,7 @@ import { UiButton, UiMenuButton, UiNavLink, UiPanel } from '@/shared/ui';
         <UiNavLink @click="toggleMenu" :to="{ name: routeNames.editAccount }"
           >Редактировать профиль</UiNavLink
         >
-        <UiButton @click="toggleMenu" variant="tertiary-light">Выход</UiButton>
+        <slot name="logout" />
       </UiPanel>
     </template>
   </UiMenuButton>

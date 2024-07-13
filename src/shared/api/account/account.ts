@@ -24,3 +24,7 @@ export async function getMe() {
   const { data } = await api.get<AccountSchema>('/users/me/');
   return accountSchema.parse(data);
 }
+
+export async function logout() {
+  await api.post('/token/logout/');
+}
