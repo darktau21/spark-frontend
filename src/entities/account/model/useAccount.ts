@@ -80,7 +80,7 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
   onMounted(refetchData);
 
   const rememberMeHandler = async () => {
-    if (!storage.get('rememberMe')) {
+    if (storage.get('authToken') && !storage.get('rememberMe')) {
       await logout();
     }
   };

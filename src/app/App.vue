@@ -18,8 +18,6 @@ import { onMounted } from 'vue';
 
 onMounted(async () => {
   const account = useAccount();
-  window.addEventListener('beforeunload', async () => {
-    await account.rememberMeHandler();
-  });
+  await account.rememberMeHandler();
 });
 </script>
