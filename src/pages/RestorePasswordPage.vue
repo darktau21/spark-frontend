@@ -4,7 +4,6 @@
       <template #right>
         <div class="form-wrapper">
           <UiHeading align="center">Восстановление пароля</UiHeading>
-          <RestorePasswordForm />
         </div>
       </template>
     </UiTwoSidesBlock>

@@ -5,6 +5,7 @@ import {
   type LoginResponse,
   type RegisterPayload,
   type RegisterResponse,
+  type RestorePasswordPayload,
   accountSchema,
   loginResponse,
   registerResponse,
@@ -27,4 +28,8 @@ export async function getMe() {
 
 export async function logout() {
   await api.post('/token/logout/');
+}
+
+export async function restorePassword(body: RestorePasswordPayload) {
+  await api.post('/reset_password/', body);
 }

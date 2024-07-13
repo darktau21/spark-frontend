@@ -65,3 +65,15 @@ export const loginResponse = z.object({
 });
 
 export type LoginResponse = z.infer<typeof loginResponse>;
+
+export const restorePasswordPayload = z.object({
+  email: z.string({ message: 'Обязательное поле' }).email({ message: 'Невалидный email' }),
+});
+
+export type RestorePasswordPayload = z.infer<typeof restorePasswordPayload>;
+
+export const restorePasswordResponse = z.object({
+  message: z.string(),
+});
+
+export type RestorePasswordResponse = z.infer<typeof restorePasswordResponse>;
