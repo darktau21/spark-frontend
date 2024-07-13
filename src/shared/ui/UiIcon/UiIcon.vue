@@ -1,18 +1,18 @@
 <template>
   <svg
-    :width="width"
     :height="height"
+    :width="width"
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
   >
-    <use :width="width" :height="height" :xlink:href="`${sprite}#${icon}`"></use>
+    <use :height="height" :width="width" :xlink:href="`${sprite}#${icon}`"></use>
   </svg>
 </template>
 
 <script setup lang="ts">
 import sprite from './sprite.svg';
 
-type Icon = 'checkbox' | 'checkbox-checked' | 'eye-opened' | 'eye-closed' | 'menu' | 'close';
+type Icon = 'checkbox' | 'checkbox-checked' | 'close' | 'eye-closed' | 'eye-opened' | 'menu';
 
 withDefaults(
   defineProps<{

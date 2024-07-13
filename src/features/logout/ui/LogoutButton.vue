@@ -3,8 +3,8 @@
 </template>
 
 <script setup>
-import { UiButton } from '@/shared/ui';
 import { useAccount } from '@/entities/account';
+import { UiButton } from '@/shared/ui';
 
 const account = useAccount();
 </script>

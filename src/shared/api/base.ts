@@ -1,8 +1,8 @@
-import axios, { HttpStatusCode, type AxiosError } from 'axios';
+import axios, { type AxiosError, HttpStatusCode } from 'axios';
+import { useRouter } from 'vue-router';
 
 import { env } from '../config';
 import { routeNames, storage } from '../lib';
-import { useRouter } from 'vue-router';
 
 export const api = axios.create({
   baseURL: env.API_BASE_URL,

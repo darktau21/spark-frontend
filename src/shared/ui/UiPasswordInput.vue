@@ -1,10 +1,10 @@
 <template>
-  <UiInput class="password-input" :id :name :label :value :type="inputType">
+  <UiInput :id :label :name :type="inputType" :value class="password-input">
     <UiButton
-      type="button"
       class="button"
-      @click.stop.prevent="togglePasswordVisibility"
+      type="button"
       variant="tertiary"
+      @click.stop.prevent="togglePasswordVisibility"
     >
       <UiIcon :icon="eyeIcon" />
     </UiButton>
@@ -13,14 +13,15 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import UiInput from './UiInput.vue';
-import UiIcon from './UiIcon/UiIcon.vue';
+
 import UiButton from './UiButton.vue';
+import UiIcon from './UiIcon/UiIcon.vue';
+import UiInput from './UiInput.vue';
 
 defineProps<{
+  id: string;
   label?: string;
   name: string;
-  id: string;
   value?: string;
 }>();
 

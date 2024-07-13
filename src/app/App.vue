@@ -15,7 +15,7 @@ import { routeNames } from '@/shared/lib';
 import { AppFooter } from '@/widgets/AppFooter';
 import { AppHeader } from '@/widgets/AppHeader';
 import { RouterOutlet } from '@/widgets/RouterOutlet';
-import { onBeforeUnmount, onErrorCaptured, onMounted } from 'vue';
+import { onErrorCaptured, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 onErrorCaptured((error) => {

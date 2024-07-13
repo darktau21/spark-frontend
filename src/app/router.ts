@@ -1,8 +1,5 @@
-import { CURRENT_USER_KEY } from '@/entities/account';
-import { accountApi } from '@/shared/api';
-import { queryClient, routeNames, storage } from '@/shared/lib';
-import { AxiosError, HttpStatusCode } from 'axios';
-import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
+import { routeNames, storage } from '@/shared/lib';
+import { type RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import { useToast } from 'vue-toastification';
 
 const routes: Readonly<RouteRecordRaw[]> = [
@@ -13,35 +10,35 @@ const routes: Readonly<RouteRecordRaw[]> = [
   },
   {
     component: () => import('@/pages/LoginPage.vue'),
-    name: routeNames.login,
-    path: '/login',
     meta: {
       blockAuth: true,
     },
+    name: routeNames.login,
+    path: '/login',
   },
   {
     component: () => import('@/pages/RegistrationPage.vue'),
-    name: routeNames.register,
-    path: '/register',
     meta: {
       blockAuth: true,
     },
+    name: routeNames.register,
+    path: '/register',
   },
   {
     component: () => import('@/pages/AccountPage.vue'),
-    name: routeNames.account,
-    path: '/account',
     meta: {
       authRequired: true,
     },
+    name: routeNames.account,
+    path: '/account',
   },
   {
     component: () => import('@/pages/EditAccountPage.vue'),
-    name: routeNames.editAccount,
-    path: '/account/edit',
     meta: {
       authRequired: true,
     },
+    name: routeNames.editAccount,
+    path: '/account/edit',
   },
   {
     component: () => import('@/pages/TestPage.vue'),
@@ -62,6 +59,11 @@ const routes: Readonly<RouteRecordRaw[]> = [
     component: () => import('@/pages/NotFoundPage.vue'),
     name: routeNames.notFound,
     path: '/:pathMatch(.*)*',
+  },
+  {
+    component: () => import('@/pages/RestorePasswordPage.vue'),
+    name: routeNames.restorePassword,
+    path: '/restore-password',
   },
 ];
 

@@ -1,16 +1,17 @@
 <template>
-  <div class="menu-wrapper" ref="menuRef">
-    <slot name="button" :isOpen="isOpen" :toggleMenu="toggle" />
+  <div ref="menuRef" class="menu-wrapper">
+    <slot :is-open="isOpen" :toggle-menu="toggle" name="button" />
     <Transition>
       <div v-show="isOpen" class="menu">
-        <slot name="menu" :isOpen="isOpen" :toggleMenu="toggle" />
+        <slot :is-open="isOpen" :toggle-menu="toggle" name="menu" />
       </div>
     </Transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, withDefaults, defineProps } from 'vue';
+import { defineProps, ref, withDefaults } from 'vue';
+
 import { useClickOutside } from '../lib';
 
 const menuRef = ref<HTMLElement | null>(null);

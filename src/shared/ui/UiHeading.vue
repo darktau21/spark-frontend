@@ -1,14 +1,14 @@
 <template>
-  <h1 v-bind="$attrs" v-if="variant === 'h1'" :class="['heading h1', alignClasses]">
+  <h1 v-if="variant === 'h1'" v-bind="$attrs" :class="['heading h1', alignClasses]">
     <slot />
   </h1>
-  <h2 v-bind="$attrs" v-if="variant === 'h2'" :class="['heading h2', alignClasses]">
+  <h2 v-if="variant === 'h2'" v-bind="$attrs" :class="['heading h2', alignClasses]">
     <slot />
   </h2>
-  <h3 v-bind="$attrs" v-if="variant === 'h3'" :class="['heading h3', alignClasses]">
+  <h3 v-if="variant === 'h3'" v-bind="$attrs" :class="['heading h3', alignClasses]">
     <slot />
   </h3>
-  <h4 v-bind="$attrs" v-if="variant === 'h4'" :class="['heading h4', alignClasses]">
+  <h4 v-if="variant === 'h4'" v-bind="$attrs" :class="['heading h4', alignClasses]">
     <slot />
   </h4>
 </template>
@@ -18,12 +18,12 @@ import { computed } from 'vue';
 
 const props = withDefaults(
   defineProps<{
-    variant?: 'h1' | 'h2' | 'h3' | 'h4';
     align?: 'center' | 'left' | 'right';
+    variant?: 'h1' | 'h2' | 'h3' | 'h4';
   }>(),
   {
-    variant: 'h1',
     align: 'left',
+    variant: 'h1',
   }
 );
 

@@ -7,7 +7,7 @@ import { useForm } from 'vee-validate';
 import { computed, ref } from 'vue';
 
 const validationSchema = toTypedSchema(accountApi.registerPayload);
-const { errors, handleSubmit, meta, defineField } = useForm<accountApi.RegisterPayload>({
+const { defineField, errors, handleSubmit, meta } = useForm<accountApi.RegisterPayload>({
   validationSchema,
 });
 
@@ -37,69 +37,69 @@ const onSubmit = handleSubmit(async (values) => {
 </script>
 
 <template>
-  <form class="form" :validation-schema="validationSchema" @submit="onSubmit">
+  <form :validation-schema="validationSchema" class="form" @submit="onSubmit">
     <UiInput
       id="first_name"
-      autocomplete="given-name"
-      name="first_name"
-      placeholder="Не более 30 символов"
-      label="Имя"
-      :disabled="account.isLoading.register"
       v-bind="firstNameAttrs"
       v-model="firstName"
+      :disabled="account.isLoading.register"
+      autocomplete="given-name"
+      label="Имя"
+      name="first_name"
+      placeholder="Не более 30 символов"
     />
     <UiInput
       id="last_name"
-      autocomplete="family-name"
-      name="last_name"
-      placeholder="Не более 30 символов"
-      label="Фамилия"
-      :disabled="account.isLoading.register"
       v-bind="lastNameAttrs"
       v-model="lastName"
+      :disabled="account.isLoading.register"
+      autocomplete="family-name"
+      label="Фамилия"
+      name="last_name"
+      placeholder="Не более 30 символов"
     />
     <UiInput
       id="patronymic"
-      autocomplete="additional-name"
-      name="patronymic"
-      placeholder="Не более 30 символов"
-      label="Отчество"
-      :disabled="account.isLoading.register"
       v-bind="patronymicAttrs"
       v-model="patronymic"
+      :disabled="account.isLoading.register"
+      autocomplete="additional-name"
+      label="Отчество"
+      name="patronymic"
+      placeholder="Не более 30 символов"
     />
     <UiInput
       id="email"
-      autocomplete="email"
-      name="email"
-      placeholder="Email"
-      label="Введите адрес эл. почты"
-      :disabled="account.isLoading.register"
       v-bind="emailAttrs"
       v-model="email"
+      :disabled="account.isLoading.register"
+      autocomplete="email"
+      label="Введите адрес эл. почты"
+      name="email"
+      placeholder="Email"
     />
     <UiPasswordInput
       id="password"
-      autocomplete="new-password"
-      name="password"
-      placeholder="Не менее 8 символов"
-      label="Пароль"
-      :disabled="account.isLoading.register"
       v-bind="passwordAttrs"
       v-model="password"
+      :disabled="account.isLoading.register"
+      autocomplete="new-password"
+      label="Пароль"
+      name="password"
+      placeholder="Не менее 8 символов"
     />
     <UiPasswordInput
       id="re_password"
-      autocomplete="new-password"
-      name="re_password"
-      label="Повторите пароль"
-      :disabled="account.isLoading.register"
       v-bind="rePasswordAttrs"
       v-model="rePassword"
+      :disabled="account.isLoading.register"
+      autocomplete="new-password"
+      label="Повторите пароль"
+      name="re_password"
     />
-    <UiCheckBox id="agreement" name="agreement" v-model="isAgreementChecked">
+    <UiCheckBox id="agreement" v-model="isAgreementChecked" name="agreement">
       <UiParagraph variant="p2">
-        Я даю согласие на обработку персональных данных и согласен с политикой конфиденциальности
+        Я даю согласие на обработку персональных данных и согласен с политикой конфиденциальности
       </UiParagraph>
     </UiCheckBox>
     <UiButton :disabled="!isSubmitAllowed" :error="isError" class="button" type="submit">

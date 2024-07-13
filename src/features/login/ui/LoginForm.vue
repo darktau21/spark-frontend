@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { useAccount } from '@/entities/account';
 import { accountApi } from '@/shared/api';
-import { UiButton, UiCheckBox, UiInput, UiPasswordInput } from '@/shared/ui';
+import { routeNames } from '@/shared/lib';
+import { UiButton, UiCheckBox, UiInput, UiNavLink, UiPasswordInput } from '@/shared/ui';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { computed, ref } from 'vue';
 
 const validationSchema = toTypedSchema(accountApi.loginPayload);
-const { errors, handleSubmit, meta, defineField } = useForm<accountApi.LoginPayload>({
+const { defineField, errors, handleSubmit, meta } = useForm<accountApi.LoginPayload>({
   validationSchema,
 });
 
@@ -29,28 +30,35 @@ const onSubmit = handleSubmit(async (values) => {
 </script>
 
 <template>
-  <form class="form" :validation-schema="validationSchema" @submit="onSubmit">
+  <form :validation-schema="validationSchema" class="form" @submit="onSubmit">
     <UiInput
       id="email"
-      autocomplete="email"
-      name="email"
-      placeholder="Email"
-      label="Введите адрес эл. почты"
-      :disabled="account.isLoading.login"
       v-bind="emailAttrs"
       v-model="email"
+      :disabled="account.isLoading.login"
+      autocomplete="email"
+      label="Введите адрес эл. почты"
+      name="email"
+      placeholder="Email"
     />
     <UiPasswordInput
       id="password"
-      autocomplete="new-password"
-      name="password"
-      placeholder="Не менее 8 символов"
-      label="Пароль"
-      :disabled="account.isLoading.login"
       v-bind="passwordAttrs"
       v-model="password"
+      :disabled="account.isLoading.login"
+      autocomplete="new-password"
+      label="Пароль"
+      name="password"
+      placeholder="Не менее 8 символов"
     />
     <UiCheckBox v-model="remember">Запомнить меня</UiCheckBox>
+    <UiNavLink
+      :to="{ name: routeNames.restorePassword }"
+      class="forgot-password"
+      variant="tertiary"
+    >
+      Забыли пароль?
+    </UiNavLink>
     <UiButton :disabled="!isSubmitAllowed" :error="isError" class="button" type="submit">
       Войти
     </UiButton>
@@ -66,5 +74,9 @@ const onSubmit = handleSubmit(async (values) => {
 }
 .button {
   align-self: center;
+}
+
+.forgot-password {
+  align-self: flex-start;
 }
 </style>

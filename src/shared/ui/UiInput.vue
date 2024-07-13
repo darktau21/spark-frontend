@@ -1,19 +1,19 @@
 <template>
   <div class="wrapper">
-    <label class="label" :for="id">
+    <label :for="id" class="label">
       <UiHeading variant="h3">{{ label }}</UiHeading>
     </label>
     <div class="input-wrapper">
       <input
         v-bind="$attrs"
-        v-model="model"
         :id
-        :name
-        :value="inputValue"
+        v-model="model"
         :class="[
           { 'input-valid': isValid, 'input-error': !isValid, 'with-slot': isSlotProvided },
           'input',
         ]"
+        :name
+        :value="inputValue"
         @blur="handleBlur"
         @change="handleChange"
       />
@@ -40,7 +40,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-const model = defineModel();
+const model = defineModel<string>();
 
 const props = defineProps<{
   id: string;

@@ -1,11 +1,12 @@
 export const routeNames = {
   account: 'account',
+  editAccount: 'editAccount',
   events: 'events',
   home: 'home',
   login: 'login',
-  register: 'register',
-  test: 'test',
   notFound: 'notFound',
+  register: 'register',
+  restorePassword: 'restorePassword',
   serverError: 'serverError',
-  editAccount: 'editAccount',
+  test: 'test',
 } as const;

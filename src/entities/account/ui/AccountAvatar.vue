@@ -1,28 +1,29 @@
 <template>
-  <div variant="tertiary-light" class="account-avatar">
+  <div class="account-avatar" variant="tertiary-light">
     <div class="image-wrapper">
-      <img class="image" v-if="!isLoading" :src="avatar" />
+      <img v-if="!isLoading" :src="avatar" class="image" />
       <UiSkeleton v-else />
     </div>
     <div class="name">
-      <span class="name-text" v-if="!isLoading">{{ name }}</span>
-      <UiSkeleton class="name-skeleton" v-else />
+      <span v-if="!isLoading" class="name-text">{{ name }}</span>
+      <UiSkeleton v-else class="name-skeleton" />
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import { UiSkeleton } from '@/shared/ui';
+
 import roflanEbalo from './roflanebalo.webp';
 
 withDefaults(
   defineProps<{
     avatar?: string;
-    name?: string;
     isLoading?: boolean;
+    name?: string;
   }>(),
   {
-    isLoading: true,
     avatar: roflanEbalo,
+    isLoading: true,
     name: 'Аноним',
   }
 );

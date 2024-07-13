@@ -27,20 +27,20 @@ const sideMenuState = useSideMenu();
         <UiNavLink :to="{ name: routeNames.events }">Мероприятия</UiNavLink>
       </UiNavMenu>
       <UiButton
-        variant="tertiary-light"
         :active="sideMenuState.isOpen"
         class="menu-button"
+        variant="tertiary-light"
         @click="sideMenuState.openSideMenu"
       >
-        <UiIcon :width="30" :height="30" icon="menu" />
+        <UiIcon :height="30" :width="30" icon="menu" />
         <UiSideMenu title="Меню">
-          <UiNavLink @click="sideMenuState.closeSideMenu" :to="{ name: routeNames.home }"
+          <UiNavLink :to="{ name: routeNames.home }" @click="sideMenuState.closeSideMenu"
             >Главная</UiNavLink
           >
-          <UiNavLink @click="sideMenuState.closeSideMenu" :to="{ name: routeNames.test }"
+          <UiNavLink :to="{ name: routeNames.test }" @click="sideMenuState.closeSideMenu"
             >Тестирование</UiNavLink
           >
-          <UiNavLink @click="sideMenuState.closeSideMenu" :to="{ name: routeNames.events }"
+          <UiNavLink :to="{ name: routeNames.events }" @click="sideMenuState.closeSideMenu"
             >Мероприятия</UiNavLink
           >
         </UiSideMenu>

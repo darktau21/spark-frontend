@@ -18,5 +18,5 @@ export const useSideMenu = defineStore(SIDE_MENU_STORE_KEY, () => {
     }
   });
 
-  return { isOpen, closeSideMenu, openSideMenu, toggleSideMenu };
+  return { closeSideMenu, isOpen, openSideMenu, toggleSideMenu };
 });

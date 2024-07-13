@@ -1,13 +1,13 @@
 import { api } from '../base';
 import {
-  type RegisterPayload,
-  registerResponse,
-  type LoginPayload,
-  loginResponse,
-  type LoginResponse,
-  type RegisterResponse,
   type AccountSchema,
+  type LoginPayload,
+  type LoginResponse,
+  type RegisterPayload,
+  type RegisterResponse,
   accountSchema,
+  loginResponse,
+  registerResponse,
 } from './schema';
 
 export async function register(body: RegisterPayload) {

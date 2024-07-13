@@ -28,7 +28,7 @@ const handleKeyboardFocus = (event: KeyboardEvent) => {
       :value="props.modelValue"
       @change="$emit('update:modelValue', ($event.target as HTMLInputElement)?.checked ?? false)"
     />
-    <UiIcon class="icon" :icon="iconName" />
+    <UiIcon :icon="iconName" class="icon" />
     <slot />
   </label>
 </template>

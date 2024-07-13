@@ -3,17 +3,17 @@
     <Transition :duration="500">
       <div
         v-if="sideMenuState.isOpen"
-        @click="sideMenuState.closeSideMenu"
+        aria-describedby="side-menu-description"
+        aria-labeledby="side-menu-title"
         class="wrapper"
         role="dialog"
-        aria-labeledby="side-menu-title"
-        aria-describedby="side-menu-description"
+        @click="sideMenuState.closeSideMenu"
       >
-        <div v-if="sideMenuState.isOpen" @click.stop class="menu">
+        <div v-if="sideMenuState.isOpen" class="menu" @click.stop>
           <header class="header">
-            <UiHeading variant="h2" id="side-menu-title">{{ title }}</UiHeading>
+            <UiHeading id="side-menu-title" variant="h2">{{ title }}</UiHeading>
             <UiButton variant="tertiary-light" @click="sideMenuState.closeSideMenu">
-              <UiIcon :width="30" :height="30" icon="close" />
+              <UiIcon :height="30" :width="30" icon="close" />
             </UiButton>
           </header>
           <div class="menu-content">
@@ -28,7 +28,6 @@
 <script setup lang="ts">
 import { UiButton, UiHeading, UiIcon } from '..';
 import { useSideMenu } from './useSideMenu';
-import { Teleport } from 'vue';
 
 const sideMenuState = useSideMenu();
 

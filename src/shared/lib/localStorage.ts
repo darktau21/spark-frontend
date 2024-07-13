@@ -20,12 +20,12 @@ class LocalStorage {
     return null;
   }
 
-  public set<K extends StorageSchemaKey>(key: K, value: StorageSchema[K]): void {
-    localStorage.setItem(key, JSON.stringify(value));
-  }
-
   public remove<K extends StorageSchemaKey>(key: K): void {
     localStorage.removeItem(key);
+  }
+
+  public set<K extends StorageSchemaKey>(key: K, value: StorageSchema[K]): void {
+    localStorage.setItem(key, JSON.stringify(value));
   }
 }
 

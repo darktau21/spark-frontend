@@ -1,8 +1,7 @@
 import { accountApi } from '@/shared/api';
 import { routeNames, storage, useAxiosErrorToast } from '@/shared/lib';
-import { AxiosError, HttpStatusCode } from 'axios';
 import { defineStore } from 'pinia';
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 
@@ -10,9 +9,9 @@ const ACCOUNT_STORE_KEY = 'store:account';
 
 export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
   const isLoading = ref({
+    data: false,
     login: false,
     register: false,
-    data: false,
   });
   const toast = useToast();
   const router = useRouter();
@@ -86,5 +85,5 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
     }
   };
 
-  return { data, login, register, isLoading, isAuthorized, refetchData, logout, rememberMeHandler };
+  return { data, isAuthorized, isLoading, login, logout, refetchData, register, rememberMeHandler };
 });

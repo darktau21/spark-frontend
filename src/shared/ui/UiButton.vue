@@ -1,5 +1,5 @@
 <template>
-  <button :disabled :class="['button', variant, error && 'error', active && 'active']">
+  <button :class="['button', variant, error && 'error', active && 'active']" :disabled>
     <slot />
   </button>
 </template>
@@ -7,16 +7,16 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
+    active?: boolean;
     disabled?: boolean;
     error?: boolean;
     variant?: 'primary' | 'secondary' | 'tertiary' | 'tertiary-light';
-    active?: boolean;
   }>(),
   {
+    active: false,
     disabled: false,
     error: false,
     variant: 'primary',
-    active: false,
   }
 );
 </script>
