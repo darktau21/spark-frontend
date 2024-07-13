@@ -11,18 +11,10 @@
 <script setup lang="ts">
 import { useAccount } from '@/entities/account';
 import { AppLayout } from '@/shared/layouts';
-import { routeNames } from '@/shared/lib';
 import { AppFooter } from '@/widgets/AppFooter';
 import { AppHeader } from '@/widgets/AppHeader';
 import { RouterOutlet } from '@/widgets/RouterOutlet';
-import { onErrorCaptured, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-
-onErrorCaptured((error) => {
-  const router = useRouter();
-  console.error(error);
-  router.push({ name: routeNames.serverError });
-});
+import { onMounted } from 'vue';
 
 onMounted(async () => {
   const account = useAccount();
