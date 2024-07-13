@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 
 import UiIcon from './UiIcon';
 
@@ -13,7 +13,7 @@ defineEmits(['update:modelValue']);
 const iconName = computed(() => (props.modelValue ? 'checkbox-checked' : 'checkbox'));
 
 const handleKeyboardFocus = (event: KeyboardEvent) => {
-  if ((event.code === 'Enter' || event.code === 'Space') && event.target instanceof HTMLElement) {
+  if (event.target instanceof HTMLElement) {
     event.target.click();
   }
 };
@@ -21,7 +21,7 @@ const handleKeyboardFocus = (event: KeyboardEvent) => {
 
 <template>
   <div class="wrapper">
-    <label class="label" tabindex="0" @keydown="handleKeyboardFocus">
+    <label class="label" tabindex="0" @keydown.space.enter.prevent="handleKeyboardFocus">
       <input
         class="checkbox"
         type="checkbox"

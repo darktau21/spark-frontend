@@ -11,8 +11,12 @@ const account = useAccount();
     <UiNavLink :to="{ name: routeNames.login }" variant="primary">Вход</UiNavLink>
     <UiNavLink :to="{ name: routeNames.register }" variant="secondary">Регистрация</UiNavLink>
   </div>
-  <AccountMenu>
-    <AccountAvatar :is-loading="account.isLoading.data" :avatar="account.data?.avatar" :name="account.data?.first_name" />
+  <AccountMenu v-else>
+    <AccountAvatar
+      :is-loading="account.isLoading.data"
+      :avatar="account.data?.avatar"
+      :name="account.data?.first_name"
+    />
   </AccountMenu>
 </template>
 

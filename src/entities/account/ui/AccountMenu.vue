@@ -21,5 +21,3 @@ import { UiButton, UiMenuButton, UiNavLink, UiPanel } from '@/shared/ui';
     </template>
   </UiMenuButton>
 </template>
-
-<style scoped></style>

@@ -15,6 +15,7 @@ import UiSkeleton from './UiSkeleton.vue';
 import UiNavMenu from './UiNavMenu.vue';
 import UiMenuButton from './UiMenuButton.vue';
 import UiPanel from './UiPanel.vue';
+import { UiSideMenu, useSideMenu } from './UiSideMenu';
 
 export {
   UiButton,
@@ -34,4 +35,6 @@ export {
   UiNavMenu,
   UiMenuButton,
   UiPanel,
+  UiSideMenu,
+  useSideMenu,
 };
