@@ -35,13 +35,14 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
     }
   };
 
-  const login = async (loginData: accountApi.LoginPayload) => {
+  const login = async (loginData: accountApi.LoginPayload, remember: boolean = false) => {
     try {
       isLoading.value.login = true;
       const response = await accountApi.login(loginData);
       storage.set('authToken', response.auth_token);
       toast.success('Вы успешно авторизовались');
       await refetchData();
+      storage.set('rememberMe', remember);
       router.push({ name: routeNames.account });
     } catch (error) {
       const parse = useAxiosErrorToast('Ошибка авторизации');
@@ -71,6 +72,7 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
   const logout = async () => {
     await accountApi.logout();
     storage.remove('authToken');
+    storage.remove('rememberMe');
     data.value = null;
     isAuthorized.value = false;
     router.push({ name: routeNames.login });
@@ -78,5 +80,11 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
 
   onMounted(refetchData);
 
-  return { data, login, register, isLoading, isAuthorized, refetchData, logout };
+  const rememberMeHandler = async () => {
+    if (!storage.get('rememberMe')) {
+      await logout();
+    }
+  };
+
+  return { data, login, register, isLoading, isAuthorized, refetchData, logout, rememberMeHandler };
 });

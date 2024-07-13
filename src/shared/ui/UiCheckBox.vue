@@ -20,19 +20,17 @@ const handleKeyboardFocus = (event: KeyboardEvent) => {
 </script>
 
 <template>
-  <div class="wrapper">
-    <label class="label" tabindex="0" @keydown.space.enter.prevent="handleKeyboardFocus">
-      <input
-        class="checkbox"
-        type="checkbox"
-        v-bind="$attrs"
-        :value="props.modelValue"
-        @change="$emit('update:modelValue', ($event.target as HTMLInputElement)?.checked ?? false)"
-      />
-      <UiIcon class="icon" :icon="iconName" />
-      <slot />
-    </label>
-  </div>
+  <label class="label" tabindex="0" @keydown.space.enter.prevent="handleKeyboardFocus">
+    <input
+      class="checkbox"
+      type="checkbox"
+      v-bind="$attrs"
+      :value="props.modelValue"
+      @change="$emit('update:modelValue', ($event.target as HTMLInputElement)?.checked ?? false)"
+    />
+    <UiIcon class="icon" :icon="iconName" />
+    <slot />
+  </label>
 </template>
 
 <style scoped>
@@ -52,14 +50,9 @@ const handleKeyboardFocus = (event: KeyboardEvent) => {
 
 .icon {
   position: absolute;
-  top: 0;
+  top: 0.9rem;
+  transform: translateY(-50%);
   left: 0;
   color: rgb(21, 21, 21);
-}
-
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
 }
 </style>

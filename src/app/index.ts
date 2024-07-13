@@ -16,10 +16,5 @@ export function initApp() {
   VueQueryPlugin.install(app, { queryClient });
   app.use(VueToastificationPlugin);
   app.use(router);
-  app.config.errorHandler = (error) => {
-    const router = useRouter();
-    console.error(error);
-    router.push({ name: routeNames.serverError });
-  };
   app.mount('#app');
 }

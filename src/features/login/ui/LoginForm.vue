@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useAccount } from '@/entities/account';
 import { accountApi } from '@/shared/api';
-import { UiButton, UiInput, UiPasswordInput } from '@/shared/ui';
+import { UiButton, UiCheckBox, UiInput, UiPasswordInput } from '@/shared/ui';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 const validationSchema = toTypedSchema(accountApi.loginPayload);
 const { errors, handleSubmit, meta, defineField } = useForm<accountApi.LoginPayload>({
@@ -21,8 +21,10 @@ const isSubmitAllowed = computed(() => {
 
 const isError = computed(() => Object.keys(errors.value).length > 0);
 
+const remember = ref(false);
+
 const onSubmit = handleSubmit(async (values) => {
-  await account.login(values);
+  await account.login(values, remember.value);
 });
 </script>
 
@@ -48,8 +50,9 @@ const onSubmit = handleSubmit(async (values) => {
       v-bind="passwordAttrs"
       v-model="password"
     />
+    <UiCheckBox v-model="remember">Запомнить меня</UiCheckBox>
     <UiButton :disabled="!isSubmitAllowed" :error="isError" class="button" type="submit">
-      Зарегистрироваться
+      Войти
     </UiButton>
   </form>
 </template>
