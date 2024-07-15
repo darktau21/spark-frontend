@@ -24,13 +24,19 @@ const routes: Readonly<RouteRecordRaw[]> = [
     name: routeNames.register,
     path: '/register',
   },
+  
   {
     component: () => import('@/pages/AccountPage.vue'),
     meta: {
       authRequired: true,
     },
     name: routeNames.account,
-    path: '/account',
+    path: '/account'
+  },
+  {
+    component: () => import('@/pages/AccountEdit.vue'),
+    name: routeNames.accountedit,
+    path: '/accountedit'
   },
   {
     component: () => import('@/pages/EditAccountPage.vue'),

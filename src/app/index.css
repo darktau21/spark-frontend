@@ -32,8 +32,8 @@ body {
 
 .container {
   --padding-inline: 1.5rem;
-  --content-max-width: 1240px;
-  --breakout-max-width: 1300px;
+  --content-max-width: 1420px;
+  --breakout-max-width: 1200px;
   --breakout-size: calc((var(--breakout-max-width) - var(--content-max-width)) / 2);
 
   display: grid;
