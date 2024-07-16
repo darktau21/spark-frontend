@@ -42,7 +42,7 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
       toast.success('Вы успешно авторизовались');
       await refetchData();
       storage.set('rememberMe', remember);
-      router.push({ name: routeNames.account });
+      router.push({ name: routeNames.account, replace: true });
     } catch (error) {
       const parse = useAxiosErrorToast('Ошибка авторизации');
       parse(error);
@@ -58,7 +58,7 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
       await accountApi.register(registerData);
       toast.success('Вы успешно зарегистрировались');
       await refetchData();
-      router.push({ name: routeNames.login });
+      router.push({ name: routeNames.login, replace: true });
     } catch (error) {
       const parse = useAxiosErrorToast('Ошибка регистрации');
       parse(error);

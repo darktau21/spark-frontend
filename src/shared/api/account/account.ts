@@ -31,5 +31,6 @@ export async function logout() {
 }
 
 export async function restorePassword(body: RestorePasswordPayload) {
-  await api.post('/reset_password/', body);
+  const response = await api.post('/reset_password/', body);
+  console.log(response);
 }
