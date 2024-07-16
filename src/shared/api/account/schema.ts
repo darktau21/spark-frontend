@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 export const accountSchema = z.object({
-  // TODO: switch optional to nullable
-  avatar: z.string().url().optional(),
+  competencies: z.array(z.string()).optional(),
+  educational_organization: z.number().optional(),
   email: z.string({ message: 'Обязательное поле' }).email({ message: 'Невалидный email' }),
   first_name: z
     .string({ message: 'Обязательное поле' })
@@ -17,13 +17,17 @@ export const accountSchema = z.object({
     .string()
     .min(3, { message: 'Отчество должно быть не менее 3 символов' })
     .max(30, { message: 'Отчество должно быть не более 30 символов' })
-    .nullable(),
+    .optional(),
+  phone_number: z.string().optional(),
+  photo: z.string().url().optional(),
+  professional_competencies: z.array(z.string()).optional(),
+  telegram: z.string().optional(),
 });
 
 export type AccountSchema = z.infer<typeof accountSchema>;
 
 export const registerPayload = accountSchema
-  .omit({ id: true })
+  .pick({ email: true, first_name: true, last_name: true })
   .extend({
     password: z
       .string({ message: 'Обязательное поле' })

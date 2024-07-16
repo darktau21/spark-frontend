@@ -13,7 +13,6 @@ const { defineField, errors, handleSubmit, meta } = useForm<accountApi.RegisterP
 
 const [firstName, firstNameAttrs] = defineField('first_name');
 const [lastName, lastNameAttrs] = defineField('last_name');
-const [patronymic, patronymicAttrs] = defineField('patronymic');
 const [email, emailAttrs] = defineField('email');
 const [password, passwordAttrs] = defineField('password');
 const [rePassword, rePasswordAttrs] = defineField('re_password');
@@ -56,16 +55,6 @@ const onSubmit = handleSubmit(async (values) => {
       autocomplete="family-name"
       label="Фамилия"
       name="last_name"
-      placeholder="Не более 30 символов"
-    />
-    <UiInput
-      id="patronymic"
-      v-bind="patronymicAttrs"
-      v-model="patronymic"
-      :disabled="account.isLoading.register"
-      autocomplete="additional-name"
-      label="Отчество"
-      name="patronymic"
       placeholder="Не более 30 символов"
     />
     <UiInput
