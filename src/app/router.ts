@@ -75,6 +75,7 @@ const routes: Readonly<RouteRecordRaw[]> = [
   {
     component: () => import('@/pages/RestorePasswordPage.vue'),
     meta: {
+      blockAuth: true,
       title: 'Восстановление пароля',
     },
     name: routeNames.restorePassword,
@@ -83,6 +84,7 @@ const routes: Readonly<RouteRecordRaw[]> = [
   {
     component: () => import('@/pages/RestorePasswordConfirmationPage.vue'),
     meta: {
+      blockAuth: true,
       title: 'Восстановление пароля',
     },
     name: routeNames.restorePasswordConfirm,
