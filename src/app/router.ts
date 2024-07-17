@@ -81,6 +81,15 @@ const routes: Readonly<RouteRecordRaw[]> = [
     path: '/restore-password',
   },
   {
+    component: () => import('@/pages/RestorePasswordConfirmationPage.vue'),
+    meta: {
+      title: 'Восстановление пароля',
+    },
+    name: routeNames.restorePasswordConfirm,
+    path: '/restore-password/confirm/:uid/:token',
+    props: true,
+  },
+  {
     component: () => import('@/pages/NotFoundPage.vue'),
     meta: {
       title: 'Страница не найдена',

@@ -5,6 +5,7 @@ import {
   type LoginResponse,
   type RegisterPayload,
   type RegisterResponse,
+  type RestorePasswordConfirmPayload,
   type RestorePasswordPayload,
   accountSchema,
   loginResponse,
@@ -31,6 +32,9 @@ export async function logout() {
 }
 
 export async function restorePassword(body: RestorePasswordPayload) {
-  const response = await api.post('/reset_password/', body);
-  console.log(response);
+  await api.post('/reset_password/', body);
+}
+
+export async function restorePasswordConfirm(body: RestorePasswordConfirmPayload) {
+  await api.post('/users/reset_password_confirm/', body);
 }

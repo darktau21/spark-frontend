@@ -80,3 +80,23 @@ export const restorePasswordResponse = z.object({
 });
 
 export type RestorePasswordResponse = z.infer<typeof restorePasswordResponse>;
+
+export const restorePasswordConfirmPayload = z
+  .object({
+    new_password: z
+      .string({ message: 'Обязательное поле' })
+      .min(8, { message: 'Пароль должен быть не менее 8 символов' })
+      .max(32, { message: 'Пароль должен быть не более 32 символов' }),
+    re_new_password: z
+      .string({ message: 'Обязательное поле' })
+      .min(8, { message: 'Пароль должен быть не менее 8 символов' })
+      .max(32, { message: 'Пароль должен быть не более 32 символов' }),
+    token: z.string({ message: 'Обязательное поле' }),
+    uid: z.string({ message: 'Обязательное поле' }),
+  })
+  .refine((data) => data.new_password === data.re_new_password, {
+    message: 'Пароли не совпадают',
+    path: ['re_new_password'],
+  });
+
+export type RestorePasswordConfirmPayload = z.infer<typeof restorePasswordConfirmPayload>;
