@@ -11,12 +11,12 @@ export function useAxiosErrorToast(defaultMessage: string) {
         errorMessages.forEach((error: string) => {
           toast.error(error);
         });
-      } else {
-        toast.error(error.response?.data?.message ?? defaultMessage);
+        return;
       }
-    } else {
-      toast.error(defaultMessage);
+      toast.error(error.response?.data?.message ?? defaultMessage);
+      return;
     }
   };
+
   return parse;
 }

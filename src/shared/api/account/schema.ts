@@ -1,30 +1,36 @@
 import { z } from 'zod';
 
 export const accountSchema = z.object({
-  // TODO: switch optional to nullable
-  avatar: z.string().url().optional(),
-  email: z.string({ message: 'Обязательное поле' }).email({ message: 'Невалидный email' }),
+  // TODO Rewrite competencies check
+  // competencies: z.record(z.string().optional(), z.string().optional()).nullable(),
+  educational_organization: z.number().nullable(),
   first_name: z
-    .string({ message: 'Обязательное поле' })
+    .string()
     .min(3, { message: 'Имя должно быть не менее 3 символов' })
-    .max(30, { message: 'Имя должно быть не более 30 символов' }),
+    .max(30, { message: 'Имя должно быть не более 30 символов' })
+    .nullable(),
   id: z.number().int(),
   last_name: z
     .string({ message: 'Обязательное поле' })
     .min(3, { message: 'Фамилия должна быть не менее 3 символов' })
-    .max(30, { message: 'Фамилия должна быть не более 30 символов' }),
+    .max(30, { message: 'Фамилия должна быть не более 30 символов' })
+    .nullable(),
   patronymic: z
     .string()
     .min(3, { message: 'Отчество должно быть не менее 3 символов' })
     .max(30, { message: 'Отчество должно быть не более 30 символов' })
     .nullable(),
+  phone_number: z.string().nullable(),
+  photo: z.string().url().nullable(),
+  // professional_competencies: z.record(z.string().optional(), z.string().optional()).nullable(),
+  telegram: z.string().nullable(),
 });
 
 export type AccountSchema = z.infer<typeof accountSchema>;
 
-export const registerPayload = accountSchema
-  .omit({ id: true })
-  .extend({
+export const registerPayload = z
+  .object({
+    email: z.string({ message: 'Обязательное поле' }).email({ message: 'Невалидный email' }),
     password: z
       .string({ message: 'Обязательное поле' })
       .min(8, { message: 'Пароль должен быть не менее 8 символов' })
@@ -41,11 +47,8 @@ export const registerPayload = accountSchema
 
 export type RegisterPayload = z.infer<typeof registerPayload>;
 
-export const registerResponse = accountSchema.pick({
-  email: true,
-  first_name: true,
-  id: true,
-  last_name: true,
+export const registerResponse = z.object({
+  email: z.string({ message: 'Обязательное поле' }).email({ message: 'Невалидный email' }),
 });
 
 export type RegisterResponse = z.infer<typeof registerResponse>;
@@ -77,3 +80,23 @@ export const restorePasswordResponse = z.object({
 });
 
 export type RestorePasswordResponse = z.infer<typeof restorePasswordResponse>;
+
+export const restorePasswordConfirmPayload = z
+  .object({
+    new_password: z
+      .string({ message: 'Обязательное поле' })
+      .min(8, { message: 'Пароль должен быть не менее 8 символов' })
+      .max(32, { message: 'Пароль должен быть не более 32 символов' }),
+    re_new_password: z
+      .string({ message: 'Обязательное поле' })
+      .min(8, { message: 'Пароль должен быть не менее 8 символов' })
+      .max(32, { message: 'Пароль должен быть не более 32 символов' }),
+    token: z.string({ message: 'Обязательное поле' }),
+    uid: z.string({ message: 'Обязательное поле' }),
+  })
+  .refine((data) => data.new_password === data.re_new_password, {
+    message: 'Пароли не совпадают',
+    path: ['re_new_password'],
+  });
+
+export type RestorePasswordConfirmPayload = z.infer<typeof restorePasswordConfirmPayload>;

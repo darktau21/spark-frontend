@@ -30,7 +30,7 @@ services:
     networks:
       - internal
   backend:
-    image: d2avids/iskra:latest
+    image: darktau21/spark-backend
     env_file: .env
     restart: always
     ports:
@@ -47,7 +47,7 @@ services:
     environment:
       - GUNICORN_CMD_ARGS=--timeout 360
   celery_worker:
-    image: d2avids/iskra:latest
+    image: darktau21/spark-backend
     restart: always
     env_file: .env
     command: celery -A backend worker --loglevel=info

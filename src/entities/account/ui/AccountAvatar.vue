@@ -1,11 +1,11 @@
 <template>
   <div class="account-avatar" variant="tertiary-light">
     <div class="image-wrapper">
-      <img v-if="!isLoading" :src="avatar" class="image" />
+      <img v-if="!isLoading" :src="avatar ?? roflanEbalo" class="image" />
       <UiSkeleton v-else />
     </div>
     <div class="name">
-      <span v-if="!isLoading" class="name-text">{{ name }}</span>
+      <span v-if="!isLoading" class="name-text">{{ name ?? 'Аноним' }}</span>
       <UiSkeleton v-else class="name-skeleton" />
     </div>
   </div>
@@ -17,9 +17,9 @@ import roflanEbalo from './roflanebalo.webp';
 
 withDefaults(
   defineProps<{
-    avatar?: string;
+    avatar?: null | string;
     isLoading?: boolean;
-    name?: string;
+    name?: null | string;
   }>(),
   {
     avatar: roflanEbalo,

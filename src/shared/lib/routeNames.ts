@@ -8,6 +8,7 @@ export const routeNames = {
   notFound: 'notFound',
   register: 'register',
   restorePassword: 'restorePassword',
+  restorePasswordConfirm: 'restorePasswordConfirm',
   serverError: 'serverError',
   test: 'test',
 } as const;

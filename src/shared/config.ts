@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 const envSchema = z.object({
   API_BASE_URL: z.string(),
+  APP_NAME: z.string(),
   BASE_URL: z.string(),
   DEV: z.boolean(),
   MODE: z.enum(['development', 'production']),

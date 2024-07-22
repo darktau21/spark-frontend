@@ -11,9 +11,6 @@ const { defineField, errors, handleSubmit, meta } = useForm<accountApi.RegisterP
   validationSchema,
 });
 
-const [firstName, firstNameAttrs] = defineField('first_name');
-const [lastName, lastNameAttrs] = defineField('last_name');
-const [patronymic, patronymicAttrs] = defineField('patronymic');
 const [email, emailAttrs] = defineField('email');
 const [password, passwordAttrs] = defineField('password');
 const [rePassword, rePasswordAttrs] = defineField('re_password');
@@ -38,36 +35,6 @@ const onSubmit = handleSubmit(async (values) => {
 
 <template>
   <form :validation-schema="validationSchema" class="form" @submit="onSubmit">
-    <UiInput
-      id="first_name"
-      v-bind="firstNameAttrs"
-      v-model="firstName"
-      :disabled="account.isLoading.register"
-      autocomplete="given-name"
-      label="Имя"
-      name="first_name"
-      placeholder="Не более 30 символов"
-    />
-    <UiInput
-      id="last_name"
-      v-bind="lastNameAttrs"
-      v-model="lastName"
-      :disabled="account.isLoading.register"
-      autocomplete="family-name"
-      label="Фамилия"
-      name="last_name"
-      placeholder="Не более 30 символов"
-    />
-    <UiInput
-      id="patronymic"
-      v-bind="patronymicAttrs"
-      v-model="patronymic"
-      :disabled="account.isLoading.register"
-      autocomplete="additional-name"
-      label="Отчество"
-      name="patronymic"
-      placeholder="Не более 30 символов"
-    />
     <UiInput
       id="email"
       v-bind="emailAttrs"

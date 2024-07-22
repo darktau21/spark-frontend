@@ -12,6 +12,8 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
     data: false,
     login: false,
     register: false,
+    restorePassword: false,
+    restorePasswordConfirm: false,
   });
   const toast = useToast();
   const router = useRouter();
@@ -42,7 +44,7 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
       toast.success('Вы успешно авторизовались');
       await refetchData();
       storage.set('rememberMe', remember);
-      router.push({ name: routeNames.account });
+      router.push({ name: routeNames.account, replace: true });
     } catch (error) {
       const parse = useAxiosErrorToast('Ошибка авторизации');
       parse(error);
@@ -58,7 +60,7 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
       await accountApi.register(registerData);
       toast.success('Вы успешно зарегистрировались');
       await refetchData();
-      router.push({ name: routeNames.login });
+      router.push({ name: routeNames.login, replace: true });
     } catch (error) {
       const parse = useAxiosErrorToast('Ошибка регистрации');
       parse(error);
@@ -69,12 +71,43 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
   };
 
   const logout = async () => {
-    await accountApi.logout();
-    storage.remove('authToken');
-    storage.remove('rememberMe');
-    data.value = null;
-    isAuthorized.value = false;
-    router.push({ name: routeNames.login });
+    try {
+      await accountApi.logout();
+    } finally {
+      storage.remove('authToken');
+      storage.remove('rememberMe');
+      data.value = null;
+      isAuthorized.value = false;
+      router.push({ name: routeNames.login });
+    }
+  };
+
+  const restorePassword = async (email: string) => {
+    try {
+      isLoading.value.restorePassword = true;
+      await accountApi.restorePassword({ email });
+      toast.success('Ссылка для сброса пароля отправлена на ваш email');
+      router.push({ name: routeNames.login });
+    } catch (error) {
+      const parse = useAxiosErrorToast('Ошибка восстановления пароля');
+      parse(error);
+    } finally {
+      isLoading.value.restorePassword = false;
+    }
+  };
+
+  const confirmRestorePassword = async (data: accountApi.RestorePasswordConfirmPayload) => {
+    try {
+      isLoading.value.restorePasswordConfirm = true;
+      await accountApi.restorePasswordConfirm(data);
+      toast.success('Пароль успешно изменен');
+      router.push({ name: routeNames.login });
+    } catch (error) {
+      const parse = useAxiosErrorToast('Ошибка смены пароля');
+      parse(error);
+    } finally {
+      isLoading.value.restorePasswordConfirm = false;
+    }
   };
 
   onMounted(refetchData);
@@ -85,5 +118,16 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
     }
   };
 
-  return { data, isAuthorized, isLoading, login, logout, refetchData, register, rememberMeHandler };
+  return {
+    confirmRestorePassword,
+    data,
+    isAuthorized,
+    isLoading,
+    login,
+    logout,
+    refetchData,
+    register,
+    rememberMeHandler,
+    restorePassword,
+  };
 });
