@@ -37,7 +37,9 @@ export default {
 
     <div class="box_pers">
       <div class="picture_input">
-        <div class="hexagon">{{ user.image }}</div>
+        <div class="hexagon">
+          <img v-bind:src="user.avatar" alt="" />
+        </div>
       </div>
 
       <div class="box_data">
@@ -84,15 +86,15 @@ export default {
       <div class="chart_box">
         <div class="diag_box">
           <label class="typo__label">Диаграмма психотипа</label>
-          <p v-show="(user.test = 'false')">
+          <p>
             Вы пока не прошли тестирование, чтобы мы определили Ваш психотип.Пройти тестирование
             можно по кнопке ниже.
           </p>
-          <router-link v-slot="{ runtest }" to="/test" v-show="(user.test = 'false')">
-            <button class="but_edit" @click="runtest">Пройти тестирование</button>
+          <router-link v-slot="{ runtest }" to="/test">
+            <button class="but_test" @click="runtest">Пройти тестирование</button>
           </router-link>
 
-          <div v-show="user.test != 'false'">
+          <div>
             <div>
               <Radar />
             </div>
@@ -212,7 +214,9 @@ label {
   padding: 40px;
   border: 4px solid #081168;
 }
-
+/* .diag_box {
+  clip-path: polygon(0 0, 100% 0, 100% 70%, 60% 70%, 60% 100%, 0 100%);
+} */
 .text_prof_user {
   font-size: 16px;
   text-align: left;
@@ -255,7 +259,15 @@ a {
 .hexagon:after {
   transform: rotate(-60deg);
 }
-
+.but_test {
+  width: 288px;
+  height: 64px;
+  border-radius: 20px;
+  border: 1px solid rgb(151, 71, 255);
+  color: #ffffff;
+  cursor: pointer;
+  background: linear-gradient(to top left, rgba(2, 1, 43, 1) 0%, rgba(37, 78, 220, 1) 100%);
+}
 @media (max-width: 800px) {
   .box_prof {
     flex-wrap: wrap;

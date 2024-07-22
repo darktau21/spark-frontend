@@ -7,17 +7,17 @@ export const useUsersStore = defineStore('user', {
     return {
       user: [
         {
-          education: [], //Образование
+          education: '', //Образование
           first_name: '', //Имя
           last_name: '', //Фамилия
           patronymic_name: '', //Отчество
           tel_number: '', // Номер телефона
           user_email: 'iskra@mail.ru',
           telegram: '', //Телеграм
-          image: {
-            type: Image, // Аватар
+          avatar: {
+            type: File, // Аватар
           },
-          prof_interes: [], //Проф интересы
+          prof_interes: '', //Проф интересы
           achievements: '', // Достижения
           competencies: '', // Компетенции
           skills: '', // Проф навыки
@@ -26,11 +26,8 @@ export const useUsersStore = defineStore('user', {
             // Сертификаты
             type: File,
           },
-          test: {
-            type: boolean,
-            default: true, // Пройдено ли тестирование
-          },
-          total_result: [], // Результаты тестирования
+
+          total_result: '', // Результаты тестирования
         },
       ],
     };

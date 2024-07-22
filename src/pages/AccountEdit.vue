@@ -35,7 +35,7 @@ export default {
   methods: {
     onChange() {
       const image = this.$refs.pictureInput.file;
-      this.userStore.user.image.push(image);
+      // this.userStore.user.image.push(image);
     },
     addTag(tag) {
       if (this.newTag != '') {
@@ -74,7 +74,6 @@ export default {
       <div class="picture_input">
         <picture-input
           ref="pictureInput"
-          v-model="user.image"
           width="246"
           height="246"
           radius="50"
@@ -93,7 +92,7 @@ export default {
             change: 'Изменить',
             remove: 'Удалить',
           }"
-          @change="onChange"
+          @click="onChange"
         >
         </picture-input>
         <p>Рекомендуемый формат файла JPEG / PNG</p>
