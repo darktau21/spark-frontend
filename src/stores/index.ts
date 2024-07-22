@@ -1,6 +1,5 @@
 /* eslint-disable perfectionist/sort-objects */
 import { defineStore } from 'pinia';
-import { boolean } from 'zod';
 
 export const useUsersStore = defineStore('user', {
   state: () => {
