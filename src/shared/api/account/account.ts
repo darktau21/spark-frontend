@@ -38,3 +38,7 @@ export async function restorePassword(body: RestorePasswordPayload) {
 export async function restorePasswordConfirm(body: RestorePasswordConfirmPayload) {
   await api.post('/users/reset_password_confirm/', body);
 }
+
+export async function deleteAccount() {
+  await api.delete('/users/me/');
+}

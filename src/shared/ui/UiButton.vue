@@ -10,7 +10,7 @@ withDefaults(
     active?: boolean;
     disabled?: boolean;
     error?: boolean;
-    variant?: 'primary' | 'secondary' | 'tertiary' | 'tertiary-light';
+    variant?: 'danger' | 'primary' | 'secondary' | 'tertiary' | 'tertiary-light';
   }>(),
   {
     active: false,
@@ -120,6 +120,29 @@ withDefaults(
   --font-weight: 600;
 
   --padding: 0.5rem;
+}
+
+.danger {
+  --color-default: rgb(255, 255, 255);
+  --color-hover: rgb(255, 255, 255);
+  --color-active: rgb(255, 255, 255);
+  --color-disabled: rgb(255, 255, 255);
+
+  --bg-color-default: rgb(254, 25, 25);
+  --bg-color-hover: rgb(229, 23, 23);
+  --bg-color-active: rgb(206, 21, 21);
+  --bg-color-disabled: rgb(202, 202, 202);
+
+  --border-default: none;
+  --border-hover: none;
+  --border-active: none;
+  --border-error: none;
+  --border-disabled: none;
+
+  --font-size: 1.8rem;
+  --font-weight: 600;
+
+  --padding: 1.2rem 2rem;
 }
 
 .button {

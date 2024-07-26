@@ -21,6 +21,7 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
   const isAuthorized = ref(Boolean(storage.get('authToken')));
 
   const refetchData = async () => {
+    console.log('refetching account');
     try {
       isLoading.value.data = true;
       const response = await accountApi.getMe();
@@ -110,6 +111,24 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
     }
   };
 
+  const deleteAccount = async () => {
+    try {
+      await accountApi.deleteAccount();
+
+      toast.warning('Аккаунт удален 😢');
+    } catch (error) {
+      const parse = useAxiosErrorToast('Ошибка смены пароля');
+      parse(error);
+    } finally {
+      storage.remove('authToken');
+      storage.remove('rememberMe');
+      data.value = null;
+      isAuthorized.value = false;
+      router.push({ name: routeNames.login });
+      refetchData();
+    }
+  };
+
   onMounted(refetchData);
 
   const rememberMeHandler = async () => {
@@ -121,6 +140,7 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
   return {
     confirmRestorePassword,
     data,
+    deleteAccount,
     isAuthorized,
     isLoading,
     login,
