@@ -21,7 +21,6 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
   const isAuthorized = ref(Boolean(storage.get('authToken')));
 
   const refetchData = async () => {
-    console.log('refetching account');
     try {
       isLoading.value.data = true;
       const response = await accountApi.getMe();
@@ -128,6 +127,18 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
     }
   };
 
+  const update = async (data: accountApi.UpdateAccountPayload) => {
+    try {
+      await accountApi.updateMe(data);
+      toast.success('Данные успешно обновлены');
+    } catch (error) {
+      const parse = useAxiosErrorToast('Ошибка обновления данных');
+      parse(error);
+    } finally {
+      await refetchData();
+    }
+  };
+
   onMounted(refetchData);
 
   const rememberMeHandler = async () => {
@@ -148,5 +159,6 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
     register,
     rememberMeHandler,
     restorePassword,
+    update,
   };
 });

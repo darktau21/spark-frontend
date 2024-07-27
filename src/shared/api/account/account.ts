@@ -7,6 +7,7 @@ import {
   type RegisterResponse,
   type RestorePasswordConfirmPayload,
   type RestorePasswordPayload,
+  type UpdateAccountPayload,
   accountSchema,
   loginResponse,
   registerResponse,
@@ -24,6 +25,11 @@ export async function login(body: LoginPayload) {
 
 export async function getMe() {
   const { data } = await api.get<AccountSchema>('/users/me/');
+  return accountSchema.parse(data);
+}
+
+export async function updateMe(body: UpdateAccountPayload) {
+  const { data } = await api.patch<AccountSchema>('/users/me/', body);
   return accountSchema.parse(data);
 }
 
