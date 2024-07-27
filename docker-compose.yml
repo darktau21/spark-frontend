@@ -30,7 +30,7 @@ services:
     networks:
       - internal
   backend:
-    image: darktau21/spark-backend
+    image: d2avids/iskra:latest
     env_file: .env
     restart: always
     ports:
