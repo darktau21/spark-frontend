@@ -1,18 +1,18 @@
-<script>
-import { useUsersStore } from '@/stores';
-// import { storeToRefs } from 'pinia';
+<script lang="ts">
+import { useAccount } from '@/entities/account';
 import Radar from '@/component/Radar.vue';
 import { Icon } from '@iconify/vue';
-const userStore = useUsersStore();
-// const { selectedFile } = storeToRefs(useUsersStore());
-
+import { useUsersStore } from '@/stores';
+const userStore = useAccount();
+const user = useUsersStore();
 export default {
   name: 'AccountePage',
   name: 'AccountePage',
   data() {
     return {
-      userStore: userStore,
       visible: false,
+      userStore,
+      user,
     };
   },
   components: {
@@ -24,7 +24,7 @@ export default {
 </script>
 
 <template>
-  <section v-for="user in userStore.user" :key="user.email" class="box_account">
+  <section class="box_account">
     <div class="title_account">
       <h1>Личный кабинет</h1>
       <router-link v-slot="{ edit }" to="/accountedit">
@@ -38,25 +38,26 @@ export default {
     <div class="box_pers">
       <div class="picture_input">
         <div class="hexagon">
-          <img v-bind:src="user.avatar" alt="" />
+          <img class="hexagon_img" src="/5.png" alt="" />
         </div>
       </div>
 
       <div class="box_data">
         <p class="pers_data">
-          {{ user.last_name }} {{ user.first_name }} {{ user.patronymic_name }}
+          {{ userStore.data?.last_name }} {{ userStore.data?.first_name }}
+          {{ userStore.data?.patronymic }}
         </p>
-        <div class="icon_box" v-show="user.tel_number != ''">
+        <div class="icon_box" v-show="userStore.data?.phone_number != null">
           <Icon icon="fluent:phone-32-light" height="28" />
-          <p class="pers_data">{{ user.tel_number }}</p>
+          <p class="pers_data">{{ userStore.data?.phone_number }}</p>
         </div>
         <div class="icon_box">
           <Icon icon="mdi-light:email" height="28" />
-          <p class="pers_data">{{ user.user_email }}</p>
+          <p class="pers_data">{{}}</p>
         </div>
-        <div class="icon_box" v-show="user.telegram != ''">
+        <div class="icon_box" v-show="userStore.data?.telegram != null">
           <Icon icon="mingcute:telegram-fill" height="28" />
-          <p class="pers_data">{{ user.telegram }}</p>
+          <p class="pers_data">{{ userStore.data?.telegram }}</p>
         </div>
       </div>
     </div>
@@ -65,26 +66,33 @@ export default {
       <div class="box__prof">
         <div class="prof_user">
           <label>Образование</label>
-          <p class="text_prof_user">{{ user.education }}</p>
+          <p v-show="userStore.data?.educational_organization == null">------</p>
+          <p class="text_prof_user">{{ userStore.data?.educational_organization }}</p>
           <label>Компетенции</label>
-          <p class="text_prof_user">{{ user.competencies }}</p>
+          <p v-show="userStore.data?.educational_organization == null">------</p>
+          <p class="text_prof_user">{{}}</p>
           <label>Профессиональные интересы</label>
-          <p class="text_prof_user">{{ user.prof_interes }}</p>
+          <p v-show="userStore.data?.educational_organization == null">------</p>
+          <p class="text_prof_user">{{ user.professional_interests }}</p>
           <label>Профессиональные навыки</label>
-          <p class="text_prof_user">{{ user.skills }}</p>
+          <p v-show="userStore.data?.educational_organization == null">------</p>
+          <p class="text_prof_user">{{}}</p>
         </div>
         <div class="skills_user">
           <label>Достижения</label>
+          <p v-show="user.achievements == ''">------</p>
           <p class="text_prof_user">{{ user.achievements }}</p>
           <label>Конкурсы</label>
-          <p class="text_prof_user">{{ user.contests }}</p>
+          <p v-show="userStore.data?.educational_organization == null">------</p>
+          <p class="text_prof_user">{{}}</p>
           <label>Сертификаты</label>
-          <p class="text_prof_user">{{ user.certificates }}</p>
+          <p v-show="userStore.data?.educational_organization == null">------</p>
+          <p class="text_prof_user">{{}}</p>
         </div>
       </div>
 
       <div class="chart_box">
-        <div class="diag_box">
+        <div class="diag_box" v-show="user.test_result == ''">
           <label class="typo__label">Диаграмма психотипа</label>
           <p>
             Вы пока не прошли тестирование, чтобы мы определили Ваш психотип.Пройти тестирование
@@ -93,18 +101,19 @@ export default {
           <router-link v-slot="{ runtest }" to="/test">
             <button class="but_test" @click="runtest">Пройти тестирование</button>
           </router-link>
-
-          <div>
+        </div>
+        <div v-show="user.test_result != ''">
+          <div class="diag_box">
             <div>
               <Radar />
             </div>
             <p>Ваш психотип -</p>
           </div>
+          <!-- <button @click="visible = !visible">
+            {{ visible ? 'Скрыть подробную информацию' : 'Подробнее' }}
+          </button>
+          <div v-show="visible" class="description_box">Какое-то описание</div> -->
         </div>
-        <button @click="visible = !visible" v-show="user.test != 'false'">
-          {{ visible ? 'Скрыть подробную информацию' : 'Подробнее' }}
-        </button>
-        <div v-show="visible" class="description_box">Какое-то описание</div>
       </div>
     </div>
   </section>
@@ -214,9 +223,7 @@ label {
   padding: 40px;
   border: 4px solid #081168;
 }
-/* .diag_box {
-  clip-path: polygon(0 0, 100% 0, 100% 70%, 60% 70%, 60% 100%, 0 100%);
-} */
+
 .text_prof_user {
   font-size: 16px;
   text-align: left;
@@ -231,34 +238,19 @@ a {
 
 .hexagon {
   width: 200px;
-  height: 115px;
+  clip-path: polygon(50% 0, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+  height: 200px;
   border-radius: 5px;
-  position: relative;
   object-fit: contain;
-  background-color: rgb(208, 212, 197);
+  background-color: azure;
   border: none;
   margin: auto;
 }
-
-.hexagon:before,
-.hexagon:after {
-  content: '';
-  position: absolute;
+.hexagon_img {
   width: 100%;
-  height: 100%;
-  border-radius: inherit;
-  background-color: rgb(208, 212, 197);
-  top: 0;
-  left: 0;
+  object-fit: contain;
 }
 
-.hexagon:before {
-  transform: rotate(60deg);
-}
-
-.hexagon:after {
-  transform: rotate(-60deg);
-}
 .but_test {
   width: 288px;
   height: 64px;

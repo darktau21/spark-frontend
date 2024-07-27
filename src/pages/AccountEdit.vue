@@ -1,11 +1,12 @@
-<script>
-import { useUsersStore } from '@/stores';
+<script lang="ts">
+import { useAccount } from '@/entities/account';
 import PictureInput from 'vue-picture-input';
 import Modal from '@/component/Modal.vue';
-// import { storeToRefs } from 'pinia';
-
-const userStore = useUsersStore();
-// const { newUser } = storeToRefs(useUsersStore());
+import Tag from '@/component/Tag.vue';
+import Select from '@/component/Select.vue';
+import { useUsersStore } from '@/stores';
+const user = useUsersStore();
+const userStore = useAccount();
 
 export default {
   name: 'AccountEdit',
@@ -13,39 +14,21 @@ export default {
   components: {
     PictureInput,
     Modal,
+    Tag,
+    Select,
   },
 
   data() {
     return {
-      options: [
-        { university: 'МГУ' },
-        { university: 'ФСБ' },
-        { university: 'РИНХ' },
-        { university: 'ДГТУ' },
-        { university: 'ЮФУ' },
-      ],
-      userStore: userStore,
-      education: { university: 'Не выбрано' },
-      tags: [],
-      newTag: '',
+      userStore,
+      user,
       isModalVisible: false,
     };
   },
 
   methods: {
     onChange() {
-      const image = this.$refs.pictureInput.file;
-      // this.userStore.user.image.push(image);
-    },
-    addTag(tag) {
-      if (this.newTag != '') {
-        this.tags.push(tag);
-        this.newTag = '';
-      }
-      return false;
-    },
-    removeTag(index) {
-      this.tags.splice(index, 1);
+      this.$refs.pictureInput;
     },
     showModal() {
       this.isModalVisible = true;
@@ -61,7 +44,7 @@ export default {
 </script>
 
 <template>
-  <section class="box_account" v-for="user in userStore.user" :key="user.email">
+  <section class="box_account">
     <div class="title_account">
       <h1>Редактирование личного кабинета</h1>
       <div>
@@ -76,14 +59,15 @@ export default {
           ref="pictureInput"
           width="246"
           height="246"
-          radius="50"
+          :plain="true"
           class="hexagon"
           accept="image/jpeg,image/png"
           size="5"
           button-class="btnchange"
           remove-button-class="btnremove"
-          removable="true"
-          :zIndex="1"
+          :removable="true"
+          :toggleAspectRatio="true"
+          :zIndex="0"
           :custom-strings="{
             upload: '<p>Ваше устройство не поддерживает загрузку файлов.</p>',
             drag: 'Здесь могло бы быть Ваше фото',
@@ -92,79 +76,46 @@ export default {
             change: 'Изменить',
             remove: 'Удалить',
           }"
-          @click="onChange"
+          @change="onChange"
         >
         </picture-input>
+
         <p>Рекомендуемый формат файла JPEG / PNG</p>
         <p>Рекомендуемый размер не более 5 МБ</p>
       </div>
 
       <div class="box_data">
         <label for="last_name">Фамилия*</label>
-        <input
-          required
-          id="last_name"
-          v-model="user.last_name"
-          @keyup.enter="editUser()"
-          type="text"
-          placeholder="Фамилия"
-        />
+        <input required id="last_name" type="text" placeholder="Фамилия" />
         <label for="first_name">Имя*</label>
-        <input required type="text" id="first_name" v-model="user.first_name" placeholder="Имя" />
-        <label for="patronymic_name">Отчество*</label>
-        <input
-          required
-          type="text"
-          id="patronymic_name"
-          v-model="user.patronymic_name"
-          placeholder="Отчество"
-        />
+        <input required type="text" id="first_name" placeholder="Имя" />
+        <label for="patronymic">Отчество*</label>
+        <input required type="text" id="patronymic" placeholder="Отчество" />
       </div>
 
       <div class="box_data">
-        <label for="tel_number">Телефон </label>
-        <input type="tel" id="tel_number" v-model="user.tel_number" placeholder="" />
+        <label for="phone_number">Телефон </label>
+        <input type="tel" id="phone_number" placeholder="" />
         <label for="user_email">Электронная почта</label>
-        <p class="disable">
-          {{ user.user_email }}
-        </p>
+        <p class="disable">{{}}</p>
         <label for="telegram">Ссылка на Telegram</label>
-        <input type="text" id="telegram" v-model="user.telegram" placeholder="" />
+        <input type="text" id="telegram" placeholder="" />
       </div>
     </div>
 
     <div class="box_prof">
       <div class="box_select">
-        <label for="education">Образование</label>
-        <select v-model="user.education" id="education">
-          <option v-bind:education="university" v-for="option in options">
-            {{ option.university }}
-          </option>
-        </select>
-        <label for="prof_interes">Профессиональные интересы</label>
+        <label for="educational_organization">Образование</label>
+        <Select />
+        <label for="professional_competencies">Профессиональные интересы</label>
         <span>Вы можете добавить до 10 интересов</span>
-        <input
-          v-model="newTag"
-          type="text"
-          @keydown.enter="addTag(newTag)"
-          @keydown.prevent.tab="addTag(newTag)"
-          placeholder="Например, психология "
-        />
-        <div class="tag-input">
-          <ul class="tags">
-            <li v-for="(tag, index) in tags" :key="tag" class="tag">
-              {{ tag }}
-              <button class="delete" @click="removeTag(index)">x</button>
-            </li>
-          </ul>
-        </div>
+        <Tag />
       </div>
       <div class="box_select">
-        <label>Компетенции</label>
+        <label for="competencies">Компетенции</label>
         <input
           type="text"
           id="competencies"
-          v-model="user.competencies"
           placeholder="Не более 1000 символов"
           maxlength="1000"
         />
@@ -184,24 +135,26 @@ export default {
           placeholder="Расскажите о своих достижениях"
         />
         <label for="contests">Конкурсы</label>
-        <input
-          type="text"
-          id="contests"
-          v-model="user.contests"
-          placeholder="Опишите конкурсы, в которых вы участвовали"
-        />
+        <input type="text" id="contests" placeholder="Опишите конкурсы, в которых вы участвовали" />
       </div>
       <div class="box_select">
         <label for="certificates">Сертификаты</label>
         <p>Загрузите изображения формата JPEG/JPG/PNG. Вы можете добавить не более 10 файлов.</p>
-        <input type="file" id="certificates" accept="image/jpeg, image/jpg, image/png" multiple />
+        <input
+          type="file"
+          id="certificates"
+          ref="certificates"
+          accept="image/jpeg, image/jpg, image/png"
+          multiple
+          class="btn_input"
+        />
       </div>
     </div>
     <div class="box_btn">
       <router-link v-slot="{ account }" to="/account">
         <button class="btn_back" @click="account">Назад</button>
       </router-link>
-      <button class="btn_save" @click="editUser">Сохранить изменения</button>
+      <button class="btn_save">Сохранить изменения</button>
     </div>
   </section>
 </template>
@@ -265,10 +218,16 @@ p {
   width: 100%;
 }
 
-.picture_img {
-  /* margin: 40px; */
+.hexagon {
+  width: 246px;
+  clip-path: polygon(50% 0, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+  height: 246px;
+  border-radius: 5px;
   object-fit: contain;
-  text-align: center;
+  background-color: azure;
+  border: none;
+  margin: auto;
+  z-index: 0;
 }
 
 .box_data {
@@ -335,22 +294,5 @@ select {
   color: white;
   cursor: pointer;
   background: linear-gradient(to top left, rgba(2, 1, 43, 1) 0%, rgba(37, 78, 220, 1) 100%);
-}
-ul {
-  max-width: 700px;
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-}
-.tag {
-  background: rgb(8, 17, 104);
-  padding: 5px;
-  border-radius: 4px;
-  color: white;
-  white-space: nowrap;
 }
 </style>

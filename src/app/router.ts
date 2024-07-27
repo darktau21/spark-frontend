@@ -34,7 +34,7 @@ const routes: Readonly<RouteRecordRaw[]> = [
   {
     component: () => import('@/pages/AccountPage.vue'),
     meta: {
-      authRequired: true,
+      authRequired: false,
       title: 'Аккаунт',
     },
     name: routeNames.account,
@@ -44,19 +44,20 @@ const routes: Readonly<RouteRecordRaw[]> = [
     component: () => import('@/pages/AccountEdit.vue'),
     meta: {
       authRequired: false,
+      title: 'Редактирование аккаунта',
     },
     name: routeNames.accountedit,
     path: '/accountedit',
   },
-  {
-    component: () => import('@/pages/EditAccountPage.vue'),
-    meta: {
-      authRequired: true,
-      title: 'Редактирование аккаунта',
-    },
-    name: routeNames.editAccount,
-    path: '/account/edit',
-  },
+  // {
+  //   component: () => import('@/pages/EditAccountPage.vue'),
+  //   meta: {
+  //     authRequired: false,
+  //     title: 'Редактирование аккаунта',
+  //   },
+  //   name: routeNames.editAccount,
+  //   path: '/account/edit',
+  // },
   {
     component: () => import('@/pages/TestPage.vue'),
     meta: {

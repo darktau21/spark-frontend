@@ -2,7 +2,7 @@ export const routeNames = {
   account: 'account',
   editAccount: 'editAccount',
   events: 'events',
-  accountedit: 'accounte',
+  accountedit: 'accountedit',
   home: 'home',
   login: 'login',
   notFound: 'notFound',
