@@ -26,6 +26,7 @@ import { computed } from 'vue';
 
 const validationSchema = toTypedSchema(accountApi.restorePasswordPayload);
 const { defineField, errors, handleSubmit, meta } = useForm<accountApi.RestorePasswordPayload>({
+  initialValues: { email: window.history.state.initialEmail },
   validationSchema,
 });
 

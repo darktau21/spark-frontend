@@ -27,6 +27,11 @@ const remember = ref(false);
 const onSubmit = handleSubmit(async (values) => {
   await account.login(values, remember.value);
 });
+
+const restorePasswordLink = computed(() => ({
+  name: routeNames.restorePassword,
+  state: { initialEmail: email.value },
+}));
 </script>
 
 <template>
@@ -52,11 +57,7 @@ const onSubmit = handleSubmit(async (values) => {
       placeholder="Не менее 8 символов"
     />
     <UiCheckBox v-model="remember">Запомнить меня</UiCheckBox>
-    <UiNavLink
-      :to="{ name: routeNames.restorePassword }"
-      class="forgot-password"
-      variant="tertiary"
-    >
+    <UiNavLink :to="restorePasswordLink" class="forgot-password" variant="tertiary">
       Забыли пароль?
     </UiNavLink>
     <UiButton :disabled="!isSubmitAllowed" :error="isError" class="button" type="submit">
