@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 import { useAccount } from '@/entities/account';
 import PictureInput from 'vue-picture-input';
 import Modal from '@/component/Modal.vue';
@@ -36,9 +36,6 @@ export default {
     closeModal() {
       this.isModalVisible = false;
     },
-    // editUser() {
-    //   this.$store.dispatch({ newUser });
-    // },
   },
 };
 </script>
@@ -52,104 +49,121 @@ export default {
         <modal v-show="isModalVisible" @close="closeModal" />
       </div>
     </div>
+    <form>
+      <div class="box_pers">
+        <div class="picture_input">
+          <picture-input
+            ref="pictureInput"
+            width="246"
+            height="246"
+            plain="true"
+            accept="image/jpeg,image/png"
+            size="5"
+            button-class="btnchange"
+            remove-button-class="btnremove"
+            removable="true"
+            :zIndex="0"
+            :custom-strings="{
+              upload: '<p>Ваше устройство не поддерживает загрузку файлов.</p>',
+              drag: 'Здесь могло бы быть Ваше фото',
+              fileSize: 'Размер файла превышает ограничение',
+              fileType: 'Этот тип файла не поддерживается',
+              change: 'Загрузить',
+              remove: 'Удалить',
+            }"
+            @change="onChange"
+          >
+          </picture-input>
 
-    <div class="box_pers">
-      <div class="picture_input">
-        <picture-input
-          ref="pictureInput"
-          width="246"
-          height="246"
-          :plain="true"
-          class="hexagon"
-          accept="image/jpeg,image/png"
-          size="5"
-          button-class="btnchange"
-          remove-button-class="btnremove"
-          :removable="true"
-          :toggleAspectRatio="true"
-          :zIndex="0"
-          :custom-strings="{
-            upload: '<p>Ваше устройство не поддерживает загрузку файлов.</p>',
-            drag: 'Здесь могло бы быть Ваше фото',
-            fileSize: 'Размер файла превышает ограничение',
-            fileType: 'Этот тип файла не поддерживается',
-            change: 'Изменить',
-            remove: 'Удалить',
-          }"
-          @change="onChange"
-        >
-        </picture-input>
+          <span>Рекомендуемый формат файла JPEG / PNG</span> <br />
+          <span>Рекомендуемый размер не более 5 МБ</span>
+        </div>
 
-        <p>Рекомендуемый формат файла JPEG / PNG</p>
-        <p>Рекомендуемый размер не более 5 МБ</p>
+        <div class="box_data">
+          <label for="last_name">Фамилия*</label>
+          <input required id="last_name" type="text" placeholder="Фамилия" />
+          <label for="first_name">Имя*</label>
+          <input required type="text" id="first_name" placeholder="Имя" />
+          <label for="patronymic">Отчество*</label>
+          <input required type="text" id="patronymic" placeholder="Отчество" />
+        </div>
+
+        <div class="box_data">
+          <label for="phone_number">Телефон </label>
+          <input type="tel" id="phone_number" placeholder="" maxlength="12" minlength="11" />
+          <label for="user_email">Электронная почта</label>
+          <p class="disable">{{}}</p>
+          <label for="telegram">Ссылка на Telegram</label>
+          <input type="text" id="telegram" placeholder="" />
+        </div>
       </div>
 
-      <div class="box_data">
-        <label for="last_name">Фамилия*</label>
-        <input required id="last_name" type="text" placeholder="Фамилия" />
-        <label for="first_name">Имя*</label>
-        <input required type="text" id="first_name" placeholder="Имя" />
-        <label for="patronymic">Отчество*</label>
-        <input required type="text" id="patronymic" placeholder="Отчество" />
-      </div>
+      <div class="box_prof">
+        <div class="box_select">
+          <div class="box_select_flex">
+            <div class="box_select_block">
+              <label for="educational_organization">Образование</label>
+              <Select />
+            </div>
+            <div class="box_select_block">
+              <label for="speciality">Специальность</label>
+              <input type="text" id="speciality" placeholder="Введите специальность" />
+            </div>
+          </div>
+          <label for="professional_competencies">Профессиональные интересы</label>
+          <span>Вы можете добавить до 10 интересов</span>
+          <Tag />
+        </div>
+        <div class="box_select">
+          <label for="competencies">Компетенции</label>
+          <input
+            type="text"
+            id="competencies"
+            placeholder="Не более 1000 символов"
+            maxlength="1000"
+          />
 
-      <div class="box_data">
-        <label for="phone_number">Телефон </label>
-        <input type="tel" id="phone_number" placeholder="" />
-        <label for="user_email">Электронная почта</label>
-        <p class="disable">{{}}</p>
-        <label for="telegram">Ссылка на Telegram</label>
-        <input type="text" id="telegram" placeholder="" />
+          <label>Профессиональные навыки</label>
+          <span>Вы можете добавить до 10 навыков</span>
+          <input type="text" placeholder="Например, коммуникабельность" />
+        </div>
       </div>
-    </div>
+      <div class="box_prof">
+        <div class="box_select">
+          <label for="achievements">Достижения</label>
+          <textarea
+            name="text"
+            id="achievements"
+            v-model="user.achievements"
+            maxlength="1000"
+            placeholder="Расскажите о своих достижениях"
+          ></textarea>
 
-    <div class="box_prof">
-      <div class="box_select">
-        <label for="educational_organization">Образование</label>
-        <Select />
-        <label for="professional_competencies">Профессиональные интересы</label>
-        <span>Вы можете добавить до 10 интересов</span>
-        <Tag />
+          <label for="contests">Конкурсы</label>
+          <textarea
+            name="text"
+            id="contests"
+            v-model="user.contests"
+            maxlength="1000"
+            placeholder="Опишите конкурсы, в которых вы участвовали"
+          ></textarea>
+          <!-- <input type="text" id="contests" placeholder="Опишите конкурсы, в которых вы участвовали" /> -->
+        </div>
+        <div class="box_select">
+          <label for="certificates">Сертификаты</label>
+          <p>Загрузите изображения формата JPEG/JPG/PNG. Вы можете добавить не более 10 файлов.</p>
+          <input
+            type="file"
+            id="certificates"
+            ref="certificates"
+            accept="image/jpeg, image/jpg, image/png"
+            multiple
+            class="btn_input"
+          />
+        </div>
       </div>
-      <div class="box_select">
-        <label for="competencies">Компетенции</label>
-        <input
-          type="text"
-          id="competencies"
-          placeholder="Не более 1000 символов"
-          maxlength="1000"
-        />
+    </form>
 
-        <label>Профессиональные навыки</label>
-        <span>Вы можете добавить до 10 навыков</span>
-        <input type="text" placeholder="Например, коммуникабельность" />
-      </div>
-    </div>
-    <div class="box_prof">
-      <div class="box_select">
-        <label for="achievements">Достижения</label>
-        <input
-          type="text"
-          id="achievements"
-          v-model="user.achievements"
-          placeholder="Расскажите о своих достижениях"
-        />
-        <label for="contests">Конкурсы</label>
-        <input type="text" id="contests" placeholder="Опишите конкурсы, в которых вы участвовали" />
-      </div>
-      <div class="box_select">
-        <label for="certificates">Сертификаты</label>
-        <p>Загрузите изображения формата JPEG/JPG/PNG. Вы можете добавить не более 10 файлов.</p>
-        <input
-          type="file"
-          id="certificates"
-          ref="certificates"
-          accept="image/jpeg, image/jpg, image/png"
-          multiple
-          class="btn_input"
-        />
-      </div>
-    </div>
     <div class="box_btn">
       <router-link v-slot="{ account }" to="/account">
         <button class="btn_back" @click="account">Назад</button>
@@ -215,24 +229,14 @@ p {
 }
 .picture_input {
   max-width: 400px;
+  min-width: 175px;
   width: 100%;
-}
-
-.hexagon {
-  width: 246px;
-  clip-path: polygon(50% 0, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
-  height: 246px;
-  border-radius: 5px;
-  object-fit: contain;
-  background-color: azure;
-  border: none;
-  margin: auto;
-  z-index: 0;
 }
 
 .box_data {
   display: grid;
   max-width: 460px;
+  min-width: 270px;
   width: 100%;
   padding: 40px;
   text-align: start;
@@ -242,23 +246,27 @@ p {
 label {
   font-size: 18px;
   font-weight: 700;
+  margin-bottom: 20px;
 }
 input,
-select {
+select,
+textarea {
   margin-bottom: 20px;
   height: 52px;
   border-radius: 8px;
   border: 1px solid rgb(37, 78, 220);
+  resize: vertical;
 }
 .disable {
   height: 52px;
   border-radius: 8px;
   background-color: rgb(174, 174, 174);
   padding: 15px 10px;
+  margin-bottom: 20px;
 }
 .box_prof {
   display: flex;
-  margin: 20px auto 40px;
+  margin: 20px auto 20px;
   gap: 20px;
 }
 .box_select {
@@ -269,7 +277,15 @@ select {
   padding: 40px;
   background-color: rgb(234, 238, 253);
   border-radius: 30px;
+}
+.box_select_flex {
+  display: flex;
   gap: 20px;
+}
+.box_select_block {
+  display: grid;
+  max-width: 350px;
+  width: 100%;
 }
 .box_btn {
   display: flex;
@@ -294,5 +310,18 @@ select {
   color: white;
   cursor: pointer;
   background: linear-gradient(to top left, rgba(2, 1, 43, 1) 0%, rgba(37, 78, 220, 1) 100%);
+}
+@media (max-width: 800px) {
+  .picture_input,
+  .box_data,
+  .box_select,
+  .box_select_block {
+    max-width: 100%;
+  }
+  .box_prof,
+  .box_pers,
+  .box_select_flex {
+    flex-wrap: wrap;
+  }
 }
 </style>

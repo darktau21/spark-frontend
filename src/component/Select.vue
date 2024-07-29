@@ -1,12 +1,15 @@
 <template>
   <select id="educational_organization">
-    <option v-bind:educational_organization="university" v-for="option in options">
+    <option v-for="option in options">
       {{ option.university }}
     </option>
   </select>
 </template>
 
 <script lang="ts">
+import { useAccount } from '@/entities/account';
+const userStore = useAccount();
+
 export default {
   name: 'Select',
   data() {
@@ -19,6 +22,7 @@ export default {
         { university: 'ЮФУ' },
       ],
       education: { university: 'Не выбрано' },
+      userStore,
     };
   },
 };

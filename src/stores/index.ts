@@ -7,8 +7,10 @@ export const useUsersStore = defineStore('user', {
     return {
       test_result: '', // Результаты тестирования
       certificates: '',
-      professional_interests: '',
+      professional_interests: [],
       achievements: '',
+      contests: '',
+      photo: '',
     };
   },
 });

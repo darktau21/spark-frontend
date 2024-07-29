@@ -1,36 +1,39 @@
 <template>
   <input
-    v-model="professional_interests"
+    v-model="newTag"
     type="text"
-    @keydown.enter="addTag(professional_interests)"
-    @keydown.prevent.tab="addTag(professional_interests)"
+    @keydown.enter="addTag(newTag)"
+    @keydown.prevent.tab="addTag(newTag)"
     placeholder="Например, психология "
   />
   <div class="tag-input">
     <ul class="tags">
       <li v-for="(tag, index) in tags" :key="tag" class="tag">
         {{ tag }}
-        <button class="delete" @click="removeTag(index)">x</button>
+        <v-button class="delete" @click="removeTag(index)">x</v-button>
       </li>
     </ul>
   </div>
 </template>
 
-<script lang="ts">
+<script>
+import { useUsersStore } from '@/stores';
+const user = useUsersStore();
 export default {
   name: 'Tag',
   data() {
     return {
       tags: [],
-      professional_interests: '',
+      newTag: '',
     };
   },
 
   methods: {
     addTag(tag) {
-      if (this.professional_interests != '') {
+      if (this.newTag != '') {
         this.tags.push(tag);
-        this.professional_interests = '';
+        user.professional_interests = this.tags;
+        this.newTag = '';
       }
       return false;
     },
@@ -63,5 +66,8 @@ ul {
   gap: 10px;
   margin: 0;
   padding: 0;
+}
+.delete {
+  cursor: pointer;
 }
 </style>

@@ -72,8 +72,10 @@ export default {
           <p v-show="userStore.data?.educational_organization == null">------</p>
           <p class="text_prof_user">{{}}</p>
           <label>Профессиональные интересы</label>
-          <p v-show="userStore.data?.educational_organization == null">------</p>
-          <p class="text_prof_user">{{ user.professional_interests }}</p>
+          <p v-show="user.professional_interests.length == 0">------</p>
+          <p class="text_prof_user tag" v-for="interests in user.professional_interests">
+            {{ interests }}
+          </p>
           <label>Профессиональные навыки</label>
           <p v-show="userStore.data?.educational_organization == null">------</p>
           <p class="text_prof_user">{{}}</p>
@@ -83,8 +85,8 @@ export default {
           <p v-show="user.achievements == ''">------</p>
           <p class="text_prof_user">{{ user.achievements }}</p>
           <label>Конкурсы</label>
-          <p v-show="userStore.data?.educational_organization == null">------</p>
-          <p class="text_prof_user">{{}}</p>
+          <p v-show="user.contests == ''">------</p>
+          <p class="text_prof_user">{{ user.contests }}</p>
           <label>Сертификаты</label>
           <p v-show="userStore.data?.educational_organization == null">------</p>
           <p class="text_prof_user">{{}}</p>
@@ -207,7 +209,7 @@ button > img {
 label {
   font-size: 18px;
   font-weight: 700;
-  padding-bottom: 10pxs;
+  margin-bottom: 20px;
 }
 .chart_box {
   position: relative;
@@ -228,6 +230,23 @@ label {
   font-size: 16px;
   text-align: left;
   padding-bottom: 20px;
+}
+.tag {
+  display: grid;
+  width: fit-content;
+  background: rgb(8, 17, 104);
+  padding: 10px;
+  border-radius: 4px;
+  color: white;
+  white-space: nowrap;
+  max-width: 700px;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
 }
 button,
 li,
