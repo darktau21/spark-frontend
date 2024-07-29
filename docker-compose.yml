@@ -12,7 +12,9 @@ services:
   vue_app:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
+      target: development
+    command: npm run dev
     ports:
       - '5173:5173'
     volumes:
@@ -30,7 +32,7 @@ services:
     networks:
       - internal
   backend:
-    image: darktau21/spark-backend
+    image: d2avids/iskra:latest
     env_file: .env
     restart: always
     ports:

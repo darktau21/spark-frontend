@@ -1,8 +1,11 @@
 import { z } from 'zod';
 
 export const accountSchema = z.object({
-  // TODO Rewrite competencies check
-  // competencies: z.record(z.string().optional(), z.string().optional()).nullable(),
+  achievements: z.string().nullable(),
+  // TODO Разобраться с сертификатами
+  // certificates: z.array(z.string()).nullable(),
+  competencies: z.string().nullable(),
+  competitions: z.string().nullable(),
   educational_organization: z.number().nullable(),
   first_name: z
     .string()
@@ -22,7 +25,9 @@ export const accountSchema = z.object({
     .nullable(),
   phone_number: z.string().nullable(),
   photo: z.string().url().nullable(),
-  // professional_competencies: z.record(z.string().optional(), z.string().optional()).nullable(),
+  professional_competencies: z.array(z.string()).nullable(),
+  professional_interests: z.string().nullable(),
+  specialty: z.string().nullable(),
   telegram: z.string().nullable(),
 });
 
@@ -100,3 +105,18 @@ export const restorePasswordConfirmPayload = z
   });
 
 export type RestorePasswordConfirmPayload = z.infer<typeof restorePasswordConfirmPayload>;
+
+export const updateAccountPayload = accountSchema
+  .omit({
+    id: true,
+    photo: true,
+  })
+  .extend({
+    photo: z.instanceof(File).nullable(),
+  })
+  .refine((data) => data.photo && data.photo.size < 10000000, {
+    message: 'Максимальный размер файла - 10мб',
+    path: ['photo'],
+  });
+
+export type UpdateAccountPayload = z.infer<typeof updateAccountPayload>;

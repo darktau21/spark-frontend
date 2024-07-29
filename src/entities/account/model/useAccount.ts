@@ -59,7 +59,6 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
       isLoading.value.register = true;
       await accountApi.register(registerData);
       toast.success('Вы успешно зарегистрировались');
-      await refetchData();
       router.push({ name: routeNames.login, replace: true });
     } catch (error) {
       const parse = useAxiosErrorToast('Ошибка регистрации');
@@ -110,6 +109,36 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
     }
   };
 
+  const deleteAccount = async () => {
+    try {
+      await accountApi.deleteAccount();
+
+      toast.warning('Аккаунт удален 😢');
+    } catch (error) {
+      const parse = useAxiosErrorToast('Ошибка смены пароля');
+      parse(error);
+    } finally {
+      storage.remove('authToken');
+      storage.remove('rememberMe');
+      data.value = null;
+      isAuthorized.value = false;
+      router.push({ name: routeNames.login });
+      refetchData();
+    }
+  };
+
+  const update = async (data: accountApi.UpdateAccountPayload) => {
+    try {
+      await accountApi.updateMe(data);
+      toast.success('Данные успешно обновлены');
+    } catch (error) {
+      const parse = useAxiosErrorToast('Ошибка обновления данных');
+      parse(error);
+    } finally {
+      await refetchData();
+    }
+  };
+
   onMounted(refetchData);
 
   const rememberMeHandler = async () => {
@@ -121,6 +150,7 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
   return {
     confirmRestorePassword,
     data,
+    deleteAccount,
     isAuthorized,
     isLoading,
     login,
@@ -129,5 +159,6 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
     register,
     rememberMeHandler,
     restorePassword,
+    update,
   };
 });

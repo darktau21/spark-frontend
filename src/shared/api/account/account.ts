@@ -7,6 +7,7 @@ import {
   type RegisterResponse,
   type RestorePasswordConfirmPayload,
   type RestorePasswordPayload,
+  type UpdateAccountPayload,
   accountSchema,
   loginResponse,
   registerResponse,
@@ -27,6 +28,11 @@ export async function getMe() {
   return accountSchema.parse(data);
 }
 
+export async function updateMe(body: UpdateAccountPayload) {
+  const { data } = await api.patch<AccountSchema>('/users/me/', body);
+  return accountSchema.parse(data);
+}
+
 export async function logout() {
   await api.post('/token/logout/');
 }
@@ -37,4 +43,8 @@ export async function restorePassword(body: RestorePasswordPayload) {
 
 export async function restorePasswordConfirm(body: RestorePasswordConfirmPayload) {
   await api.post('/users/reset_password_confirm/', body);
+}
+
+export async function deleteAccount() {
+  await api.delete('/users/me/');
 }

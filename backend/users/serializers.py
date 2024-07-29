@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreatePasswordRetypeSerializer
 
 from users.constants import PROFESSIONAL_COMPETENCES_VALIDATION_MSG
-from users.models import EducationalOrganization
+from users.models import EducationalOrganization, UserCertificate
 
 User = get_user_model()
 
@@ -14,7 +14,19 @@ class EmailSerializer(serializers.ModelSerializer):
         fields = ('email',)
 
 
+class UserCertificateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserCertificate
+        fields = ('id', 'certificate')
+
+
 class UserSerializer(serializers.ModelSerializer):
+    educational_organization = serializers.PrimaryKeyRelatedField(
+        queryset=EducationalOrganization.objects.all(),
+        allow_null=True
+    )
+    certificates = UserCertificateSerializer(many=True, read_only=True)
+
     class Meta:
         model = User
         fields = (
@@ -27,7 +39,12 @@ class UserSerializer(serializers.ModelSerializer):
             'telegram',
             'educational_organization',
             'professional_competencies',
+            'professional_interests',
             'competencies',
+            'specialty',
+            'achievements',
+            'competitions',
+            'certificates'
         )
 
     def validate_professional_competencies(self, value):
@@ -36,6 +53,12 @@ class UserSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError(
             PROFESSIONAL_COMPETENCES_VALIDATION_MSG
         )
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        if repr['professional_competencies'] in ({}, '{}', [], '[]'):
+            repr['professional_competencies'] = None
+        return repr
 
 
 class UserCreateSerializer(UserCreatePasswordRetypeSerializer):
@@ -61,3 +84,7 @@ class EducationalOrganizationSerializer(serializers.ModelSerializer):
             'id',
             'name'
         )
+
+
+class CustomUserDeleteSerializer(serializers.Serializer):
+    pass

@@ -10,7 +10,6 @@
 
 <script setup lang="ts">
 import { useAccount } from '@/entities/account';
-import { accountApi } from '@/shared/api';
 import { AppLayout } from '@/shared/layouts';
 import { AppFooter } from '@/widgets/AppFooter';
 import { AppHeader } from '@/widgets/AppHeader';
@@ -20,6 +19,5 @@ import { onMounted } from 'vue';
 onMounted(async () => {
   const account = useAccount();
   await account.rememberMeHandler();
-  // await accountApi.restorePassword({ email: 'test10@gmail.com' });
 });
 </script>
