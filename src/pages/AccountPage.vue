@@ -43,11 +43,11 @@ export default {
       </div>
 
       <div class="box_data">
-        <p class="pers_data">
+        <p class="label_data">
           {{ userStore.data?.last_name }} {{ userStore.data?.first_name }}
           {{ userStore.data?.patronymic }}
         </p>
-        <div class="icon_box" v-show="userStore.data?.phone_number != null">
+        <div class="icon_box">
           <Icon icon="fluent:phone-32-light" height="28" />
           <p class="pers_data">{{ userStore.data?.phone_number }}</p>
         </div>
@@ -55,7 +55,7 @@ export default {
           <Icon icon="mdi-light:email" height="28" />
           <p class="pers_data">{{}}</p>
         </div>
-        <div class="icon_box" v-show="userStore.data?.telegram != null">
+        <div class="icon_box">
           <Icon icon="mingcute:telegram-fill" height="28" />
           <p class="pers_data">{{ userStore.data?.telegram }}</p>
         </div>
@@ -66,37 +66,47 @@ export default {
       <div class="box__prof">
         <div class="prof_user">
           <label>Образование</label>
-          <p v-show="userStore.data?.educational_organization == null">------</p>
+          <p v-show="userStore.data?.educational_organization == null">-</p>
           <p class="text_prof_user">{{ userStore.data?.educational_organization }}</p>
+
+          <label>Специальность</label>
+          <p v-show="userStore.data?.specialty == null">-</p>
+          <p class="text_prof_user">{{ userStore.data?.specialty }}</p>
+
           <label>Компетенции</label>
-          <p v-show="userStore.data?.educational_organization == null">------</p>
-          <p class="text_prof_user">{{}}</p>
+          <p v-show="userStore.data?.competencies == null">-</p>
+          <p class="text_prof_user">{{ userStore.data?.competencies }}</p>
+
           <label>Профессиональные интересы</label>
-          <p v-show="user.professional_interests.length == 0">------</p>
-          <p class="text_prof_user tag" v-for="interests in user.professional_interests">
+          <p v-show="userStore.data?.professional_interests == null">-</p>
+          <p class="text_prof_user" v-for="interests in userStore.data?.professional_interests">
             {{ interests }}
           </p>
+
           <label>Профессиональные навыки</label>
-          <p v-show="userStore.data?.educational_organization == null">------</p>
-          <p class="text_prof_user">{{}}</p>
+          <p v-show="userStore.data?.professional_competencies == null">-</p>
+          <p class="text_prof_user">{{ userStore.data?.professional_competencies }}</p>
         </div>
+
         <div class="skills_user">
           <label>Достижения</label>
-          <p v-show="user.achievements == ''">------</p>
-          <p class="text_prof_user">{{ user.achievements }}</p>
+          <p v-show="userStore.data?.achievements == null">-</p>
+          <p class="text_prof_user">{{ userStore.data?.achievements }}</p>
+
           <label>Конкурсы</label>
-          <p v-show="user.contests == ''">------</p>
-          <p class="text_prof_user">{{ user.contests }}</p>
-          <label>Сертификаты</label>
-          <p v-show="userStore.data?.educational_organization == null">------</p>
-          <p class="text_prof_user">{{}}</p>
+          <p v-show="userStore.data?.competitions == null">-</p>
+          <p class="text_prof_user">{{ userStore.data?.competitions }}</p>
+
+          <!-- <label>Сертификаты</label>
+          <p v-show="userStore.data?.educational_organization == null">-</p>
+          <p class="text_prof_user">{{}}</p> -->
         </div>
       </div>
 
       <div class="chart_box">
         <div class="diag_box" v-show="user.test_result == ''">
-          <label class="typo__label">Диаграмма психотипа</label>
-          <p>
+          <label>Диаграмма психотипа</label>
+          <p class="text_prof_user">
             Вы пока не прошли тестирование, чтобы мы определили Ваш психотип.Пройти тестирование
             можно по кнопке ниже.
           </p>
@@ -156,27 +166,57 @@ button > img {
 .box_pers {
   display: flex;
   position: relative;
-  height: 280px;
-  background-color: rgb(234, 238, 253);
+  height: 254px;
   margin: 40px auto 0;
   border-radius: 60px;
-  border: 4px solid #081168;
+  border: 4px solid rgba(3, 0, 124, 1);
 }
 .picture_input {
-  max-width: 280px;
+  max-width: 254px;
   width: 100%;
   margin: 0 auto;
   display: flex;
 }
-
-.box_data {
-  width: 80%;
-  margin: 30px 40px;
-  text-align: start;
+.hexagon {
+  width: 174px;
+  clip-path: polygon(50% 0, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+  height: 174px;
+  border-radius: 5px;
+  object-fit: contain;
+  background-color: rgba(209, 219, 255, 1);
+  border: none;
+  margin: auto;
+}
+.hexagon_img {
+  width: 100%;
+  object-fit: contain;
 }
 
-.pers_data {
-  padding: 10px 0;
+.box_data {
+  max-width: 1166px;
+  width: 100%;
+  margin: 40px 0;
+  text-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.label_data,
+label {
+  font-family: 'Nunito Sans';
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 30px;
+}
+label {
+  margin-bottom: 10px;
+}
+.pers_data,
+.text_prof_user {
+  font-family: 'Nunito Sans';
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 28px;
 }
 .icon_box {
   display: flex;
@@ -198,19 +238,14 @@ button > img {
 
 .prof_user,
 .skills_user {
-  background-color: rgb(234, 238, 253);
   text-align: start;
   border-radius: 60px;
   padding: 40px;
-  gap: 20px;
   border: 4px solid #081168;
+  display: flex;
+  flex-direction: column;
 }
 
-label {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 20px;
-}
 .chart_box {
   position: relative;
   display: block;
@@ -219,7 +254,6 @@ label {
 }
 .diag_box,
 .description_box {
-  background-color: rgb(234, 238, 253);
   text-align: start;
   border-radius: 60px;
   padding: 40px;
@@ -227,23 +261,17 @@ label {
 }
 
 .text_prof_user {
-  font-size: 16px;
-  text-align: left;
   padding-bottom: 20px;
 }
 .tag {
   display: grid;
   width: fit-content;
-  background: rgb(8, 17, 104);
   padding: 10px;
-  border-radius: 4px;
-  color: white;
   white-space: nowrap;
   max-width: 700px;
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   gap: 10px;
   margin: 0;
   padding: 0;
@@ -255,21 +283,6 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
-.hexagon {
-  width: 200px;
-  clip-path: polygon(50% 0, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
-  height: 200px;
-  border-radius: 5px;
-  object-fit: contain;
-  background-color: azure;
-  border: none;
-  margin: auto;
-}
-.hexagon_img {
-  width: 100%;
-  object-fit: contain;
-}
-
 .but_test {
   width: 288px;
   height: 64px;
@@ -277,7 +290,13 @@ a {
   border: 1px solid rgb(151, 71, 255);
   color: #ffffff;
   cursor: pointer;
-  background: linear-gradient(to top left, rgba(2, 1, 43, 1) 0%, rgba(37, 78, 220, 1) 100%);
+  background: linear-gradient(316.71deg, #02012b 0%, #2955ec 100%),
+    radial-gradient(
+      51.12% 56.12% at 100% 0%,
+      #730f94 0%,
+      rgba(175, 70, 210, 0.2) 63.01%,
+      rgba(175, 70, 210, 0) 100%
+    );
 }
 @media (max-width: 800px) {
   .box_prof {

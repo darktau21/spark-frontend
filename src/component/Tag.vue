@@ -17,8 +17,10 @@
 </template>
 
 <script>
-import { useUsersStore } from '@/stores';
-const user = useUsersStore();
+// import { useUsersStore } from '@/stores';
+import { useAccount } from '@/entities/account';
+// const user = useUsersStore();
+const userStore = useAccount();
 export default {
   name: 'Tag',
   data() {
@@ -32,7 +34,7 @@ export default {
     addTag(tag) {
       if (this.newTag != '') {
         this.tags.push(tag);
-        user.professional_interests = this.tags;
+        userStore.data.professional_interests = this.tags;
         this.newTag = '';
       }
       return false;

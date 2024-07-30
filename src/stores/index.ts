@@ -11,6 +11,8 @@ export const useUsersStore = defineStore('user', {
       achievements: '',
       contests: '',
       photo: '',
+      last_name: 'Иванов',
+      phone_number: '888888888888888',
     };
   },
 });

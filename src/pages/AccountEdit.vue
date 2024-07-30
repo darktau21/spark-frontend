@@ -4,10 +4,10 @@ import PictureInput from 'vue-picture-input';
 import Modal from '@/component/Modal.vue';
 import Tag from '@/component/Tag.vue';
 import Select from '@/component/Select.vue';
-import { useUsersStore } from '@/stores';
-const user = useUsersStore();
+import Certificates from '@/component/Certificates.vue';
+// import { useUsersStore } from '@/stores';
+// const user = useUsersStore();
 const userStore = useAccount();
-
 export default {
   name: 'AccountEdit',
 
@@ -16,16 +16,16 @@ export default {
     Modal,
     Tag,
     Select,
+    Certificates,
   },
 
   data() {
     return {
       userStore,
-      user,
+      // user,
       isModalVisible: false,
     };
   },
-
   methods: {
     onChange() {
       this.$refs.pictureInput;
@@ -45,8 +45,11 @@ export default {
     <div class="title_account">
       <h1>Редактирование личного кабинета</h1>
       <div>
-        <button @click="showModal" class="but_edit">Удалить личный кабинет</button>
-        <modal v-show="isModalVisible" @close="closeModal" />
+        <button @click="showModal" class="but_edit">
+          <img src="" alt="" />
+          <span>Удалить личный кабинет</span>
+        </button>
+        <Modal v-if="isModalVisible" @close="closeModal" />
       </div>
     </div>
     <form>
@@ -134,7 +137,6 @@ export default {
           <textarea
             name="text"
             id="achievements"
-            v-model="user.achievements"
             maxlength="1000"
             placeholder="Расскажите о своих достижениях"
           ></textarea>
@@ -143,23 +145,12 @@ export default {
           <textarea
             name="text"
             id="contests"
-            v-model="user.contests"
             maxlength="1000"
             placeholder="Опишите конкурсы, в которых вы участвовали"
           ></textarea>
-          <!-- <input type="text" id="contests" placeholder="Опишите конкурсы, в которых вы участвовали" /> -->
         </div>
         <div class="box_select">
-          <label for="certificates">Сертификаты</label>
-          <p>Загрузите изображения формата JPEG/JPG/PNG. Вы можете добавить не более 10 файлов.</p>
-          <input
-            type="file"
-            id="certificates"
-            ref="certificates"
-            accept="image/jpeg, image/jpg, image/png"
-            multiple
-            class="btn_input"
-          />
+          <Certificates />
         </div>
       </div>
     </form>
@@ -215,9 +206,20 @@ p {
   width: 351px;
   height: 64px;
   border-radius: 20px;
-  border: 1px solid #081168;
-  color: #081168;
+  border: 2px solid rgba(3, 0, 124, 1);
+  color: rgba(3, 0, 124, 1);
   cursor: pointer;
+  font-family: 'Nunito Sans';
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 24px;
+}
+button > img,
+button > span {
+  vertical-align: middle;
+}
+button > img {
+  padding-right: 10px;
 }
 
 .box_pers {
@@ -240,8 +242,11 @@ p {
   width: 100%;
   padding: 40px;
   text-align: start;
-  background-color: rgb(234, 238, 253);
-  border-radius: 30px;
+  border: 4px solid rgba(3, 0, 124, 1);
+  /* 
+  border-image-source: linear-gradient(#02012b 100%, #2955ec 100%),
+    radial-gradient(#730f94 100%, #af46d2 20%, #af46d2 0%); */
+  border-radius: 60px;
 }
 label {
   font-size: 18px;
@@ -275,8 +280,8 @@ textarea {
   max-width: 700px;
   width: 100%;
   padding: 40px;
-  background-color: rgb(234, 238, 253);
-  border-radius: 30px;
+  border: 4px solid rgba(3, 0, 124, 1);
+  border-radius: 60px;
 }
 .box_select_flex {
   display: flex;

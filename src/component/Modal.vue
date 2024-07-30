@@ -9,29 +9,26 @@ export default {
 };
 </script>
 <template>
-  <transition name="modal-fade">
-    <div class="modal-backdrop">
-      <div
-        class="modal"
-        role="dialog"
-        aria-labelledby="modalTitle"
-        aria-describedby="modalDescription"
-      >
-        <button type="button" class="btn-close" @click="close" aria-label="Close modal">x</button>
-        <div class="modal_box">
-          <h2>Предупреждение</h2>
-          <p>
-            Вы уверены, что хотите удалить свой профиль?<br />
-            Отменить это действие будет невозможно.
-          </p>
-          <div class="btn_box">
-            <button type="button" class="btn-back" @click="close">Отмена</button>
-            <button type="button" class="btn-del">Удалить профиль</button>
+  <teleport to="#modal">
+    <transition name="modal-fade">
+      <div class="modal-backdrop" @wheel.prevent @touchmove.prevent @scroll.prevent>
+        <div class="modal" role="dialog" aria-labelledby="modalTitle">
+          <button type="button" class="btn-close" @click="close" aria-label="Close modal">x</button>
+          <div class="modal_box">
+            <h2>Предупреждение</h2>
+            <p>
+              Вы уверены, что хотите удалить свой профиль?<br />
+              Отменить это действие будет невозможно.
+            </p>
+            <div class="btn_box">
+              <button type="button" class="btn-back" @click="close">Отмена</button>
+              <button type="button" class="btn-del">Удалить профиль</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </transition>
+    </transition>
+  </teleport>
 </template>
 <style>
 .modal-backdrop {
@@ -41,6 +38,7 @@ export default {
   left: 0;
   right: 0;
   background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -72,6 +70,7 @@ export default {
 }
 .modal_box {
   margin: auto;
+  text-align: center;
 }
 .btn_box {
   gap: 20px;
