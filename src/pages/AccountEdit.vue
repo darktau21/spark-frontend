@@ -26,6 +26,16 @@ export default {
       isModalVisible: false,
     };
   },
+  computed: {
+    input_value: {
+      get() {
+        return userStore.data?.last_name;
+      },
+      // set() {
+      //   userStore.data?.dispatch(last_name);
+      // },
+    },
+  },
   methods: {
     onChange() {
       this.$refs.pictureInput;
@@ -84,9 +94,9 @@ export default {
 
         <div class="box_data">
           <label for="last_name">Фамилия*</label>
-          <input required id="last_name" type="text" placeholder="Фамилия" />
+          <input required id="last_name" type="text" v-model="input_value" placeholder="Фамилия" />
           <label for="first_name">Имя*</label>
-          <input required type="text" id="first_name" placeholder="Имя" />
+          <input required type="text" id="first_name" v-model="input_value" placeholder="Имя" />
           <label for="patronymic">Отчество*</label>
           <input required type="text" id="patronymic" placeholder="Отчество" />
         </div>
