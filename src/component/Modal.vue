@@ -55,6 +55,7 @@ export default {
   flex-direction: column;
   z-index: 10;
   border-radius: 40px;
+  margin: 0 20px;
 }
 
 .btn-close {
@@ -92,8 +93,14 @@ export default {
   height: 64px;
   width: 100%;
   color: #ffffff;
-  background: linear-gradient(to top left, rgba(2, 1, 43, 1) 0%, rgba(37, 78, 220, 1) 100%);
-  border: 1px solid #081168;
+  background: radial-gradient(
+      51% 56% at 100% 0%,
+      rgba(115, 15, 148, 1) 0%,
+      rgba(175, 70, 210, 0.2) 63%,
+      rgba(175, 70, 210, 0) 100%
+    ),
+    linear-gradient(316.71deg, rgba(2, 1, 43, 1) 0%, rgba(41, 85, 236, 1) 100%);
   border-radius: 20px;
+  border: none;
 }
 </style>

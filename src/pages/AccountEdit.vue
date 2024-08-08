@@ -3,10 +3,11 @@ import { useAccount } from '@/entities/account';
 import PictureInput from 'vue-picture-input';
 import Modal from '@/component/Modal.vue';
 import Tag from '@/component/Tag.vue';
-import Select from '@/component/Select.vue';
 import Certificates from '@/component/Certificates.vue';
-// import { useUsersStore } from '@/stores';
-// const user = useUsersStore();
+import Select from '@/component/Select.vue';
+import Roleuser from '@/component/Roleuser.vue';
+import { useUsersStore } from '@/stores';
+const user = useUsersStore();
 const userStore = useAccount();
 export default {
   name: 'AccountEdit',
@@ -17,29 +18,22 @@ export default {
     Tag,
     Select,
     Certificates,
+    Roleuser,
   },
 
   data() {
     return {
       userStore,
-      // user,
+      user,
       isModalVisible: false,
     };
   },
-  computed: {
-    input_value: {
-      get() {
-        return userStore.data?.last_name;
-      },
-      // set() {
-      //   userStore.data?.dispatch(last_name);
-      // },
-    },
-  },
+
   methods: {
     onChange() {
-      this.$refs.pictureInput;
+      this.$refs.pictureInputs;
     },
+
     showModal() {
       this.isModalVisible = true;
     },
@@ -56,7 +50,7 @@ export default {
       <h1>Редактирование личного кабинета</h1>
       <div>
         <button @click="showModal" class="but_edit">
-          <img src="" alt="" />
+          <img src="/public/Vector.svg" alt="" />
           <span>Удалить личный кабинет</span>
         </button>
         <Modal v-if="isModalVisible" @close="closeModal" />
@@ -69,12 +63,12 @@ export default {
             ref="pictureInput"
             width="246"
             height="246"
-            plain="true"
+            :plain="true"
             accept="image/jpeg,image/png"
             size="5"
             button-class="btnchange"
             remove-button-class="btnremove"
-            removable="true"
+            :removable="true"
             :zIndex="0"
             :custom-strings="{
               upload: '<p>Ваше устройство не поддерживает загрузку файлов.</p>',
@@ -94,11 +88,20 @@ export default {
 
         <div class="box_data">
           <label for="last_name">Фамилия*</label>
-          <input required id="last_name" type="text" v-model="input_value" placeholder="Фамилия" />
-          <label for="first_name">Имя*</label>
-          <input required type="text" id="first_name" v-model="input_value" placeholder="Имя" />
-          <label for="patronymic">Отчество*</label>
-          <input required type="text" id="patronymic" placeholder="Отчество" />
+          <input required id="last_name" type="text" placeholder="Фамилия" />
+          <div class="box__data">
+            <div>
+              <label for="first_name">Имя*</label>
+              <input required type="text" id="first_name" placeholder="Имя" />
+            </div>
+            <div>
+              <label for="patronymic">Отчество*</label>
+              <input required type="text" id="patronymic" placeholder="Отчество" />
+            </div>
+          </div>
+
+          <label for="role_user">Роль пользователя</label>
+          <Roleuser />
         </div>
 
         <div class="box_data">
@@ -107,7 +110,7 @@ export default {
           <label for="user_email">Электронная почта</label>
           <p class="disable">{{}}</p>
           <label for="telegram">Ссылка на Telegram</label>
-          <input type="text" id="telegram" placeholder="" />
+          <input type="text" id="telegram" placeholder="" pattern="[A-Za-z]" />
         </div>
       </div>
 
@@ -180,16 +183,19 @@ export default {
   width: 100%;
   height: 64px;
   border-radius: 20px;
-  border: 1px solid rgb(8, 17, 104);
-  color: rgb(8, 17, 104);
+  border: 2px solid rgba(3, 0, 124, 1);
+  color: rgba(3, 0, 124, 1);
+  background-color: white;
+  font-weight: 600;
 }
 .btnremove {
   max-width: 174px;
   width: 100%;
   height: 64px;
   border-radius: 20px;
-  border: 1px solid red;
+  border: 2px solid red;
   color: red;
+  background-color: white;
 }
 </style>
 <style scoped>
@@ -223,6 +229,7 @@ p {
   font-size: 20px;
   font-weight: 600;
   line-height: 24px;
+  background-color: white;
 }
 button > img,
 button > span {
@@ -252,30 +259,44 @@ button > img {
   width: 100%;
   padding: 40px;
   text-align: start;
-  border: 4px solid rgba(3, 0, 124, 1);
-  /* 
-  border-image-source: linear-gradient(#02012b 100%, #2955ec 100%),
-    radial-gradient(#730f94 100%, #af46d2 20%, #af46d2 0%); */
+  border: double 4px transparent;
   border-radius: 60px;
+  background-image: linear-gradient(white, white),
+    linear-gradient(316.71deg, #0c08a7 0%, #6386fe 100%);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+.box__data {
+  display: grid;
+  grid-template-columns: 47% 47%;
+  justify-content: space-between;
 }
 label {
-  font-size: 18px;
+  font-family: 'Nunito Sans';
+  font-size: 20px;
   font-weight: 700;
-  margin-bottom: 20px;
+  line-height: 28px;
+  margin-bottom: 10px;
 }
 input,
 select,
 textarea {
+  width: 100%;
   margin-bottom: 20px;
   height: 52px;
   border-radius: 8px;
   border: 1px solid rgb(37, 78, 220);
   resize: vertical;
+  padding: 16px;
+}
+
+span {
+  margin-bottom: 10px;
 }
 .disable {
   height: 52px;
   border-radius: 8px;
-  background-color: rgb(174, 174, 174);
+  background-color: rgba(222, 227, 244, 1);
   padding: 15px 10px;
   margin-bottom: 20px;
 }
@@ -289,9 +310,15 @@ textarea {
   text-align: left;
   max-width: 700px;
   width: 100%;
+  height: fit-content;
   padding: 40px;
-  border: 4px solid rgba(3, 0, 124, 1);
   border-radius: 60px;
+  border: double 4px transparent;
+  border-radius: 60px;
+  background-image: linear-gradient(white, white),
+    linear-gradient(316.71deg, #0c08a7 0%, #6386fe 100%);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
 }
 .box_select_flex {
   display: flex;
@@ -313,18 +340,28 @@ textarea {
   width: 140px;
   height: 64px;
   border-radius: 20px;
-  border: 1px solid rgb(8, 17, 104);
-  color: rgb(8, 17, 104);
+  border: 2px solid rgba(3, 0, 124, 1);
+  color: rgba(3, 0, 124, 1);
+  background: white;
+  font-weight: 600;
 }
 .btn_save {
   font-size: 20px;
   max-width: 292px;
+  font-weight: 600;
   width: 100%;
   height: 64px;
   border-radius: 20px;
+  border: none;
   color: white;
   cursor: pointer;
-  background: linear-gradient(to top left, rgba(2, 1, 43, 1) 0%, rgba(37, 78, 220, 1) 100%);
+  background: radial-gradient(
+      51% 56% at 100% 0%,
+      rgba(115, 15, 148, 1) 0%,
+      rgba(175, 70, 210, 0.2) 63%,
+      rgba(175, 70, 210, 0) 100%
+    ),
+    linear-gradient(316.71deg, rgba(2, 1, 43, 1) 0%, rgba(41, 85, 236, 1) 100%);
 }
 @media (max-width: 800px) {
   .picture_input,
@@ -333,10 +370,26 @@ textarea {
   .box_select_block {
     max-width: 100%;
   }
+  .title_account,
   .box_prof,
   .box_pers,
   .box_select_flex {
     flex-wrap: wrap;
+  }
+  .title_account {
+    justify-content: center;
+    gap: 20px;
+  }
+  .box_select,
+  .box_data {
+    padding: 20px;
+  }
+  .box__data {
+    display: block;
+  }
+  .but_edit,
+  .btn_upload {
+    width: 240px;
   }
 }
 </style>

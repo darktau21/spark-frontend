@@ -1,5 +1,6 @@
 <template>
   <select id="educational_organization">
+    <option selected disabled hidden>Не выбрано</option>
     <option v-for="option in options">
       {{ option.university }}
     </option>
