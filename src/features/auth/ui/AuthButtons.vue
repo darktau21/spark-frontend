@@ -2,15 +2,15 @@
 import { AccountAvatar, AccountMenu, useAccount } from '@/entities/account';
 import { LogoutButton } from '@/features/logout';
 import { routeNames } from '@/shared/lib';
-import { UiNavLink } from '@/shared/ui';
+import { UiNavButton } from '@/shared/ui';
 
 const account = useAccount();
 </script>
 
 <template>
   <div v-if="!account.isAuthorized" class="auth-buttons">
-    <UiNavLink :to="{ name: routeNames.login }" variant="primary">Вход</UiNavLink>
-    <UiNavLink :to="{ name: routeNames.register }" variant="secondary">Регистрация</UiNavLink>
+    <UiNavButton :to="{ name: routeNames.login }" variant="primary">Вход</UiNavButton>
+    <UiNavButton :to="{ name: routeNames.register }" variant="secondary">Регистрация</UiNavButton>
   </div>
   <AccountMenu v-else>
     <template #account>

@@ -1,5 +1,6 @@
 <template>
   <form class="form">
+    <UiHeading align="center">Восстановление пароля</UiHeading>
     <UiInput
       id="restore-password-email"
       v-bind="emailAttrs"
@@ -19,7 +20,7 @@
 <script setup lang="ts">
 import { useAccount } from '@/entities/account';
 import { accountApi } from '@/shared/api';
-import { UiButton, UiInput } from '@/shared/ui';
+import { UiButton, UiHeading, UiInput } from '@/shared/ui';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { computed } from 'vue';
@@ -52,6 +53,7 @@ const isError = computed(() => Object.keys(errors.value).length > 0);
   flex-direction: column;
   align-items: stretch;
   gap: 1.6rem;
+  padding: 2rem;
 }
 .button {
   align-self: center;

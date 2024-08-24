@@ -1,15 +1,11 @@
 <template>
-  <div>
-    <p v-if="variant === 'p1'" class="paragraph p1"><slot /></p>
-    <p v-if="variant === 'p2'" class="paragraph p2"><slot /></p>
-    <p v-if="variant === 'p3'" class="paragraph p3"><slot /></p>
-  </div>
+  <p :class="['paragraph', variant]"><slot /></p>
 </template>
 
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    variant: 'p1' | 'p2' | 'p3';
+    variant?: 'p1' | 'p2' | 'p3';
   }>(),
   {
     variant: 'p1',

@@ -1,9 +1,9 @@
 <template>
   <div class="two-sides-block">
-    <div class="left">
+    <div class="left part">
       <slot name="left" />
     </div>
-    <div class="right">
+    <div class="right part">
       <slot name="right" />
     </div>
   </div>
@@ -12,27 +12,34 @@
 <style scoped>
 .two-sides-block {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
-  min-height: 50rem;
+  grid-template-columns: repeat(2, minmax(32rem, 1fr));
+  background-color: rgb(255, 255, 255);
+  min-height: 60rem;
 }
 
-.left {
-  background-color: rgb(217, 217, 217);
+.part {
+  padding: 4rem;
+  display: grid;
   position: relative;
   z-index: 10;
 }
 
-@media screen and (max-width: 40rem) {
+.right {
+  align-self: self-start;
+  margin: 4rem 0;
+}
+
+@media screen and (max-width: 64em) {
+  .two-sides-block {
+    align-items: stretch;
+    grid-template-columns: minmax(32rem, 1fr);
+  }
+
   .left {
     display: none;
   }
-}
-
-.right {
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  display: grid;
-  align-content: center;
-  position: relative;
-  z-index: 1;
+  .part {
+    padding: 1rem;
+  }
 }
 </style>

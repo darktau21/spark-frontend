@@ -2,7 +2,7 @@
 import { useAccount } from '@/entities/account';
 import { accountApi } from '@/shared/api';
 import { routeNames } from '@/shared/lib';
-import { UiButton, UiCheckBox, UiInput, UiNavLink, UiPasswordInput } from '@/shared/ui';
+import { UiButton, UiCheckBox, UiHeading, UiInput, UiNavLink, UiPasswordInput } from '@/shared/ui';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { computed, ref } from 'vue';
@@ -35,7 +35,8 @@ const restorePasswordLink = computed(() => ({
 </script>
 
 <template>
-  <form :validation-schema="validationSchema" class="form" @submit="onSubmit">
+  <form class="form" @submit="onSubmit">
+    <UiHeading align="center">Авторизация</UiHeading>
     <UiInput
       id="email"
       v-bind="emailAttrs"
@@ -56,8 +57,8 @@ const restorePasswordLink = computed(() => ({
       name="password"
       placeholder="Не менее 8 символов"
     />
-    <UiCheckBox v-model="remember">Запомнить меня</UiCheckBox>
-    <UiNavLink :to="restorePasswordLink" class="forgot-password" variant="tertiary">
+    <UiCheckBox v-model="remember"><span class="remember-me">Запомнить меня</span></UiCheckBox>
+    <UiNavLink :to="restorePasswordLink" class="forgot-password" variant="dark">
       Забыли пароль?
     </UiNavLink>
     <UiButton :disabled="!isSubmitAllowed" :error="isError" class="button" type="submit">
@@ -72,6 +73,7 @@ const restorePasswordLink = computed(() => ({
   flex-direction: column;
   align-items: stretch;
   gap: 1.6rem;
+  padding: 2rem;
 }
 .button {
   align-self: center;
@@ -79,5 +81,10 @@ const restorePasswordLink = computed(() => ({
 
 .forgot-password {
   align-self: flex-start;
+}
+.remember-me {
+  color: rgb(3, 0, 124);
+  font-size: 2rem;
+  font-weight: 600;
 }
 </style>

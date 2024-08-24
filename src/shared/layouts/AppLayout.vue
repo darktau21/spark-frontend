@@ -25,8 +25,4 @@
   flex: 1 0;
   position: relative;
 }
-
-.footer {
-  background-color: rgb(202, 202, 202);
-}
 </style>

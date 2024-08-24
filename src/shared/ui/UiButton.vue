@@ -1,5 +1,5 @@
 <template>
-  <button :class="['button', variant, error && 'error', active && 'active']" :disabled>
+  <button :class="['button', variant, error && 'error', active && 'active']">
     <slot />
   </button>
 </template>
@@ -8,13 +8,11 @@
 withDefaults(
   defineProps<{
     active?: boolean;
-    disabled?: boolean;
     error?: boolean;
     variant?: 'danger' | 'primary' | 'secondary' | 'tertiary' | 'tertiary-light';
   }>(),
   {
     active: false,
-    disabled: false,
     error: false,
     variant: 'primary',
   }
@@ -29,17 +27,23 @@ withDefaults(
   --color-error: rgb(255, 255, 255);
   --color-disabled: rgb(255, 255, 255);
 
-  --bg-color-default: rgb(151, 71, 255);
-  --bg-color-hover: rgb(94, 0, 215);
-  --bg-color-active: rgb(68, 15, 136);
+  --bg-color-default: radial-gradient(
+      51.12% 56.12% at 100% 0%,
+      #730f94 0%,
+      rgba(175, 70, 210, 0.2) 63.01%,
+      rgba(175, 70, 210, 0) 100%
+    ),
+    linear-gradient(316.71deg, #02012b 0%, #2955ec 100%);
+  --bg-color-hover: linear-gradient(
+    135.99deg,
+    #02012b -28.99%,
+    #080339 6.47%,
+    #072f9e 49.44%,
+    #af46d2 96.04%
+  );
+  --bg-color-active: linear-gradient(316.71deg, #0c08a7 0%, #6386fe 100%);
   --bg-color-error: rgb(254, 25, 25);
   --bg-color-disabled: rgb(202, 202, 202);
-
-  --border-default: none;
-  --border-hover: none;
-  --border-active: none;
-  --border-error: none;
-  --border-disabled: none;
 
   --font-size: 1.8rem;
   --font-weight: 600;
@@ -48,23 +52,19 @@ withDefaults(
 }
 
 .secondary {
-  --color-default: rgb(151, 71, 255);
-  --color-hover: rgb(94, 0, 215);
-  --color-active: rgb(68, 15, 136);
+  --color-default: rgb(2, 0, 119);
+  --color-hover: rgb(111, 65, 186);
+  --color-active: rgb(255, 255, 255);
   --color-error: rgb(254, 25, 25);
   --color-disabled: rgb(202, 202, 202);
 
-  --bg-color-default: transparent;
-  --bg-color-hover: transparent;
-  --bg-color-active: transparent;
-  --bg-color-error: transparent;
-  --bg-color-disabled: transparent;
+  --bg-color-active: linear-gradient(316.71deg, #0c08a7 0%, #6386fe 100%);
 
-  --border-default: 1px solid rgb(151, 71, 255);
-  --border-hover: 1px solid rgb(94, 0, 215);
-  --border-active: 1px solid rgb(68, 15, 136);
-  --border-error: 1px solid rgb(254, 25, 25);
-  --border-disabled: 1px solid rgb(202, 202, 202);
+  --border-default: 1px solid rgb(2, 0, 119);
+  --border-hover: 1px solid rgb(111, 65, 186);
+  --border-active: 1px solid transparent;
+  --border-error: 1px solid transparent;
+  --border-disabled: 1px solid transparent;
 
   --font-size: 1.8rem;
   --font-weight: 600;
@@ -73,23 +73,11 @@ withDefaults(
 }
 
 .tertiary {
-  --color-default: rgb(151, 71, 255);
-  --color-hover: rgb(94, 0, 215);
-  --color-active: rgb(68, 15, 136);
+  --color-default: rgba(3, 0, 124, 1);
+  --color-hover: rgba(141, 164, 243, 1);
+  --color-active: rgba(37, 78, 220, 1);
   --color-error: rgb(254, 25, 25);
   --color-disabled: rgb(202, 202, 202);
-
-  --bg-color-default: transparent;
-  --bg-color-hover: transparent;
-  --bg-color-active: transparent;
-  --bg-color-error: transparent;
-  --bg-color-disabled: transparent;
-
-  --border-default: none;
-  --border-hover: none;
-  --border-active: none;
-  --border-error: none;
-  --border-disabled: none;
 
   --font-size: 1.8rem;
   --font-weight: 600;
@@ -98,23 +86,11 @@ withDefaults(
 }
 
 .tertiary-light {
-  --color-default: rgb(0, 0, 0);
-  --color-hover: rgb(179, 107, 255);
-  --color-active: rgb(151, 71, 255);
+  --color-default: rgba(255, 255, 255);
+  --color-hover: rgba(200, 200, 255);
+  --color-active: rgba(150, 150, 255);
   --color-error: rgb(254, 25, 25);
   --color-disabled: rgb(202, 202, 202);
-
-  --bg-color-default: transparent;
-  --bg-color-hover: transparent;
-  --bg-color-active: transparent;
-  --bg-color-error: transparent;
-  --bg-color-disabled: transparent;
-
-  --border-default: none;
-  --border-hover: none;
-  --border-active: none;
-  --border-error: none;
-  --border-disabled: none;
 
   --font-size: 1.8rem;
   --font-weight: 600;
@@ -132,12 +108,6 @@ withDefaults(
   --bg-color-hover: rgb(229, 23, 23);
   --bg-color-active: rgb(206, 21, 21);
   --bg-color-disabled: rgb(202, 202, 202);
-
-  --border-default: none;
-  --border-hover: none;
-  --border-active: none;
-  --border-error: none;
-  --border-disabled: none;
 
   --font-size: 1.8rem;
   --font-weight: 600;

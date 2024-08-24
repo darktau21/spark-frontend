@@ -1,19 +1,17 @@
 <template>
   <div class="page">
-    <UiTwoSidesBlock>
-      <template #right>
-        <div class="form-wrapper">
-          <UiHeading align="center">Смена пароля</UiHeading>
-          <RestorePasswordConfirmationForm :token="token" :uid="uid" />
-        </div>
-      </template>
-    </UiTwoSidesBlock>
+    <AuthForm>
+      <UiGradientBorder :border-radius="30" :border-width="4">
+        <RestorePasswordConfirmationForm :token="token" :uid="uid" />
+      </UiGradientBorder>
+    </AuthForm>
   </div>
 </template>
 
 <script setup lang="ts">
 import { RestorePasswordConfirmationForm } from '@/features/restorePassword';
-import { UiHeading, UiTwoSidesBlock } from '@/shared/ui';
+import { UiGradientBorder } from '@/shared/ui';
+import { AuthForm } from '@/widgets/AuthForm';
 
 defineProps<{
   token: string;
@@ -23,12 +21,12 @@ defineProps<{
 
 <style scoped>
 .page {
-  padding: 10rem 0;
+  padding: 5rem 0;
 }
 
 @media screen and (max-width: 40rem) {
   .page {
-    padding: 5rem 0;
+    padding: 0;
   }
 }
 

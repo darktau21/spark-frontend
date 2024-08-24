@@ -1,5 +1,4 @@
-import { queryClient, routeNames } from '@/shared/lib';
-import { VueQueryPlugin } from '@tanstack/vue-query';
+import { routeNames } from '@/shared/lib';
 import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 import VueToastificationPlugin from 'vue-toastification';
@@ -12,7 +11,6 @@ import { router } from './router';
 export function initApp() {
   const app = createApp(App);
   app.use(createPinia());
-  VueQueryPlugin.install(app, { queryClient });
   app.use(VueToastificationPlugin);
   app.use(router);
   app.config.errorHandler = (error) => {

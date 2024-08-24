@@ -1,79 +1,66 @@
 <template>
-  <a :class="['button', variant]" rel="noopener noreferrer" target="_blank">
+  <a :class="['link', variant]" target="_blank" rel="noopener noreferrer">
     <slot />
   </a>
 </template>
 
 <script setup lang="ts">
+type Variant = 'dark' | 'inline' | 'light';
+
 withDefaults(
   defineProps<{
-    variant?: 'primary' | 'secondary' | 'tertiary';
+    variant?: Variant;
   }>(),
   {
-    variant: 'tertiary',
+    variant: 'dark',
   }
 );
 </script>
 
 <style scoped>
-.primary {
-  --color-default: rgb(255, 255, 255);
-  --color-hover: rgb(255, 255, 255);
-  --color-active: rgb(255, 255, 255);
-
-  --bg-color-default: rgb(151, 71, 255);
-  --bg-color-hover: rgb(94, 0, 215);
-  --bg-color-active: rgb(68, 15, 136);
-
-  --border-default: none;
-  --border-hover: none;
-  --border-active: none;
+.dark {
+  --color-default: rgba(3, 0, 124, 1);
+  --color-hover: rgba(141, 164, 243, 1);
+  --color-active: rgba(37, 78, 220, 1);
+  --color-visited: --color-visited: rgba(2, 0, 100, 1);
 
   --font-size: 1.8rem;
   --font-weight: 600;
 
-  --padding: 1.2rem 2rem;
+  --wrap: normal;
+  --padding: 0.5rem;
 }
 
-.secondary {
-  --color-default: rgb(151, 71, 255);
-  --color-hover: rgb(94, 0, 215);
-  --color-active: rgb(68, 15, 136);
-
-  --bg-color-default: transparent;
-  --bg-color-hover: transparent;
-  --bg-color-active: transparent;
-
-  --border-default: 1px solid rgb(151, 71, 255);
-  --border-hover: 1px solid rgb(94, 0, 215);
-  --border-active: 1px solid rgb(68, 15, 136);
+.light {
+  --color-default: rgba(255, 255, 255);
+  --color-hover: rgba(200, 200, 255);
+  --color-active: rgba(150, 150, 255);
+  --color-visited: rgba(180, 180, 255);
 
   --font-size: 1.8rem;
   --font-weight: 600;
 
-  --padding: 1.2rem 2rem;
+  --wrap: normal;
+  --padding: 0.5rem;
 }
 
-.tertiary {
-  --color-default: rgb(0, 0, 0);
-  --color-hover: rgb(151, 71, 255);
-  --color-active: rgb(94, 0, 215);
+.link.inline {
+  --color-default: rgba(24, 97, 165, 1);
+  --color-hover: rgba(50, 150, 200, 1);
+  --color-active: rgba(30, 120, 180, 1);
+  --color-visited: rgba(20, 80, 140, 1);
 
-  --bg-color-default: transparent;
-  --bg-color-hover: transparent;
-  --bg-color-active: transparent;
+  --font-size: inherit;
+  --font-weight: inherit;
 
-  --border-default: none;
-  --border-hover: none;
-  --border-active: none;
+  --wrap: normal;
+  --padding: 0;
 
-  --font-size: 1.8rem;
-  --font-weight: 600;
-
-  --padding: 1rem 1rem 1rem 0.4rem;
+  display: inline;
+  text-decoration: underline;
 }
 
-.button {
+.link {
   position: relative;
   display: inline-block;
   text-decoration: none;
@@ -81,27 +68,20 @@ withDefaults(
   transition:
     background 0.15s ease-in-out,
     color 0.15s ease-in-out;
-  border-radius: 10px;
-  border: var(--border-default);
   cursor: pointer;
-  background: var(--bg-color-default);
   color: var(--color-default);
   font-size: var(--font-size);
   font-weight: var(--font-weight);
+  white-space: var(--wrap);
 }
 
-@media (hover: hover) {
-  .button:hover {
-    background: var(--bg-color-hover);
+.link:visited {
+  color: var(--color-visited);
+}
+
+@media screen and (hover: hover) {
+  .link:hover {
     color: var(--color-hover);
-    border: var(--border-default);
   }
-}
-
-.button:active,
-.active {
-  background: var(--bg-color-active);
-  color: var(--color-active);
-  border: var(--border-active);
 }
 </style>

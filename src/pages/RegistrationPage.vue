@@ -1,43 +1,27 @@
 <template>
   <div class="page">
-    <UiTwoSidesBlock>
-      <template #right>
-        <div class="form-wrapper">
-          <UiHeading align="center">Регистрация</UiHeading>
-          <RegistrationForm />
-        </div>
-      </template>
-    </UiTwoSidesBlock>
+    <AuthForm>
+      <UiGradientBorder class="form-border" :border-width="4" :border-radius="30">
+        <RegistrationForm />
+      </UiGradientBorder>
+    </AuthForm>
   </div>
 </template>
 
 <script setup lang="ts">
 import { RegistrationForm } from '@/features/registration';
-import { UiHeading, UiTwoSidesBlock } from '@/shared/ui';
+import { UiGradientBorder } from '@/shared/ui';
+import { AuthForm } from '@/widgets/AuthForm';
 </script>
 
 <style scoped>
 .page {
-  padding: 10rem 0;
+  padding: 5rem 0;
 }
 
-@media screen and (max-width: 40rem) {
+@media screen and (max-width: 40em) {
   .page {
-    padding: 5rem 0;
-  }
-}
-
-.form-wrapper {
-  padding: 3rem 15%;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  align-items: stretch;
-}
-
-@media screen and (max-width: 50rem) {
-  .form-wrapper {
-    padding: 3rem 1.5rem;
+    padding: 0;
   }
 }
 </style>

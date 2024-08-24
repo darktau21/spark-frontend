@@ -1,5 +1,6 @@
 <template>
   <form class="form">
+    <UiHeading align="center">Смена пароля</UiHeading>
     <UiPasswordInput
       id="new-password"
       v-bind="newPasswordAttrs"
@@ -28,7 +29,7 @@
 <script setup lang="ts">
 import { useAccount } from '@/entities/account';
 import { accountApi } from '@/shared/api';
-import { UiButton, UiPasswordInput } from '@/shared/ui';
+import { UiButton, UiHeading, UiPasswordInput } from '@/shared/ui';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { computed } from 'vue';
@@ -78,6 +79,7 @@ const onSubmit = handleSubmit(async (data) => {
   flex-direction: column;
   align-items: stretch;
   gap: 1.6rem;
+  padding: 2rem;
 }
 .button {
   align-self: center;

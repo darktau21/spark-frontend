@@ -1,4 +1,4 @@
-import { accountApi } from '@/shared/api';
+import { accountApi, api } from '@/shared/api';
 import { routeNames, storage, useAxiosErrorToast } from '@/shared/lib';
 import { defineStore } from 'pinia';
 import { onMounted, ref } from 'vue';
@@ -139,13 +139,21 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
     }
   };
 
-  onMounted(refetchData);
-
-  const rememberMeHandler = async () => {
-    if (storage.get('authToken') && !storage.get('rememberMe')) {
-      await logout();
-    }
+  const rememberMeHandler = () => {
+    window.addEventListener('beforeunload', () => {
+      if (storage.get('rememberMe')) {
+        return;
+      }
+      try {
+        navigator.sendBeacon(`${api.defaults.baseURL}/token/logout/`);
+      } finally {
+        storage.clear();
+      }
+    });
   };
+
+  onMounted(refetchData);
+  onMounted(rememberMeHandler);
 
   return {
     confirmRestorePassword,
@@ -157,7 +165,6 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
     logout,
     refetchData,
     register,
-    rememberMeHandler,
     restorePassword,
     update,
   };

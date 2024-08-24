@@ -6,7 +6,7 @@ import { UiButton, UiMenuButton, UiNavLink, UiPanel } from '@/shared/ui';
 <template>
   <UiMenuButton>
     <template #button="{ toggleMenu, isOpen }">
-      <UiButton :active="isOpen" variant="tertiary-light" @click="toggleMenu">
+      <UiButton :active="isOpen" variant="tertiary" @click="toggleMenu">
         <slot name="account" />
       </UiButton>
     </template>

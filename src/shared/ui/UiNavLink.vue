@@ -1,5 +1,5 @@
 <template>
-  <RouterLink :class="['button', variant]" :to="to" active-class="active">
+  <RouterLink :class="['link', variant]" :to="to" active-class="active">
     <slot />
   </RouterLink>
 </template>
@@ -7,92 +7,69 @@
 <script setup lang="ts">
 import { type RouteLocationAsRelativeGeneric, RouterLink } from 'vue-router';
 
+type Variant = `${'dark' | 'light'}${'' | '-line'}`;
+
 withDefaults(
   defineProps<{
     to: RouteLocationAsRelativeGeneric;
-    variant?: 'primary' | 'secondary' | 'tertiary';
+    variant?: Variant;
   }>(),
   {
-    variant: 'tertiary',
+    variant: 'dark-line',
   }
 );
 </script>
 
 <style scoped>
-.primary {
-  --color-default: rgb(255, 255, 255);
-  --color-hover: rgb(255, 255, 255);
-  --color-active: rgb(255, 255, 255);
-
-  --bg-color-default: rgb(151, 71, 255);
-  --bg-color-hover: rgb(94, 0, 215);
-  --bg-color-active: rgb(68, 15, 136);
-
-  --border-default: none;
-  --border-hover: none;
-  --border-active: none;
+.dark {
+  --color-default: rgba(3, 0, 124, 1);
+  --color-hover: rgba(141, 164, 243, 1);
+  --color-active: rgba(37, 78, 220, 1);
 
   --font-size: 1.8rem;
   --font-weight: 600;
 
-  --padding: 1.2rem 2rem;
-}
-
-.secondary {
-  --color-default: rgb(151, 71, 255);
-  --color-hover: rgb(94, 0, 215);
-  --color-active: rgb(68, 15, 136);
-
-  --bg-color-default: transparent;
-  --bg-color-hover: transparent;
-  --bg-color-active: transparent;
-
-  --border-default: 1px solid rgb(151, 71, 255);
-  --border-hover: 1px solid rgb(94, 0, 215);
-  --border-active: 1px solid rgb(68, 15, 136);
-
-  --font-size: 1.8rem;
-  --font-weight: 600;
-
-  --padding: 1.2rem 2rem;
-}
-
-.tertiary {
-  --color-default: rgb(0, 0, 0);
-  --color-hover: rgb(151, 71, 255);
-  --color-active: rgb(94, 0, 215);
-
-  --bg-color-default: transparent;
-  --bg-color-hover: transparent;
-  --bg-color-active: transparent;
-
-  --border-default: none;
-  --border-hover: none;
-  --border-active: none;
-
-  --font-size: 1.8rem;
-  --font-weight: 600;
-
+  --wrap: normal;
   --padding: 0.5rem;
 }
 
-.tertiary::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0%;
-  height: 2px;
-  background: var(--color-active);
-  transition: width 0.15s ease-in-out;
-  border-radius: 100px;
+.dark-line {
+  --color-default: rgba(3, 0, 124, 1);
+  --color-hover: rgba(141, 164, 243, 1);
+  --color-active: rgba(37, 78, 220, 1);
+
+  --font-size: 1.8rem;
+  --font-weight: 600;
+
+  --wrap: nowrap;
+  --padding: 0.5rem;
 }
 
-.tertiary.active::before {
-  width: 100%;
+.light {
+  --color-default: rgba(255, 255, 255);
+  --color-hover: rgba(200, 200, 255);
+  --color-active: rgba(150, 150, 255);
+
+  --font-size: 1.8rem;
+  --font-weight: 600;
+
+  --wrap: normal;
+  --padding: 0.5rem;
 }
 
-.button {
+.light-line {
+  --color-default: rgba(255, 255, 255);
+  --color-hover: rgba(200, 200, 255);
+  --color-active: rgba(150, 150, 255);
+
+  --font-size: 1.8rem;
+  --font-weight: 600;
+
+  --wrap: nowrap;
+  --padding: 0.5rem;
+}
+
+.link {
   position: relative;
   display: inline-block;
   text-decoration: none;
@@ -100,33 +77,41 @@ withDefaults(
   transition:
     background 0.15s ease-in-out,
     color 0.15s ease-in-out;
-  border-radius: 10px;
-  border: var(--border-default);
   cursor: pointer;
-  background: var(--bg-color-default);
   color: var(--color-default);
   font-size: var(--font-size);
   font-weight: var(--font-weight);
-  white-space: nowrap;
+  white-space: var(--wrap);
 }
 
-@media (hover: hover) {
-  .button:hover {
-    background: var(--bg-color-hover);
+@media screen and (hover: hover) {
+  .link:hover {
     color: var(--color-hover);
-    border: var(--border-default);
-  }
-
-  .tertiary:hover::before {
-    width: 100%;
-    background: var(--color-hover);
   }
 }
 
-.button:active,
-.active {
-  background: var(--bg-color-active);
+.link.active,
+.link:active {
   color: var(--color-active);
-  border: var(--border-active);
+}
+
+.link.dark-line::before,
+.link.light-line::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%);
+  width: 0%;
+  height: 2px;
+  transition: width 0.15s ease-in-out;
+  background-color: var(--color-active);
+}
+
+.link.dark-line.active::before,
+.link.dark-line:active::before,
+.link.light-line.active::before,
+.link.light-line:active::before {
+  width: 100%;
 }
 </style>

@@ -39,6 +39,7 @@ const handleKeyboardFocus = (event: KeyboardEvent) => {
   background: none;
   margin: 0;
   display: none;
+  cursor: pointer;
 }
 
 .label {
@@ -46,11 +47,13 @@ const handleKeyboardFocus = (event: KeyboardEvent) => {
   padding: 0;
   padding-left: 3rem;
   position: relative;
+  cursor: pointer;
+  user-select: none;
 }
 
 .icon {
   position: absolute;
-  top: 0.9rem;
+  top: 1rem;
   transform: translateY(-50%);
   left: 0;
   color: rgb(21, 21, 21);

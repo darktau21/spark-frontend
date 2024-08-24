@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import { useAccount } from '@/entities/account';
 import { accountApi } from '@/shared/api';
-import { UiButton, UiCheckBox, UiInput, UiParagraph, UiPasswordInput } from '@/shared/ui';
+import { PERSONAL_DATA_CONSENT_LINK, PRIVACY_POLICY_LINK } from '@/shared/const';
+import {
+  UiButton,
+  UiCheckBox,
+  UiHeading,
+  UiInput,
+  UiOuterLink,
+  UiParagraph,
+  UiPasswordInput,
+} from '@/shared/ui';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { computed, ref } from 'vue';
@@ -34,7 +43,8 @@ const onSubmit = handleSubmit(async (values) => {
 </script>
 
 <template>
-  <form :validation-schema="validationSchema" class="form" @submit="onSubmit">
+  <form class="form" @submit="onSubmit">
+    <UiHeading align="center">Регистрация</UiHeading>
     <UiInput
       id="email"
       v-bind="emailAttrs"
@@ -65,8 +75,15 @@ const onSubmit = handleSubmit(async (values) => {
       name="re_password"
     />
     <UiCheckBox id="agreement" v-model="isAgreementChecked" name="agreement">
-      <UiParagraph variant="p2">
-        Я даю согласие на обработку персональных данных и согласен с политикой конфиденциальности
+      <UiParagraph variant="p2"
+        >Я даю
+        <UiOuterLink variant="inline" :href="PERSONAL_DATA_CONSENT_LINK"
+          >согласие на обработку персональных данных</UiOuterLink
+        >
+        и согласен с
+        <UiOuterLink variant="inline" :href="PRIVACY_POLICY_LINK"
+          >политикой конфиденциальности</UiOuterLink
+        >
       </UiParagraph>
     </UiCheckBox>
     <UiButton :disabled="!isSubmitAllowed" :error="isError" class="button" type="submit">
@@ -81,6 +98,7 @@ const onSubmit = handleSubmit(async (values) => {
   flex-direction: column;
   align-items: stretch;
   gap: 1.6rem;
+  padding: 2rem;
 }
 .button {
   align-self: center;

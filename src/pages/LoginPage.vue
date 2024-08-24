@@ -1,43 +1,41 @@
 <template>
   <div class="page">
-    <UiTwoSidesBlock>
-      <template #right>
-        <div class="form-wrapper">
-          <UiHeading align="center">Авторизация</UiHeading>
-          <LoginForm />
-        </div>
-      </template>
-    </UiTwoSidesBlock>
+    <AuthForm>
+      <UiGradientBorder class="form-border" :border-width="4" :border-radius="30">
+        <LoginForm />
+      </UiGradientBorder>
+      <div class="question">
+        <UiParagraph>
+          <span>Нет аккаунта?</span>
+          <UiNavLink :to="{ name: routeNames.register }">Зарегистрироваться</UiNavLink>
+        </UiParagraph>
+      </div>
+    </AuthForm>
   </div>
 </template>
 
 <script setup lang="ts">
 import { LoginForm } from '@/features/login';
-import { UiHeading, UiTwoSidesBlock } from '@/shared/ui';
+import { routeNames } from '@/shared/lib';
+import { UiGradientBorder, UiNavLink, UiParagraph } from '@/shared/ui';
+import { AuthForm } from '@/widgets/AuthForm';
 </script>
 
 <style scoped>
-.page {
-  padding: 10rem 0;
-}
-
-@media screen and (max-width: 40rem) {
-  .page {
-    padding: 5rem 0;
-  }
-}
-
-.form-wrapper {
-  padding: 3rem 15%;
+.question:deep(p) {
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  align-items: stretch;
+  align-items: center;
+  justify-content: space-evenly;
+  padding-top: 3rem;
 }
 
-@media screen and (max-width: 50rem) {
-  .form-wrapper {
-    padding: 3rem 1.5rem;
+.page {
+  padding: 5rem 0;
+}
+
+@media screen and (max-width: 40em) {
+  .page {
+    padding: 0;
   }
 }
 </style>

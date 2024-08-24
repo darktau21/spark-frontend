@@ -1,25 +1,41 @@
 <script setup lang="ts">
+import { PERSONAL_DATA_CONSENT_LINK, PRIVACY_POLICY_LINK } from '@/shared/const';
 import { routeNames } from '@/shared/lib';
-import { UiFooter, UiLogo, UiNavLink, UiOuterLink } from '@/shared/ui';
+import {
+  ClientCopyright,
+  SotCopyright,
+  UiFooter,
+  UiLogo,
+  UiNavLink,
+  UiOuterLink,
+  WebWaveCopyright,
+} from '@/shared/ui';
 </script>
 
 <template>
   <UiFooter>
     <template #logo>
-      <UiLogo />
+      <UiLogo variant="light" />
     </template>
 
     <div class="footer-links">
-      <UiNavLink :to="{ name: routeNames.home }">Главная</UiNavLink>
-      <UiNavLink :to="{ name: routeNames.account }">Личный кабинет</UiNavLink>
-      <UiNavLink :to="{ name: routeNames.test }">Тестирование</UiNavLink>
+      <UiNavLink variant="light" :to="{ name: routeNames.home }">Главная</UiNavLink>
+      <UiNavLink variant="light" :to="{ name: routeNames.account }">Личный кабинет</UiNavLink>
+      <UiNavLink variant="light" :to="{ name: routeNames.test }">Тестирование</UiNavLink>
     </div>
     <div class="footer-links">
-      <UiOuterLink href="https://www.google.com">
+      <UiOuterLink variant="light" :href="PERSONAL_DATA_CONSENT_LINK">
         Согласие на обработку персональных данных
       </UiOuterLink>
-      <UiOuterLink href="https://www.google.com"> Политика конфиденциальности </UiOuterLink>
+      <UiOuterLink variant="light" :href="PRIVACY_POLICY_LINK">
+        Политика конфиденциальности
+      </UiOuterLink>
     </div>
+    <template #copyrights>
+      <ClientCopyright />
+      <SotCopyright width="88" height="52" />
+      <WebWaveCopyright />
+    </template>
   </UiFooter>
 </template>
 

@@ -91,6 +91,7 @@ const isValid = computed(() => !errorMessage.value);
 
 .label {
   margin-bottom: 0.8rem;
+  align-self: flex-start;
 }
 
 .input::placeholder {

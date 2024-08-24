@@ -9,6 +9,10 @@ type StorageSchema = z.infer<typeof storageSchema>;
 type StorageSchemaKey = keyof StorageSchema;
 
 class LocalStorage {
+  public clear() {
+    localStorage.clear();
+  }
+
   public get<K extends StorageSchemaKey>(key: K): StorageSchema[K] | null {
     const item = localStorage.getItem(key);
     if (item === null) return null;
