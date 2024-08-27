@@ -14,7 +14,6 @@
     "depgraph": "npx depcruise src --include-only \"^src\" --output-type dot | dot -T svg > dependency-graph.svg"
   },
   "dependencies": {
-    "@tanstack/vue-query": "^5.49.1",
     "@vee-validate/zod": "^4.13.1",
     "axios": "^1.7.2",
     "normalize.css": "^8.0.1",
@@ -28,7 +27,6 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",
-    "@tanstack/eslint-plugin-query": "^5.50.0",
     "@tsconfig/node20": "^20.1.4",
     "@types/node": "^20.14.5",
     "@vitejs/plugin-vue": "^5.0.5",
