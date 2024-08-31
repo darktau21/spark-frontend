@@ -1,5 +1,1055 @@
 <template>
-  <div>
-    <h1>Тестирование</h1>
+  <div class="main_test" id="main_test">
+  <h1>Опросник структуры темперамента</h1>
+  <p class="help_txt">
+    Вам предлагается оценить 77 утверждений, касающихся самых типичных ситуаций, используя шкалу от
+    1 до 4. Постарайтесь отвечать быстро, по Вашему первому впечатлению, но будьте уверены, что
+    прочитали утверждение до конца. Помните, что нет “плохих” и “хороших” ответов.
+  </p>
+  <div id="quiz" class="quiz">
+    <UiGradientBorder class="form-border" :border-width="4" :border-radius="50">
+      <div class="pad">
+        <p>
+          <b>Утверждение №{{ currentQuestion.id }}</b>
+        </p>
+        <div v-if="currentQuestion">
+          <p :for="currentQuestion.id" class="q-text">{{ currentQuestion.question }}</p>
+          <div v-for="answer in currentQuestion.answers" :key="answer.id" class="test_mr">
+            <input
+              type="radio"
+              :id="answer.id"
+              :name="currentQuestion.id"
+              :value="answer.value"
+              v-model="localResults[currentQuestion.id]"
+              @change="handleChange"
+            />
+            <label :for="answer.id">{{ answer.name }}</label>
+          </div>
+        </div>
+      </div>
+    </UiGradientBorder>
   </div>
+  <div class="test_btns">
+    <UiButton @click="turn" variant="secondary">Назад</UiButton>
+    <UiButton v-if="currentIndex == 76" @click="modal">Завершить тестирование</UiButton>
+  </div>
+</div>
+
+<div class="entry_test" id="entry_test">
+<AuthForm>
+  <div class="cen">
+  <UiGradientBorder class="form-border" :border-width="4" :border-radius="30">
+    <div class="pad grid">
+    <h1 class="for_text">Добро пожаловать 
+      в раздел “Тестирование”!</h1>
+      <p  class="for_text">Данное тестирование позволит определить ваш психотип. 
+        Чтобы начать, нажмите на кнопку ниже.</p>
+        <UiButton @click="hide">Начать тестирование</UiButton>
+      </div>
+      </UiGradientBorder></div>
+</AuthForm>
+</div>
 </template>
+
+<script setup>
+import { ref, computed } from 'vue';
+import UiGradientBorder from '@/shared/ui/UiGradientBorder.vue';
+import UiButton from '@/shared/ui/UiButton.vue';
+import { routeNames, useMatchMedia } from '@/shared/lib';
+import {UiTilesImage, UiTwoSidesBlock } from '@/shared/ui';
+import { AuthForm } from '@/widgets/AuthForm';
+import { testApi } from '@/shared/api';
+import { useAccount } from '@/entities/account';
+import { useToast } from 'vue-toastification';
+import { useRouter } from 'vue-router';
+const isQueryMatched = useMatchMedia('(max-width: 64em)');
+const user = useAccount();
+const toast = useToast();
+const router = useRouter()
+// Определяем вопросы с фиксированными значениями
+const questions = ref([
+  {
+    id: '1',
+    question: 'В свободное время я с удовольствием занимаюсь физическим трудом.',
+    answers: [
+      { id: 'a1-q1', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q1', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q1', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q1', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '2',
+    question:
+      'Если то, что я наметил(а), не складывается, мне достаточно нескольких минут, чтобы без сожаления отбросить эти планы, даже если в них было вложено много усилий.',
+    answers: [
+      { id: 'a1-q2', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q2', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q2', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q2', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '3',
+    question: 'Я люблю участвовать в спортивных играх, требующих быстрых движений.',
+    answers: [
+      { id: 'a1-q3', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q3', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q3', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q3', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '4',
+    question: 'В большой компании я могу без устали говорить со многими собеседниками.',
+    answers: [
+      { id: 'a1-q4', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q4', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q4', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q4', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '5',
+    question: 'Я обычно скучаю, если люди вокруг говорят о политике или науке.',
+    answers: [
+      { id: 'a1-q5', name: 'Cовершенно не согласен', value: 4 },
+      { id: 'a2-q5', name: 'Cкорее не согласен', value: 3 },
+      { id: 'a3-q5', name: 'Cкорее согласен', value: 2 },
+      { id: 'a4-q5', name: 'Cовершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '6',
+    question: 'Мне легко вести быстрые разговоры.',
+    answers: [
+      { id: 'a1-q6', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q6', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q6', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q6', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '7',
+    question: 'Когда я жду кого-то, кто делает все медленно, я часто подгоняю его.',
+    answers: [
+      { id: 'a1-q7', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q7', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q7', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q7', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '8',
+    question: 'Я остаюсь спокойным, уверенным и оптимистичным даже в сложных ситуациях.',
+    answers: [
+      { id: 'a1-q8', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q8', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q8', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q8', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '9',
+    question: 'Я не люблю рискованные дела.',
+    answers: [
+      { id: 'a1-q9', name: 'Cовершенно не согласен', value: 4 },
+      { id: 'a2-q9', name: 'Cкорее не согласен', value: 3 },
+      { id: 'a3-q9', name: 'Cкорее согласен', value: 2 },
+      { id: 'a4-q9', name: 'Cовершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '10',
+    question:
+      'Когда руководство или преподаватели заставляют меня что-то поменять в заданиях, я никогда не спорю с ними.',
+    answers: [
+      { id: 'a1-q10', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q10', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q10', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q10', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '11',
+    question: 'Меня часто мучают сожаления и чувство недовольства результатами своих действий.',
+    answers: [
+      { id: 'a1-q11', name: 'Cовершенно не согласен', value: 4 },
+      { id: 'a2-q11', name: 'Cкорее не согласен', value: 3 },
+      { id: 'a3-q11', name: 'Cкорее согласен', value: 2 },
+      { id: 'a4-q11', name: 'Cовершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '12',
+    question: 'Я постоянно хочу приобретатъ новые знания.',
+    answers: [
+      { id: 'a1-q12', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q12', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q12', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q12', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '13',
+    question: 'Я никогда не опаздывал(а) на свидание или на работу.',
+    answers: [
+      { id: 'a1-q13', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q13', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q13', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q13', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '14',
+    question: 'Я с удовольствием занимаюсь физическим трудом. ',
+    answers: [
+      { id: 'a1-q14', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q14', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q14', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q14', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '15',
+    question:
+      'Нет особого смысла ломать себе голову почему что-то случается и как что-то работает. ',
+    answers: [
+      { id: 'a1-q15', name: 'Cовершенно не согласен', value: 4 },
+      { id: 'a2-q15', name: 'Cкорее не согласен', value: 3 },
+      { id: 'a3-q15', name: 'Cкорее согласен', value: 2 },
+      { id: 'a4-q15', name: 'Cовершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '16',
+    question: 'Я довольно быстро выполняю физическую работу. ',
+    answers: [
+      { id: 'a1-q16', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q16', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q16', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q16', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '17',
+    question: 'На разговоры с друзьями у меня уходит время, но я от этого не устаю.',
+    answers: [
+      { id: 'a1-q17', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q17', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q17', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q17', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '18',
+    question: 'Я почти никогда не злюсь, даже когда что-то не получается.',
+    answers: [
+      { id: 'a1-q18', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q18', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q18', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q18', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '19',
+    question: 'Мне нравится говорить быстро.',
+    answers: [
+      { id: 'a1-q19', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q19', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q19', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q19', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '20',
+    question: 'Интересы, проблемы и желания других людей для меня закон.',
+    answers: [
+      { id: 'a1-q20', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q20', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q20', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q20', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '21',
+    question:
+      'Я предпочитаю пользоваться сервисом в компаниях, которые мне знакомы, и не пробовать другие места, даже если другие компании могут быть лучше.',
+    answers: [
+      { id: 'a1-q21', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q21', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q21', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q21', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '22',
+    question: 'Даже во взрослом возрасте я делал достаточно рисковые вещи, чисто ради удовольствия',
+    answers: [
+      { id: 'a1-q22', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q22', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q22', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q22', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '23',
+    question:
+      'Я с детства вовлекаюсь одновременно во много разных проектов, и потом мучаюсь от нехватки времени.',
+    answers: [
+      { id: 'a1-q23', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q23', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q23', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q23', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '24',
+    question: 'Я без труда рассказываю о себе незнакомым людям.',
+    answers: [
+      { id: 'a1-q24', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q24', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q24', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q24', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '25',
+    question: 'При умственной работе (чтении, планировании, подсчетах) я устаю очень быстро.',
+    answers: [
+      { id: 'a1-q25', name: 'Cовершенно не согласен', value: 4 },
+      { id: 'a2-q25', name: 'Cкорее не согласен', value: 3 },
+      { id: 'a3-q25', name: 'Cкорее согласен', value: 2 },
+      { id: 'a4-q25', name: 'Cовершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '26',
+    question: 'Бывает, что я говорю о вещах, в которых не разбираюсь.',
+    answers: [
+      { id: 'a1-q26', name: 'Cовершенно не согласен', value: 4 },
+      { id: 'a2-q26', name: 'Cкорее не согласен', value: 3 },
+      { id: 'a3-q26', name: 'Cкорее согласен', value: 2 },
+      { id: 'a4-q26', name: 'Cовершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '27',
+    question: 'Я могу довести долгую физическую работу до конца без перерыва на отдых',
+    answers: [
+      { id: 'a1-q27', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q27', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q27', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q27', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '28',
+    question:
+      'Меня часто критикуют за то, что я не волнуюсь о многих вещах беспокоющих других людей.',
+    answers: [
+      { id: 'a1-q28', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q28', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q28', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q28', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '29',
+    question: 'Движения моих рук быстры и стремительны.',
+    answers: [
+      { id: 'a1-q29', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q29', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q29', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q29', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '30',
+    question: 'В свободное время я предпочитаю общаться с людьми, чем заниматься чем-то своим.',
+    answers: [
+      { id: 'a1-q30', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q30', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q30', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q30', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '31',
+    question: 'В физической работе я быстро набираю темп.',
+    answers: [
+      { id: 'a1-q31', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q31', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q31', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q31', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '32',
+    question: 'Я говорю свободно, без запинок.',
+    answers: [
+      { id: 'a1-q32', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q32', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q32', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q32', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '33',
+    question:
+      'Часто бывает, что я слишком быстро или сильно на что-то среагировал(а), и это привело к нежелательным последствиям.',
+    answers: [
+      { id: 'a1-q33', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q33', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q33', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q33', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '34',
+    question: 'Лучше всегда просто ожидать худшего чем быть плохо подготовленным к этому',
+    answers: [
+      { id: 'a1-q34', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q34', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q34', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q34', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '35',
+    question: 'Меня часто раздражает, когда люди тратят мое время рассказывая про свои неудачи.',
+    answers: [
+      { id: 'a1-q35', name: 'Cовершенно не согласен', value: 4 },
+      { id: 'a2-q35', name: 'Cкорее не согласен', value: 3 },
+      { id: 'a3-q35', name: 'Cкорее согласен', value: 2 },
+      { id: 'a4-q35', name: 'Cовершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '36',
+    question: 'Я люблю интеллектуальные игры, даже если в них требуется длительное размышление.',
+    answers: [
+      { id: 'a1-q36', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q36', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q36', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q36', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '37',
+    question:
+      'Я часто "торможу" когда меня неожиданно заставляют что-то поменять, или по крайней мене мне на это жаловались.',
+    answers: [
+      { id: 'a1-q37', name: 'Cовершенно не согласен', value: 4 },
+      { id: 'a2-q37', name: 'Cкорее не согласен', value: 3 },
+      { id: 'a3-q37', name: 'Cкорее согласен', value: 2 },
+      { id: 'a4-q37', name: 'Cовершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '38',
+    question: 'На основной работе я предпочитаю умственную, а не физическую активность.',
+    answers: [
+      { id: 'a1-q38', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q38', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q38', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q38', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '39',
+    question: 'Я иногда сплетничаю.',
+    answers: [
+      { id: 'a1-q39', name: 'Cовершенно не согласен', value: 4 },
+      { id: 'a2-q39', name: 'Cкорее не согласен', value: 3 },
+      { id: 'a3-q39', name: 'Cкорее согласен', value: 2 },
+      { id: 'a4-q39', name: 'Cовершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '40',
+    question: 'Я достаточно долго могу заниматься физической работой до того, как устану.',
+    answers: [
+      { id: 'a1-q40', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q40', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q40', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q40', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '41',
+    question:
+      'Длительная подготовка и планирование каких-то событий меня выматывают, мне легче ориентироваться "на месте".',
+    answers: [
+      { id: 'a1-q41', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q41', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q41', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q41', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '42',
+    question: 'Я предпочитаю выполнять физическую работу в быстром темпе.',
+    answers: [
+      { id: 'a1-q42', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q42', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q42', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q42', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '43',
+    question:
+      'С соседями или сотрудниками я обычно общаюсь очень коротко, поэтому я не считаюсь "социальным" человеком.',
+    answers: [
+      { id: 'a1-q43', name: 'Cовершенно не согласен', value: 4 },
+      { id: 'a2-q43', name: 'Cкорее не согласен', value: 3 },
+      { id: 'a3-q43', name: 'Cкорее согласен', value: 2 },
+      { id: 'a4-q43', name: 'Cовершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '44',
+    question:
+      'Может я и зануда, но я обычно ищу научные, а не мистические объяснения всему необычному',
+    answers: [
+      { id: 'a1-q44', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q44', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q44', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q44', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '45',
+    question: 'Мне трудно говорить быстро.',
+    answers: [
+      { id: 'a1-q45', name: 'Cовершенно не согласен', value: 4 },
+      { id: 'a2-q45', name: 'Cкорее не согласен', value: 3 },
+      { id: 'a3-q45', name: 'Cкорее согласен', value: 2 },
+      { id: 'a4-q45', name: 'Cовершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '46',
+    question:
+      'Если какое-то дело занимает слишком долго, я либо пытаюсь все ускорить, либо махаю на это рукой.',
+    answers: [
+      { id: 'a1-q46', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q46', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q46', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q46', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '47',
+    question:
+      'Mеста, в которых я не планировал оказаться или неожиданные повороты событий вызывают у меня скорее тревогу, чем любопытство.',
+    answers: [
+      { id: 'a1-q47', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q47', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q47', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q47', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '48',
+    question: 'Предпринять что-то рисковое - это лучший способ борьбы со скукой.',
+    answers: [
+      { id: 'a1-q48', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q48', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q48', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q48', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '49',
+    question:
+      'Мне гораздо легче, чем другим людям, дается работа и игры, где я часто должен менять планы, останавливаться и что-то поправлять.',
+    answers: [
+      { id: 'a1-q49', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q49', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q49', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q49', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '50',
+    question: 'Мне всегда интересны мысли и мотивация даже самых плохих людей',
+    answers: [
+      { id: 'a1-q50', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q50', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q50', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q50', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '51',
+    question: 'Мне легко выполнять умственную работу, требующую длительного внимания.',
+    answers: [
+      { id: 'a1-q51', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q51', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q51', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q51', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '52',
+    question: 'У меня нет времени на проблемы других людей.',
+    answers: [
+      { id: 'a1-q52', name: 'Cовершенно не согласен', value: 4 },
+      { id: 'a2-q52', name: 'Cкорее не согласен', value: 3 },
+      { id: 'a3-q52', name: 'Cкорее согласен', value: 2 },
+      { id: 'a4-q52', name: 'Cовершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '53',
+    question: 'Я быстро устаю от ручного труда.',
+    answers: [
+      { id: 'a1-q53', name: 'Cовершенно не согласен', value: 4 },
+      { id: 'a2-q53', name: 'Cкорее не согласен', value: 3 },
+      { id: 'a3-q53', name: 'Cкорее согласен', value: 2 },
+      { id: 'a4-q53', name: 'Cовершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '54',
+    question:
+      'Я люблю экспериментировать с новыми и необычными ощущениями, даже если это связано с веществами-стимулянтами.',
+    answers: [
+      { id: 'a1-q54', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q54', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q54', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q54', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '55',
+    question: 'Я могу делать домашние дела в быстром темпе, и качество при этом не пострадает.',
+    answers: [
+      { id: 'a1-q55', name: 'Cвершенно не согласен', value: 1 },
+      { id: 'a2-q55', name: 'Cорее не согласен', value: 2 },
+      { id: 'a3-q55', name: 'Cорее согласен', value: 3 },
+      { id: 'a4-q55', name: 'Cвершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '56',
+    question: 'Даже находясь в тесном кругу друзей я остаюсь молчаливым. ',
+    answers: [
+      { id: 'a1-q56', name: 'Cовершенно не согласен', value: 4 },
+      { id: 'a2-q56', name: 'Cкорее не согласен', value: 3 },
+      { id: 'a3-q56', name: 'Cкорее согласен', value: 2 },
+      { id: 'a4-q56', name: 'Cовершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '57',
+    question: 'Когда я ошибаюсь, мне гораздо легче это пережить, чем людям вокруг.',
+    answers: [
+      { id: 'a1-q57', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q57', name: 'Cкорее не согласен', value: 2 },
+      { id: 'a3-q57', name: 'Cкорее согласен', value: 3 },
+      { id: 'a4-q57', name: 'Cовершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '58',
+    question: 'Я не люблю одалживать свои вещи другим людям',
+    answers: [
+      { id: 'a1-q58', name: 'Cовершенно не согласен', value: 4 },
+      { id: 'a2-q58', name: 'Cкорее не согласен', value: 3 },
+      { id: 'a3-q58', name: 'Cкорее согласен', value: 2 },
+      { id: 'a4-q58', name: 'Cовершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '59',
+    question: 'Моя импульсивность и мои эмоции часто приводят меня к неприятностям.',
+    answers: [
+      { id: 'a1-q59', name: 'Cовершенно не согласен', value: 1 },
+      { id: 'a2-q59', name: 'Cорее не согласен', value: 2 },
+      { id: 'a3-q59', name: 'Cорее согласен', value: 3 },
+      { id: 'a4-q59', name: 'Cвершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '60',
+    question:
+      'В неопределенных ситуациях мне часто нужны люди, которые меня поддерживают и подбодряют.',
+    answers: [
+      { id: 'a1-q60', name: 'Совершенно не согласен', value: 1 },
+      { id: 'a2-q60', name: 'Скорее не согласен', value: 2 },
+      { id: 'a3-q60', name: 'Скорее согласен', value: 3 },
+      { id: 'a4-q60', name: 'Совершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '61',
+    question: 'Мне нравятся очень быстрая езда на машине или катания на крутых аттракционах.',
+    answers: [
+      { id: 'a1-q61', name: 'Совершенно не согласен', value: 1 },
+      { id: 'a2-q61', name: 'Скорее не согласен', value: 2 },
+      { id: 'a3-q61', name: 'Скорее согласен', value: 3 },
+      { id: 'a4-q61', name: 'Совершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '62',
+    question: 'Мне нравится философия и наука',
+    answers: [
+      { id: 'a1-q62', name: 'Совершенно не согласен', value: 1 },
+      { id: 'a2-q62', name: 'Скорее не согласен', value: 2 },
+      { id: 'a3-q62', name: 'Скорее согласен', value: 3 },
+      { id: 'a4-q62', name: 'Совершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '63',
+    question:
+      'Многие из моих действий направлены больше на помощь другим чем на мои собственные интересы',
+    answers: [
+      { id: 'a1-q63', name: 'Совершенно не согласен', value: 1 },
+      { id: 'a2-q63', name: 'Скорее не согласен', value: 2 },
+      { id: 'a3-q63', name: 'Скорее согласен', value: 3 },
+      { id: 'a4-q63', name: 'Совершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '64',
+    question:
+      'При выборе ТВ программы между спортивной передачей, романтическим или документальным фильмом, я выбрал(а) бы последнее.',
+    answers: [
+      { id: 'a1-q64', name: 'Совершенно не согласен', value: 1 },
+      { id: 'a2-q64', name: 'Скорее не согласен', value: 2 },
+      { id: 'a3-q64', name: 'Скорее согласен', value: 3 },
+      { id: 'a4-q64', name: 'Совершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '65',
+    question: 'Я способен (а) выполнять длительную физическую работу без утомления.',
+    answers: [
+      { id: 'a1-q65', name: 'Совершенно не согласен', value: 1 },
+      { id: 'a2-q65', name: 'Скорее не согласен', value: 2 },
+      { id: 'a3-q65', name: 'Скорее согласен', value: 3 },
+      { id: 'a4-q65', name: 'Совершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '66',
+    question: 'Я не очень быстро говорю, но у меня много есть чем поделиться.',
+    answers: [
+      { id: 'a1-q66', name: 'Совершенно не согласен', value: 4 },
+      { id: 'a2-q66', name: 'Скорее не согласен', value: 3 },
+      { id: 'a3-q66', name: 'Скорее согласен', value: 2 },
+      { id: 'a4-q66', name: 'Совершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '67',
+    question: 'Приступая к решению даже несложной задачи, я испытываю чувство неуверенности.',
+    answers: [
+      { id: 'a1-q67', name: 'Совершенно не согласен', value: 1 },
+      { id: 'a2-q67', name: 'Скорее не согласен', value: 2 },
+      { id: 'a3-q67', name: 'Скорее согласен', value: 3 },
+      { id: 'a4-q67', name: 'Совершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '68',
+    question: 'На вечеринках и в компаниях я держусь обособленно.',
+    answers: [
+      { id: 'a1-q68', name: 'Совершенно не согласен', value: 4 },
+      { id: 'a2-q68', name: 'Скорее не согласен', value: 3 },
+      { id: 'a3-q68', name: 'Скорее согласен', value: 2 },
+      { id: 'a4-q68', name: 'Совершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '69',
+    question:
+      'Я не вижу больших проблем, если люди заставляют меня переделать что-то по нескольку раз.',
+    answers: [
+      { id: 'a1-q69', name: 'Совершенно не согласен', value: 1 },
+      { id: 'a2-q69', name: 'Скорее не согласен', value: 2 },
+      { id: 'a3-q69', name: 'Скорее согласен', value: 3 },
+      { id: 'a4-q69', name: 'Совершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '70',
+    question: 'Мне трудно читать вслух в быстром темпе.',
+    answers: [
+      { id: 'a1-q70', name: 'Совершенно не согласен', value: 4 },
+      { id: 'a2-q70', name: 'Скорее не согласен', value: 3 },
+      { id: 'a3-q70', name: 'Скорее согласен', value: 2 },
+      { id: 'a4-q70', name: 'Совершенно согласен', value: 1 },
+    ],
+  },
+  {
+    id: '71',
+    question: 'У меня не хватает терпения в делах требующих долгого ожидания.',
+    answers: [
+      { id: 'a1-q71', name: 'Совершенно не согласен', value: 1 },
+      { id: 'a2-q71', name: 'Скорее не согласен', value: 2 },
+      { id: 'a3-q71', name: 'Скорее согласен', value: 3 },
+      { id: 'a4-q71', name: 'Совершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '72',
+    question:
+      'Когда я путешествую, я  заранее проверяю, где я остановлюсь, и что это место безопасно.',
+    answers: [
+      { id: 'a1-q72', name: 'Совершенно не согласен', value: 1 },
+      { id: 'a2-q72', name: 'Скорее не согласен', value: 2 },
+      { id: 'a3-q72', name: 'Скорее согласен', value: 3 },
+      { id: 'a4-q72', name: 'Совершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '73',
+    question:
+      'Когда какое-то дело доставляет мне удовольствие, мне трудно остановиться и прекратить его, даже если оно становится рискованно.',
+    answers: [
+      { id: 'a1-q73', name: 'Совершенно не согласен', value: 1 },
+      { id: 'a2-q73', name: 'Скорее не согласен', value: 2 },
+      { id: 'a3-q73', name: 'Скорее согласен', value: 3 },
+      { id: 'a4-q73', name: 'Совершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '74',
+    question:
+      'Я часто высказываю то, что приходит в голову, даже когда момент не самый подходящий.',
+    answers: [
+      { id: 'a1-q74', name: 'Совершенно не согласен', value: 1 },
+      { id: 'a2-q74', name: 'Скорее не согласен', value: 2 },
+      { id: 'a3-q74', name: 'Скорее согласен', value: 3 },
+      { id: 'a4-q74', name: 'Совершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '75',
+    question:
+      'Мне нравится изучать экономику, науку или политику в свободное время, т.к. это помогает мне даже в каждодневной жизни.',
+    answers: [
+      { id: 'a1-q75', name: 'Совершенно не согласен', value: 1 },
+      { id: 'a2-q75', name: 'Скорее не согласен', value: 2 },
+      { id: 'a3-q75', name: 'Скорее согласен', value: 3 },
+      { id: 'a4-q75', name: 'Совершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '76',
+    question: 'Я так легко отвлекаюсь на проблемы других людей, что часто забываю о собственных.',
+    answers: [
+      { id: 'a1-q76', name: 'Совершенно не согласен', value: 1 },
+      { id: 'a2-q76', name: 'Скорее не согласен', value: 2 },
+      { id: 'a3-q76', name: 'Скорее согласен', value: 3 },
+      { id: 'a4-q76', name: 'Совершенно согласен', value: 4 },
+    ],
+  },
+  {
+    id: '77',
+    question: 'Среди моих знакомых есть люди, которые мне явно не нравятся.',
+    answers: [
+      { id: 'a1-q77', name: 'Совершенно не согласен', value: 4 },
+      { id: 'a2-q77', name: 'Скорее не согласен', value: 3 },
+      { id: 'a3-q77', name: 'Скорее согласен', value: 2 },
+      { id: 'a4-q77', name: 'Совершенно согласен', value: 1 },
+    ],
+  },
+]);
+
+const currentIndex = ref(0);
+const localResults = ref({});
+const sums = ref([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]); // Массив для хранения сумм
+
+const currentQuestion = computed(() => {
+  return questions.value[currentIndex.value];
+});
+
+const hide =()=>{
+const MainTest = document.getElementById('main_test');
+const EntryTest = document.getElementById('entry_test');
+  MainTest.classList.add('show');
+  EntryTest.classList.add('hide');
+}
+
+const handleChange = () => {
+  updateSums();
+  next();
+
+};
+
+const next = () => {
+  if (currentIndex.value < questions.value.length - 1) {
+    currentIndex.value++;
+    updateSums();
+   
+  } else {
+    updateSums();
+  }
+};
+const turn = () => {
+  if (currentIndex.value > 0) {
+    currentIndex.value--;
+  }
+};
+const modal = async() => {
+  const xds = document.getElementById('quiz');
+  xds.style.display = 'none';
+  updateSums();
+  if (user.isAuthorized) {
+    
+   await testApi.saveTest({ answers: sums.value });
+    toast.success('Результаты теста успешно сохранены');
+    router.push({
+      name:routeNames.account
+    })
+   return;
+  }
+  localStorage.setItem('test', JSON.stringify(sums.value));
+  toast.info('Результаты теста успешно сохранены,зарегистрируйтесь для просмотра');
+  router.push({
+      name:routeNames.login
+    })
+};
+// Функция для получения суммы ответов на заданные вопросы
+const getSum = (questionIds) => {
+  return questionIds.reduce((sum, id) => {
+    const value = localResults.value[id];
+    return sum + (value ? parseInt(value, 10) : 0);
+  }, 0);
+};
+
+// Вопросы, на которые нужно подсчитать сумму ответов
+const ERM = ['1', '14', '27', '40', '53', '65'];
+const TMM = ['3', '16', '29', '31', '42', '55'];
+const SS = ['9', '22', '48', '54', '61', '73'];
+const ERS = ['4', '17', '30', '43', '56', '68'];
+const TMS = ['6', '19', '32', '45', '66', '70'];
+const EMP = ['20', '35', '50', '52', '63', '76'];
+const ERI = ['12', '25', '36', '38', '41', '51'];
+const PL = ['2', '10', '23', '37', '49', '69'];
+const PRO = ['5', '15', '44', '62', '64', '75'];
+const SF = ['8', '11', '18', '24', '28', '57'];
+const IMP = ['7', '33', '46', '59', '71', '74'];
+const NEU = ['21', '34', '47', '60', '67', '72'];
+const VAL = ['13', '26', '39', '58', '77'];
+// Функция для обновления сумм
+const updateSums = () => {
+  sums.value[0] = getSum(ERM);
+  sums.value[1] = getSum(TMM);
+  sums.value[2] = getSum(SS);
+  sums.value[3] = getSum(ERS);
+  sums.value[4] = getSum(TMS);
+  sums.value[5] = getSum(EMP);
+  sums.value[6] = getSum(ERI);
+  sums.value[7] = getSum(PL);
+  sums.value[8] = getSum(PRO);
+  sums.value[9] = getSum(SF);
+  sums.value[10] = getSum(IMP);
+  sums.value[11] = getSum(NEU);
+  sums.value[12] = getSum(VAL);
+};
+
+// updateSums при первом запуске
+updateSums();
+</script>
+
+<style scoped>
+h1 {
+  font-size: 28px;
+  margin: 0 !important;
+}
+.quiz {
+  max-width: 62%;
+  margin-bottom: 40px;
+  margin-top: 20px;
+}
+input {
+  display: none;
+}
+.cen{
+  align-self: center;
+}
+.entry_test{
+  margin-bottom:120px ;
+  margin-top:40px;
+}
+.pad {
+  padding: 40px;
+}
+label {
+  padding: 10px 20px 10px 20px;
+  border-radius: 40px;
+  border: 1px solid rgba(3, 0, 124, 1);
+  margin-bottom: 20px;
+  color: rgba(3, 0, 124, 1);
+  cursor: pointer;
+  font-weight: 600;
+}
+label::first-child {
+  border: none;
+}
+.hide{
+  display: none !important;
+}
+.show{
+  display: initial !important;
+}
+.test_mr {
+  margin-bottom: 35px;
+}
+.q-text {
+  margin-bottom: 20px;
+}
+input:checked + label {
+  color: white;
+  background-color: rgba(37, 78, 220, 1);
+  border-color: rgba(37, 78, 220, 1);
+}
+.main_test{
+  display: none;
+}
+
+.test_btns {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 120px;
+}
+.help_txt {
+  max-width: 60%;
+}
+.for_text{
+  text-align: center;
+}
+.grid{
+  align-items: center;
+  display: grid;
+}
+@media(max-width:1024px){
+  .entry_test{
+    margin-bottom: unset;
+  }
+}
+@media(max-width:900px){
+  .help_txt{
+    max-width: 100%;
+  }
+  .quiz{
+    max-width: 100%;
+  }
+}
+@media(max-width:600px){
+  .pad{
+    padding: 20px;
+  }
+  .test_btns{
+    justify-content: center;
+  }
+}
+</style>
