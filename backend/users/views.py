@@ -6,14 +6,20 @@ from django.conf import settings
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status, filters
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.exceptions import NotFound, ValidationError
+from datetime import datetime, timedelta
+
 
 from users.serializers import (EmailSerializer,
-                               EducationalOrganizationSerializer, UserCertificateSerializer)
+                               EducationalOrganizationSerializer, UserCertificateSerializer,
+                               UserTestAnswerSerializer, AnswerRetrieveSerializer)
 from rest_framework import permissions
+from rest_framework.pagination import PageNumberPagination
 
 
-from users.models import User, EducationalOrganization, UserCertificate
-from users.mixins import ListRetrieveViewSet, ListRetrieveCreateDeleteViewSet
+from users.models import User, EducationalOrganization, UserCertificate, UserTestAnswer
+from users.mixins import ListRetrieveViewSet, ListRetrieveCreateDeleteViewSet, ListRetrieveCreateViewSet
 from api.tasks import send_reset_password_email_without_user
 
 
@@ -90,3 +96,65 @@ class CustomUserViewSet(UserViewSet):
                 )},
                 status=status.HTTP_409_CONFLICT
             )
+
+
+class TestPagination(PageNumberPagination):
+    page_size = 13
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+
+class UserTestAnswerView(ListRetrieveCreateViewSet):
+    serializer_class = UserTestAnswerSerializer
+    pagination_class = TestPagination
+    permission_classes = (permissions.IsAuthenticated,)
+
+    @method_decorator(cache_page(settings.TEST_ANSWER_TTL))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return UserTestAnswer.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        today_start = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        today_end = today_start + timedelta(days=1)
+        attempts_today = UserTestAnswer.objects.filter(user=user, created__range=(today_start, today_end)).count()
+
+        if attempts_today >= 10:
+            raise ValidationError("Тест можно пройти не более 10 раз в день.")
+        serializer.save(user=user)
+
+    @action(detail=False, methods=['get'], url_path='latest')
+    def get_latest(self, request):
+        user = request.user
+        latest_answers = UserTestAnswer.objects.filter(user=user).order_by('-created')[:2]
+        if len(latest_answers) == 2:
+            previous_answers = latest_answers[1]
+            current_answers = latest_answers[0]
+        elif len(latest_answers) == 1:
+            previous_answers = None
+            current_answers = latest_answers[0]
+        else:
+            previous_answers = None
+            current_answers = None
+        response_data = {
+            "previous": UserTestAnswerSerializer(previous_answers).data if previous_answers else None,
+            "current": UserTestAnswerSerializer(current_answers).data if current_answers else None
+        }
+        return Response(response_data)
+
+    @action(detail=True, methods=['get'], url_path='answers/(?P<index>[^/.]+)')
+    def get_answer(self, request, pk=None, index=None):
+        try:
+            test_answer = self.get_object()
+        except UserTestAnswer.DoesNotExist:
+            raise NotFound('Test answer not found.')
+        try:
+            index = int(index)
+            answer = test_answer.answers[index]
+        except (IndexError, ValueError):
+            raise NotFound('Answer index out of range.')
+        serializer = AnswerRetrieveSerializer({'answer': answer})
+        return Response(serializer.data)

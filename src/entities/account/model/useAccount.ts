@@ -41,8 +41,8 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
       isLoading.value.login = true;
       const response = await accountApi.login(loginData);
       storage.set('authToken', response.auth_token);
-      toast.success('Вы успешно авторизовались');
       await refetchData();
+      toast.success('Вы успешно авторизовались');
       storage.set('rememberMe', remember);
       router.push({ name: routeNames.account, replace: true });
     } catch (error) {

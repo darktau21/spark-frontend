@@ -6,9 +6,13 @@
 withDefaults(
   defineProps<{
     animationDuration?: string;
+    height?: number | string;
+    width?: number | string;
   }>(),
   {
     animationDuration: '2s',
+    height: '100%',
+    width: '100%',
   }
 );
 </script>
@@ -19,8 +23,8 @@ withDefaults(
   background-color: rgb(217, 217, 217);
   position: relative;
   overflow: hidden;
-  width: 100%;
-  height: 100%;
+  width: v-bind(width);
+  height: v-bind(height);
   border-radius: 4px;
 }
 

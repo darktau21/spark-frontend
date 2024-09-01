@@ -1,10 +1,12 @@
 <template>
-  <UiInput :id :label :name :type="inputType" :value class="password-input">
+  <UiInput :id ref="inputRef" :label :name :type="inputType" :value class="password-input">
     <UiButton
       class="button"
       type="button"
       variant="tertiary"
       @click.stop.prevent="togglePasswordVisibility"
+      @mousedown.prevent
+      @mouseup.prevent
     >
       <UiIcon :icon="eyeIcon" />
     </UiButton>
@@ -25,8 +27,11 @@ defineProps<{
   value?: string;
 }>();
 
+const inputRef = ref<InstanceType<typeof UiInput>>();
 const isPasswordVisible = ref(false);
-const togglePasswordVisibility = () => (isPasswordVisible.value = !isPasswordVisible.value);
+const togglePasswordVisibility = () => {
+  isPasswordVisible.value = !isPasswordVisible.value
+};
 
 const inputType = computed(() => (isPasswordVisible.value ? 'text' : 'password'));
 const eyeIcon = computed(() => (isPasswordVisible.value ? 'eye-opened' : 'eye-closed'));

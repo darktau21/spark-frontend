@@ -29,7 +29,7 @@ export async function getMe() {
 }
 
 export async function updateMe(body: UpdateAccountPayload) {
-  const { data } = await api.patch<AccountSchema>('/users/me/', body);
+  const { data } = await api.put<AccountSchema>('/users/me/', body);
   return accountSchema.parse(data);
 }
 

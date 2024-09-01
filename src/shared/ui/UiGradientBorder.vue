@@ -32,13 +32,6 @@ const contentBorderRadius = computed(() => `${props.borderRadius - props.borderW
       rgba(175, 70, 210, 0) 100%
     ),
     linear-gradient(316.71deg, #02012b 0%, #2955ec 100%);
-  --bg-color-hover: linear-gradient(
-    135.99deg,
-    #02012b -28.99%,
-    #080339 6.47%,
-    #072f9e 49.44%,
-    #af46d2 96.04%
-  );
   border-radius: v-bind(borderRadius);
   padding: v-bind(borderWidth);
 }

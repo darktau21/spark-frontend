@@ -19,9 +19,11 @@ import { UiSideMenu, useSideMenu } from './UiSideMenu';
 import UiSkeleton from './UiSkeleton.vue';
 import UiTilesImage from './UiTilesImage/UiTilesImage.vue';
 import UiTwoSidesBlock from './UiTwoSidesBlock.vue';
-
+import UiFileInput from './UiFileInput.vue';
+export * from './UiTabSelector';
 export * from './Copyrights';
 export {
+  UiFileInput,
   UiButton,
   UiCheckBox,
   UiFooter,

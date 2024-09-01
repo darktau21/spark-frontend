@@ -1,16 +1,18 @@
 <template>
-  <h1 v-if="variant === 'h1'" v-bind="$attrs" :class="['heading h1', alignClasses]">
-    <slot />
-  </h1>
-  <h2 v-if="variant === 'h2'" v-bind="$attrs" :class="['heading h2', alignClasses]">
-    <slot />
-  </h2>
-  <h3 v-if="variant === 'h3'" v-bind="$attrs" :class="['heading h3', alignClasses]">
-    <slot />
-  </h3>
-  <h4 v-if="variant === 'h4'" v-bind="$attrs" :class="['heading h4', alignClasses]">
-    <slot />
-  </h4>
+  <div>
+    <h1 v-if="variant === 'h1'" :class="['heading h1', alignClasses]">
+      <slot v-if="!isLoading" />
+    </h1>
+    <h2 v-if="variant === 'h2'" :class="['heading h2', alignClasses]">
+      <slot />
+    </h2>
+    <h3 v-if="variant === 'h3'" :class="['heading h3', alignClasses]">
+      <slot />
+    </h3>
+    <h4 v-if="variant === 'h4'" :class="['heading h4', alignClasses]">
+      <slot />
+    </h4>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -19,10 +21,12 @@ import { computed } from 'vue';
 const props = withDefaults(
   defineProps<{
     align?: 'center' | 'left' | 'right';
-    variant?: 'h1' | 'h2' | 'h3' | 'h4';
+    isLoading?: boolean;
+    variant?: 'h1' | 'h2' | 'h3' | 'h4'; 
   }>(),
   {
     align: 'left',
+    isLoading: false,
     variant: 'h1',
   }
 );

@@ -1,8 +1,8 @@
 <template>
   <div class="account-avatar" variant="tertiary-light">
-    <div class="image-wrapper">
-      <img v-if="!isLoading" :src="avatar ?? roflanEbalo" class="image" />
-      <UiSkeleton v-else />
+    <div class="image">
+      <img v-show="!isLoading" :src="avatarUrl ?? avatarPlaceholder" />
+      <UiSkeleton v-show="isLoading" />
     </div>
     <div class="name">
       <span v-if="!isLoading" class="name-text">{{ name ?? 'Аноним' }}</span>
@@ -13,33 +13,34 @@
 <script lang="ts" setup>
 import { UiSkeleton } from '@/shared/ui';
 
-import roflanEbalo from './roflanebalo.webp';
+import avatarPlaceholder from './avatar-placeholder.webp';
 
 withDefaults(
-  defineProps<{
-    avatar?: null | string;
-    isLoading?: boolean;
-    name?: null | string;
-  }>(),
+  defineProps<Partial<{
+    avatarUrl: null | string;
+    isLoading: boolean;
+    name: null | string;
+  }>>(),
   {
-    avatar: roflanEbalo,
+    avatarUrl: avatarPlaceholder,
     isLoading: true,
     name: 'Аноним',
-  }
+  },
 );
 </script>
 
 <style scoped>
-.image-wrapper {
+.image {
   width: 4.5rem;
   height: 4.5rem;
   border-radius: 50%;
   border: 1px solid rgb(217, 217, 217);
   overflow: hidden;
 }
-.image {
+.image img {
+  display: block;
   width: 100%;
-  height: 100%;
+  object-position: center;
   object-fit: cover;
 }
 .account-avatar {

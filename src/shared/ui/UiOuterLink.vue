@@ -22,7 +22,7 @@ withDefaults(
   --color-default: rgba(3, 0, 124, 1);
   --color-hover: rgba(141, 164, 243, 1);
   --color-active: rgba(37, 78, 220, 1);
-  --color-visited: --color-visited: rgba(2, 0, 100, 1);
+  --color-visited: rgba(2, 0, 100, 1);
 
   --font-size: 1.8rem;
   --font-weight: 600;

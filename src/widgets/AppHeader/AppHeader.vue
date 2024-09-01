@@ -29,7 +29,7 @@ const sideMenuState = useSideMenu();
       <UiButton
         :active="sideMenuState.isOpen"
         class="menu-button"
-        variant="tertiary-light"
+        variant="secondary"
         @click="sideMenuState.openSideMenu"
       >
         <UiIcon :height="30" :width="30" icon="menu" />
@@ -56,8 +56,6 @@ const sideMenuState = useSideMenu();
 .menu-button {
   display: none;
   margin-right: auto;
-  border: 1px solid rgb(224, 224, 224);
-  border-radius: 8px;
   padding: 0.5rem;
 }
 

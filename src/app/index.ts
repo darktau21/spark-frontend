@@ -17,5 +17,9 @@ export function initApp() {
     console.error(error);
     router.push({ name: routeNames.serverError });
   };
+  window.addEventListener('unhandledrejection', (e) => {
+    console.error(e.reason);
+    router.push({ name: routeNames.serverError });
+  });
   app.mount('#app');
 }

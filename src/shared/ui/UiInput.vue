@@ -7,6 +7,7 @@
       <input
         v-bind="$attrs"
         :id
+        ref="inputRef"
         v-model="model"
         :class="[
           { 'input-valid': isValid, 'input-error': !isValid, 'with-slot': isSlotProvided },
@@ -31,7 +32,7 @@
 
 <script setup lang="ts">
 import { useField } from 'vee-validate';
-import { computed, toRef, useSlots } from 'vue';
+import { computed, ref, toRef, useSlots } from 'vue';
 
 import UiHeading from './UiHeading.vue';
 import UiParagraph from './UiParagraph.vue';
@@ -40,14 +41,27 @@ defineOptions({
   inheritAttrs: false,
 });
 
-const model = defineModel<string>();
+const model = defineModel<string | null>();
 
 const props = defineProps<{
   id: string;
   label?: string;
   name: string;
   value?: string;
+  class?: string;
 }>();
+
+const inputRef = ref<HTMLInputElement>();
+const focus = () => {
+  if (!inputRef.value) {
+    return;
+  }
+  inputRef.value.focus();
+};
+
+defineExpose({
+  focus
+})
 
 const name = toRef(props, 'name');
 const slots = useSlots();
@@ -70,7 +84,7 @@ const isValid = computed(() => !errorMessage.value);
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  min-width: 28ch;
+  min-width: 24ch;
 }
 
 .input-wrapper {

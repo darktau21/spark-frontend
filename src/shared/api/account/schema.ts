@@ -2,26 +2,21 @@ import { z } from 'zod';
 
 export const accountSchema = z.object({
   achievements: z.string().nullable(),
-  // TODO Разобраться с сертификатами
-  // certificates: z.array(z.string()).nullable(),
   competencies: z.string().nullable(),
   competitions: z.string().nullable(),
   educational_organization: z.number().nullable(),
+  certificates: z.array(z.string()),
+  email: z.string().email(),
   first_name: z
     .string()
-    .min(3, { message: 'Имя должно быть не менее 3 символов' })
-    .max(30, { message: 'Имя должно быть не более 30 символов' })
+
+    .max(50, { message: 'Имя должно быть не более 50 символов' })
     .nullable(),
   id: z.number().int(),
-  last_name: z
-    .string({ message: 'Обязательное поле' })
-    .min(3, { message: 'Фамилия должна быть не менее 3 символов' })
-    .max(30, { message: 'Фамилия должна быть не более 30 символов' })
-    .nullable(),
+  last_name: z.string().max(50, { message: 'Фамилия должна быть не более 50 символов' }).nullable(),
   patronymic: z
     .string()
-    .min(3, { message: 'Отчество должно быть не менее 3 символов' })
-    .max(30, { message: 'Отчество должно быть не более 30 символов' })
+    .max(50, { message: 'Отчество должно быть не более 50 символов' })
     .nullable(),
   phone_number: z.string().nullable(),
   photo: z.string().url().nullable(),
@@ -109,14 +104,7 @@ export type RestorePasswordConfirmPayload = z.infer<typeof restorePasswordConfir
 export const updateAccountPayload = accountSchema
   .omit({
     id: true,
-    photo: true,
   })
-  .extend({
-    photo: z.instanceof(File).nullable(),
-  })
-  .refine((data) => data.photo && data.photo.size < 10000000, {
-    message: 'Максимальный размер файла - 10мб',
-    path: ['photo'],
-  });
+  .partial();
 
 export type UpdateAccountPayload = z.infer<typeof updateAccountPayload>;

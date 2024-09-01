@@ -121,12 +121,12 @@ withDefaults(
     background 0.15s ease-in-out,
     color 0.15s ease-in-out;
   border-radius: 10px;
-  border: var(--border-default);
+  border: var(--border-default, none);
   cursor: pointer;
-  background: var(--bg-color-default);
-  color: var(--color-default);
-  font-size: var(--font-size);
-  font-weight: var(--font-weight);
+  background: var(--bg-color-default, transparent);
+  color: var(--color-default, inherit);
+  font-size: var(--font-size, inherit);
+  font-weight: var(--font-weight, inherit);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -134,29 +134,29 @@ withDefaults(
 
 @media (hover: hover) {
   .button:hover {
-    background: var(--bg-color-hover);
-    color: var(--color-hover);
-    border: var(--border-default);
+    background: var(--bg-color-hover, transparent);
+    color: var(--color-hover, inherit);
+    border: var(--border-default, none);
   }
 }
 
 .button:active,
 .button.active {
-  background: var(--bg-color-active);
-  color: var(--color-active);
-  border: var(--border-active);
+  background: var(--bg-color-active, transparent);
+  color: var(--color-active, inherit);
+  border: var(--border-active, none);
 }
 
 .button:disabled {
-  background: var(--bg-color-disabled);
-  color: var(--color-disabled);
-  border: var(--border-disabled);
+  background: var(--bg-color-disabled, transparent);
+  color: var(--color-disabled, inherit);
+  border: var(--border-disabled, none);
   cursor: not-allowed;
 }
 
 .button.error {
-  background: var(--bg-color-error);
-  color: var(--color-error);
-  border: var(--border-error);
+  background: var(--bg-color-error, transparent);
+  color: var(--color-error, inherit);
+  border: var(--border-error, none);
 }
 </style>
