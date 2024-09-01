@@ -1,54 +1,56 @@
 <template>
   <div class="main_test" id="main_test">
-  <h1>Опросник структуры темперамента</h1>
-  <p class="help_txt">
-    Вам предлагается оценить 77 утверждений, касающихся самых типичных ситуаций, используя шкалу от
-    1 до 4. Постарайтесь отвечать быстро, по Вашему первому впечатлению, но будьте уверены, что
-    прочитали утверждение до конца. Помните, что нет “плохих” и “хороших” ответов.
-  </p>
-  <div id="quiz" class="quiz">
-    <UiGradientBorder class="form-border" :border-width="4" :border-radius="50">
-      <div class="pad">
-        <p>
-          <b>Утверждение №{{ currentQuestion.id }}</b>
-        </p>
-        <div v-if="currentQuestion">
-          <p :for="currentQuestion.id" class="q-text">{{ currentQuestion.question }}</p>
-          <div v-for="answer in currentQuestion.answers" :key="answer.id" class="test_mr">
-            <input
-              type="radio"
-              :id="answer.id"
-              :name="currentQuestion.id"
-              :value="answer.value"
-              v-model="localResults[currentQuestion.id]"
-              @change="handleChange"
-            />
-            <label :for="answer.id">{{ answer.name }}</label>
+    <h1>Опросник структуры темперамента</h1>
+    <p class="help_txt">
+      Вам предлагается оценить 77 утверждений, касающихся самых типичных ситуаций, используя шкалу
+      от 1 до 4. Постарайтесь отвечать быстро, по Вашему первому впечатлению, но будьте уверены, что
+      прочитали утверждение до конца. Помните, что нет “плохих” и “хороших” ответов.
+    </p>
+    <div id="quiz" class="quiz">
+      <UiGradientBorder class="form-border" :border-width="4" :border-radius="50">
+        <div class="pad">
+          <p>
+            <b>Утверждение №{{ currentQuestion.id }}</b>
+          </p>
+          <div v-if="currentQuestion">
+            <p :for="currentQuestion.id" class="q-text">{{ currentQuestion.question }}</p>
+            <div v-for="answer in currentQuestion.answers" :key="answer.id" class="test_mr">
+              <input
+                type="radio"
+                :id="answer.id"
+                :name="currentQuestion.id"
+                :value="answer.value"
+                v-model="localResults[currentQuestion.id]"
+                @change="handleChange"
+              />
+              <label :for="answer.id">{{ answer.name }}</label>
+            </div>
           </div>
         </div>
-      </div>
-    </UiGradientBorder>
+      </UiGradientBorder>
+    </div>
+    <div class="test_btns">
+      <UiButton @click="turn" variant="secondary">Назад</UiButton>
+      <UiButton v-if="currentIndex == 76" @click="modal">Завершить тестирование</UiButton>
+    </div>
   </div>
-  <div class="test_btns">
-    <UiButton @click="turn" variant="secondary">Назад</UiButton>
-    <UiButton v-if="currentIndex == 76" @click="modal">Завершить тестирование</UiButton>
-  </div>
-</div>
 
-<div class="entry_test" id="entry_test">
-<AuthForm>
-  <div class="cen">
-  <UiGradientBorder class="form-border" :border-width="4" :border-radius="30">
-    <div class="pad grid">
-    <h1 class="for_text">Добро пожаловать 
-      в раздел “Тестирование”!</h1>
-      <p  class="for_text">Данное тестирование позволит определить ваш психотип. 
-        Чтобы начать, нажмите на кнопку ниже.</p>
-        <UiButton @click="hide">Начать тестирование</UiButton>
+  <div class="entry_test" id="entry_test">
+    <AuthForm>
+      <div class="cen">
+        <UiGradientBorder class="form-border" :border-width="4" :border-radius="30">
+          <div class="pad grid">
+            <h1 class="for_text">Добро пожаловать в раздел “Тестирование”!</h1>
+            <p class="for_text">
+              Данное тестирование позволит определить ваш психотип. Чтобы начать, нажмите на кнопку
+              ниже.
+            </p>
+            <UiButton @click="hide">Начать тестирование</UiButton>
+          </div>
+        </UiGradientBorder>
       </div>
-      </UiGradientBorder></div>
-</AuthForm>
-</div>
+    </AuthForm>
+  </div>
 </template>
 
 <script setup>
@@ -56,7 +58,7 @@ import { ref, computed } from 'vue';
 import UiGradientBorder from '@/shared/ui/UiGradientBorder.vue';
 import UiButton from '@/shared/ui/UiButton.vue';
 import { routeNames, useMatchMedia } from '@/shared/lib';
-import {UiTilesImage, UiTwoSidesBlock } from '@/shared/ui';
+import { UiTilesImage, UiTwoSidesBlock } from '@/shared/ui';
 import { AuthForm } from '@/widgets/AuthForm';
 import { testApi } from '@/shared/api';
 import { useAccount } from '@/entities/account';
@@ -65,12 +67,12 @@ import { useRouter } from 'vue-router';
 const isQueryMatched = useMatchMedia('(max-width: 64em)');
 const user = useAccount();
 const toast = useToast();
-const router = useRouter()
+const router = useRouter();
 // Определяем вопросы с фиксированными значениями
 const questions = ref([
   {
     id: '1',
-    question: 'В свободное время я с удовольствием занимаюсь физическим трудом.',
+    question: 'В свободное время я с удовольствием занимаюсь трудом физической деятельностью.',
     answers: [
       { id: 'a1-q1', name: 'Cовершенно не согласен', value: 1 },
       { id: 'a2-q1', name: 'Cкорее не согласен', value: 2 },
@@ -131,7 +133,7 @@ const questions = ref([
   },
   {
     id: '7',
-    question: 'Когда я жду кого-то, кто делает все медленно, я часто подгоняю его.',
+    question: 'Когда я жду кого-то, кто делает всё медленно, я часто подгоняю его.',
     answers: [
       { id: 'a1-q7', name: 'Cовершенно не согласен', value: 1 },
       { id: 'a2-q7', name: 'Cкорее не согласен', value: 2 },
@@ -161,8 +163,7 @@ const questions = ref([
   },
   {
     id: '10',
-    question:
-      'Когда руководство или преподаватели заставляют меня что-то поменять в заданиях, я никогда не спорю с ними.',
+    question: 'Когда меня что-то поменять в делах, я никогда не спорю.',
     answers: [
       { id: 'a1-q10', name: 'Cовершенно не согласен', value: 1 },
       { id: 'a2-q10', name: 'Cкорее не согласен', value: 2 },
@@ -182,7 +183,7 @@ const questions = ref([
   },
   {
     id: '12',
-    question: 'Я постоянно хочу приобретатъ новые знания.',
+    question: 'Я постоянно хочу получать новые знания.',
     answers: [
       { id: 'a1-q12', name: 'Cовершенно не согласен', value: 1 },
       { id: 'a2-q12', name: 'Cкорее не согласен', value: 2 },
@@ -376,7 +377,7 @@ const questions = ref([
   },
   {
     id: '31',
-    question: 'В физической работе я быстро набираю темп.',
+    question: 'В физической деятельности  я быстро набираю темп.',
     answers: [
       { id: 'a1-q31', name: 'Cовершенно не согласен', value: 1 },
       { id: 'a2-q31', name: 'Cкорее не согласен', value: 2 },
@@ -407,7 +408,7 @@ const questions = ref([
   },
   {
     id: '34',
-    question: 'Лучше всегда просто ожидать худшего чем быть плохо подготовленным к этому',
+    question: 'Лучше всегда просто ожидать худшего, чем быть плохо подготовленным к этому',
     answers: [
       { id: 'a1-q34', name: 'Cовершенно не согласен', value: 1 },
       { id: 'a2-q34', name: 'Cкорее не согласен', value: 2 },
@@ -417,7 +418,7 @@ const questions = ref([
   },
   {
     id: '35',
-    question: 'Меня часто раздражает, когда люди тратят мое время рассказывая про свои неудачи.',
+    question: 'Меня часто раздражает, когда люди тратят моё время, рассказывая про свои неудачи.',
     answers: [
       { id: 'a1-q35', name: 'Cовершенно не согласен', value: 4 },
       { id: 'a2-q35', name: 'Cкорее не согласен', value: 3 },
@@ -438,7 +439,7 @@ const questions = ref([
   {
     id: '37',
     question:
-      'Я часто "торможу" когда меня неожиданно заставляют что-то поменять, или по крайней мене мне на это жаловались.',
+      'Я часто "торможу" когда меня неожиданно заставляют что-то поменять, или  на это указывают.',
     answers: [
       { id: 'a1-q37', name: 'Cовершенно не согласен', value: 4 },
       { id: 'a2-q37', name: 'Cкорее не согласен', value: 3 },
@@ -448,7 +449,7 @@ const questions = ref([
   },
   {
     id: '38',
-    question: 'На основной работе я предпочитаю умственную, а не физическую активность.',
+    question: 'По основной занятости я предпочитаю умственную, а не физическую активность.',
     answers: [
       { id: 'a1-q38', name: 'Cовершенно не согласен', value: 1 },
       { id: 'a2-q38', name: 'Cкорее не согласен', value: 2 },
@@ -458,7 +459,7 @@ const questions = ref([
   },
   {
     id: '39',
-    question: 'Я иногда сплетничаю.',
+    question: 'Я иногда обсуждаю слухи о других людях за их спиной.',
     answers: [
       { id: 'a1-q39', name: 'Cовершенно не согласен', value: 4 },
       { id: 'a2-q39', name: 'Cкорее не согласен', value: 3 },
@@ -489,7 +490,7 @@ const questions = ref([
   },
   {
     id: '42',
-    question: 'Я предпочитаю выполнять физическую работу в быстром темпе.',
+    question: 'Я выполняю физическую деятельность  в быстром темпе.',
     answers: [
       { id: 'a1-q42', name: 'Cовершенно не согласен', value: 1 },
       { id: 'a2-q42', name: 'Cкорее не согласен', value: 2 },
@@ -635,7 +636,7 @@ const questions = ref([
   },
   {
     id: '56',
-    question: 'Даже находясь в тесном кругу друзей я остаюсь молчаливым. ',
+    question: 'Даже находясь в тесном кругу друзей, я остаюсь молчаливым. ',
     answers: [
       { id: 'a1-q56', name: 'Cовершенно не согласен', value: 4 },
       { id: 'a2-q56', name: 'Cкорее не согласен', value: 3 },
@@ -707,7 +708,7 @@ const questions = ref([
   {
     id: '63',
     question:
-      'Многие из моих действий направлены больше на помощь другим чем на мои собственные интересы',
+      'Многие из моих действий направлены больше на помощь другим, чем на мои собственные интересы',
     answers: [
       { id: 'a1-q63', name: 'Совершенно не согласен', value: 1 },
       { id: 'a2-q63', name: 'Скорее не согласен', value: 2 },
@@ -718,7 +719,7 @@ const questions = ref([
   {
     id: '64',
     question:
-      'При выборе ТВ программы между спортивной передачей, романтическим или документальным фильмом, я выбрал(а) бы последнее.',
+      'При выборе видео/ТВ между спортивной передачей, романтическим или документальным фильмом, я выбираю последнее.',
     answers: [
       { id: 'a1-q64', name: 'Совершенно не согласен', value: 1 },
       { id: 'a2-q64', name: 'Скорее не согласен', value: 2 },
@@ -789,7 +790,7 @@ const questions = ref([
   },
   {
     id: '71',
-    question: 'У меня не хватает терпения в делах требующих долгого ожидания.',
+    question: 'У меня не хватает терпения в делах, требующих долгого ожидания.',
     answers: [
       { id: 'a1-q71', name: 'Совершенно не согласен', value: 1 },
       { id: 'a2-q71', name: 'Скорее не согласен', value: 2 },
@@ -811,7 +812,7 @@ const questions = ref([
   {
     id: '73',
     question:
-      'Когда какое-то дело доставляет мне удовольствие, мне трудно остановиться и прекратить его, даже если оно становится рискованно.',
+      'Если какое-то дело доставляет мне удовольствие, мне трудно остановиться и прекратить его, даже если оно становится рискованно.',
     answers: [
       { id: 'a1-q73', name: 'Совершенно не согласен', value: 1 },
       { id: 'a2-q73', name: 'Скорее не согласен', value: 2 },
@@ -871,24 +872,22 @@ const currentQuestion = computed(() => {
   return questions.value[currentIndex.value];
 });
 
-const hide =()=>{
-const MainTest = document.getElementById('main_test');
-const EntryTest = document.getElementById('entry_test');
+const hide = () => {
+  const MainTest = document.getElementById('main_test');
+  const EntryTest = document.getElementById('entry_test');
   MainTest.classList.add('show');
   EntryTest.classList.add('hide');
-}
+};
 
 const handleChange = () => {
   updateSums();
   next();
-
 };
 
 const next = () => {
   if (currentIndex.value < questions.value.length - 1) {
     currentIndex.value++;
     updateSums();
-   
   } else {
     updateSums();
   }
@@ -898,24 +897,23 @@ const turn = () => {
     currentIndex.value--;
   }
 };
-const modal = async() => {
+const modal = async () => {
   const xds = document.getElementById('quiz');
   xds.style.display = 'none';
   updateSums();
   if (user.isAuthorized) {
-    
-   await testApi.saveTest({ answers: sums.value });
+    await testApi.saveTest({ answers: sums.value });
     toast.success('Результаты теста успешно сохранены');
     router.push({
-      name:routeNames.account
-    })
-   return;
+      name: routeNames.account,
+    });
+    return;
   }
   localStorage.setItem('test', JSON.stringify(sums.value));
   toast.info('Результаты теста успешно сохранены,зарегистрируйтесь для просмотра');
   router.push({
-      name:routeNames.login
-    })
+    name: routeNames.login,
+  });
 };
 // Функция для получения суммы ответов на заданные вопросы
 const getSum = (questionIds) => {
@@ -973,12 +971,12 @@ h1 {
 input {
   display: none;
 }
-.cen{
+.cen {
   align-self: center;
 }
-.entry_test{
-  margin-bottom:120px ;
-  margin-top:40px;
+.entry_test {
+  margin-bottom: 120px;
+  margin-top: 40px;
 }
 .pad {
   padding: 40px;
@@ -995,10 +993,10 @@ label {
 label::first-child {
   border: none;
 }
-.hide{
+.hide {
   display: none !important;
 }
-.show{
+.show {
   display: initial !important;
 }
 .test_mr {
@@ -1012,7 +1010,7 @@ input:checked + label {
   background-color: rgba(37, 78, 220, 1);
   border-color: rgba(37, 78, 220, 1);
 }
-.main_test{
+.main_test {
   display: none;
 }
 
@@ -1024,31 +1022,31 @@ input:checked + label {
 .help_txt {
   max-width: 60%;
 }
-.for_text{
+.for_text {
   text-align: center;
 }
-.grid{
+.grid {
   align-items: center;
   display: grid;
 }
-@media(max-width:1024px){
-  .entry_test{
+@media (max-width: 1024px) {
+  .entry_test {
     margin-bottom: unset;
   }
 }
-@media(max-width:900px){
-  .help_txt{
+@media (max-width: 900px) {
+  .help_txt {
     max-width: 100%;
   }
-  .quiz{
+  .quiz {
     max-width: 100%;
   }
 }
-@media(max-width:600px){
-  .pad{
+@media (max-width: 600px) {
+  .pad {
     padding: 20px;
   }
-  .test_btns{
+  .test_btns {
     justify-content: center;
   }
 }
