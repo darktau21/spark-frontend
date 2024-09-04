@@ -103,9 +103,14 @@ export const useTest = defineStore(TEST_STORE_KEY, () => {
   };
 
   const getTests = async () => {
-    const res = await testApi.getTest();
-    testRes.value = res.results?.[0];
-    prevTestRes.value = res.results?.[1];
+    try {
+      const res = await testApi.getTest();
+      testRes.value = res.results?.[0];
+      prevTestRes.value = res.results?.[1];
+    } catch {
+      testRes.value = undefined;
+      prevTestRes.value = undefined;
+    }
   };
   const save = async () => {
     try {
