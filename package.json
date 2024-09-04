@@ -16,7 +16,7 @@
   "dependencies": {
     "@tanstack/vue-query": "^5.49.1",
     "@vee-validate/zod": "^4.13.1",
-    "axios": "^1.7.2",
+    "axios": "^1.7.4",
     "normalize.css": "^8.0.1",
     "pinia": "^2.1.7",
     "vee-validate": "^4.13.1",
