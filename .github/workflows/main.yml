@@ -1,0 +1,46 @@
+name: Build and Transfer Static Files
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_static:
+    name: Build and transfer static files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t iskra-static .
+
+      - name: Create container from image and copy static files
+        run: |
+          docker create --name iskra-static-container iskra-static
+          docker cp iskra-static-container:/usr/src/app/src/app/dist ./dist
+          docker rm iskra-static-container
+
+      - name: Copy static files to server using SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          password: ${{ secrets.PASSWORD }}
+          source: "./dist/*"
+          target: "/usr/src/app/src/app/dist/"
+
+      - name: Execute remote SSH commands
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            cd /usr/src/app/src/app
+            ls -la dist
