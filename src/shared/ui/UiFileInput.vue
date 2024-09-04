@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue';
 import { DataUrl } from '../lib/DataUrl';
 import UiButton from './UiButton.vue';
-import { useField, validate } from 'vee-validate';
+import { useField } from 'vee-validate';
 
 const uploadedUrls = ref<DataUrl[]>([]);
 const inputRef = ref<HTMLInputElement>();

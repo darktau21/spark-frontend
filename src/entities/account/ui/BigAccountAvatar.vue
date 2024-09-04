@@ -11,7 +11,7 @@ withDefaults(
   defineProps<
     Partial<{
       avatarUrl: string | null;
-      isLoading: boolean;
+      isLoading: boolean | null;
     }>
   >(),
   {
