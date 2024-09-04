@@ -7,6 +7,8 @@ import 'vue-toastification/dist/index.css';
 import App from './App.vue';
 import './index.css';
 import { router } from './router';
+import VueTelInput from 'vue-tel-input';
+import 'vue-tel-input/vue-tel-input.css';
 
 export function initApp() {
   const app = createApp(App);

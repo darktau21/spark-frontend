@@ -6,6 +6,7 @@ import { routeNames, storage } from '../lib';
 
 export const api = axios.create({
   baseURL: env.API_BASE_URL,
+  timeout: 15 * 1000,
 });
 
 api.interceptors.request.use(

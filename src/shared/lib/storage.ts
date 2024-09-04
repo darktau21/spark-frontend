@@ -3,6 +3,7 @@ import { z } from 'zod';
 const storageSchema = z.object({
   authToken: z.string(),
   rememberMe: z.boolean(),
+  testResults: z.array(z.number()),
 });
 
 type StorageSchema = z.infer<typeof storageSchema>;

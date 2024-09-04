@@ -20,9 +20,11 @@ import UiSkeleton from './UiSkeleton.vue';
 import UiTilesImage from './UiTilesImage/UiTilesImage.vue';
 import UiTwoSidesBlock from './UiTwoSidesBlock.vue';
 import UiFileInput from './UiFileInput.vue';
+import UiAccordion from './UiAccordion.vue';
 export * from './UiTabSelector';
 export * from './Copyrights';
 export {
+  UiAccordion,
   UiFileInput,
   UiButton,
   UiCheckBox,

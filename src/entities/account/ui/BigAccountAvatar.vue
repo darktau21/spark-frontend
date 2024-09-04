@@ -1,6 +1,6 @@
 <template>
   <div class="avatar">
-    <img v-show="!isLoading" :src="avatarUrl ?? avatarPlaceholder" :alt="`Аватар пользователя`" />
+    <img loading="lazy" v-show="!isLoading" :src="avatarUrl ?? avatarPlaceholder" :alt="`Аватар пользователя`" />
     <UiSkeleton v-show="isLoading" />
   </div>
 </template>

@@ -15,7 +15,7 @@ const account = useAccount();
   <AccountMenu v-else>
     <template #account>
       <AccountAvatar
-        :avatar="account.data?.photo"
+        :avatar-url="account.data?.photo"
         :is-loading="account.isLoading.data"
         :name="account.data?.first_name"
       />

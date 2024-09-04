@@ -1,3 +1,4 @@
+import { DataUrl } from '@/shared/lib';
 import { z } from 'zod';
 
 export const accountSchema = z.object({
@@ -10,13 +11,13 @@ export const accountSchema = z.object({
   first_name: z
     .string()
 
-    .max(50, { message: 'Имя должно быть не более 50 символов' })
+    .max(30, { message: 'Имя должно быть не более 30 символов' })
     .nullable(),
   id: z.number().int(),
-  last_name: z.string().max(50, { message: 'Фамилия должна быть не более 50 символов' }).nullable(),
+  last_name: z.string().max(30, { message: 'Фамилия должна быть не более 30 символов' }).nullable(),
   patronymic: z
     .string()
-    .max(50, { message: 'Отчество должно быть не более 50 символов' })
+    .max(30, { message: 'Отчество должно быть не более 30 символов' })
     .nullable(),
   phone_number: z.string().nullable(),
   photo: z.string().url().nullable(),
@@ -103,7 +104,20 @@ export type RestorePasswordConfirmPayload = z.infer<typeof restorePasswordConfir
 
 export const updateAccountPayload = accountSchema
   .omit({
-    id: true,
+    photo: true,
+  })
+  .extend({
+    photo: z.custom<DataUrl>(
+      (file) => {
+        return (
+          (file instanceof DataUrl && !file.size) ||
+          (file instanceof DataUrl && (file.size ?? Number.MAX_SAFE_INTEGER) <= 8 * 1024 * 1024)
+        );
+      },
+      {
+        message: 'Размер файла должен быть не более 8 МБ',
+      }
+    ),
   })
   .partial();
 

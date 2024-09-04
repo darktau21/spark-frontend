@@ -34,10 +34,12 @@ const contentBorderRadius = computed(() => `${props.borderRadius - props.borderW
     linear-gradient(316.71deg, #02012b 0%, #2955ec 100%);
   border-radius: v-bind(borderRadius);
   padding: v-bind(borderWidth);
+  max-width: 100%;
 }
 .gradient-border-content {
   background: white;
   border-radius: v-bind(contentBorderRadius);
   overflow: hidden;
+  max-width: 100%;
 }
 </style>

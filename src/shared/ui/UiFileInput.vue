@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { fileToDataURL } from '../lib';
+import { computed, ref } from 'vue';
+import { DataUrl } from '../lib/DataUrl';
 import UiButton from './UiButton.vue';
-
-
-type DataUrl = { dataUrl: string; size: number, name: string, file: File };
+import { useField, validate } from 'vee-validate';
 
 const uploadedUrls = ref<DataUrl[]>([]);
 const inputRef = ref<HTMLInputElement>();
@@ -13,38 +11,57 @@ const emit = defineEmits<{
   change: [fileDataUrls: DataUrl[]];
 }>();
 
-defineProps<{
+const props = defineProps<{
   multiple?: boolean;
   id?: string;
-  name?: string;
+  name: string;
   label: string;
   accept?: string;
+  maxSize?: number;
 }>();
-
-const handleChange = async (e: Event) => {
-  const input = e.target as HTMLInputElement;
-  const filesArray = Array.from(input.files ?? []);
-  const urls = await Promise.all(
-    filesArray.map(async (f) => ({ dataUrl: await fileToDataURL(f), size: f.size, name: f.name, file: f }))
-  );
-  uploadedUrls.value = urls;
-  emit('change', urls)
-};
 
 const handleClick = () => {
   if (!inputRef.value) {
     return;
   }
   inputRef.value.click();
-}
+};
+
+const { errorMessage, handleBlur, handleChange, validate } = useField(props.name, undefined);
+
+const reset = () => (uploadedUrls.value = []);
+
+defineExpose({
+  reset,
+});
+
+const onChange = async (e: Event) => {
+  const input = e.target as HTMLInputElement;
+  const filesArray = Array.from(input.files ?? []);
+  const urls = await Promise.all(filesArray.map(async (f) => await DataUrl.create(f)));
+  handleChange(props.multiple ? urls : urls[0]);
+  const res = await validate();
+  uploadedUrls.value = res.valid ? urls : [];
+};
 </script>
 
 <template>
   <div class="file-input-wrapper">
     <slot name="view" :uploadedUrls />
-    <slot name="msg"/>
+    <slot name="msg" :errorMessage />
     <UiButton @click.prevent="handleClick" variant="secondary">{{ label }}</UiButton>
-    <input v-bind="$attrs" :accept :id :name multiple ref="inputRef" @change="handleChange" type="file" class="file-input" />
+    <input
+      v-bind="$attrs"
+      :accept
+      :id
+      :name
+      multiple
+      ref="inputRef"
+      @change="onChange"
+      @blur="handleBlur"
+      type="file"
+      class="file-input"
+    />
   </div>
 </template>
 <style scoped>

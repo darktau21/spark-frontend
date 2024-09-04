@@ -1,3 +1,4 @@
+import imageCompression from 'browser-image-compression';
 import { api } from '../base';
 import {
   type AccountSchema,
@@ -29,6 +30,11 @@ export async function getMe() {
 }
 
 export async function updateMe(body: UpdateAccountPayload) {
+  if (body.photo?.file && body.photo?.file instanceof File) {
+    await uploadAvatar(body.photo.file);
+  }
+  delete body.photo;
+  body.professional_competencies = body.professional_competencies ?? [];
   const { data } = await api.put<AccountSchema>('/users/me/', body);
   return accountSchema.parse(data);
 }
@@ -47,4 +53,17 @@ export async function restorePasswordConfirm(body: RestorePasswordConfirmPayload
 
 export async function deleteAccount() {
   await api.delete('/users/me/');
+}
+
+export async function uploadAvatar(file: File) {
+  const formData = new FormData();
+  const compressedFile = await imageCompression(file, {
+    maxWidthOrHeight: 250,
+    initialQuality: 0.8,
+  });
+  console.log(compressedFile, 'compFile', file);
+  formData.append('photo', new File([compressedFile], file.name));
+
+  const { data } = await api.patch<AccountSchema>('/users/me/', formData);
+  return data;
 }

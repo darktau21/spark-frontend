@@ -1,5 +1,5 @@
 <template>
-  <div v-show="isSelected">
+  <div class='window' v-show="isSelected">
       <slot :isSelected="isSelected" />
   </div>
 </template>
@@ -15,3 +15,8 @@ const props = defineProps<{
 const selectedTab = inject(SELECTED_TAB_SYMBOL);
 const isSelected = computed(() => selectedTab?.value === props.tabId);
 </script>
+<style scoped>
+.window {
+  max-width: 100%;
+}
+</style>

@@ -2,14 +2,29 @@
   <div class="edit-account-page">
     <h1>Редактирование личного кабинета</h1>
     <form class="account-form" @submit="onSubmit">
-      <UiFileInput v-bind="photoAttrs" name="photo" @change="(data) => photo = data[0].file" class="avatar-block" accept="image/jpeg, image/png" label="Загрузить фотографию">
+      <UiFileInput
+        ref="fileInputRef"
+        v-bind="photoAttrs"
+        name="photo"
+        @change="
+          async (data) => {
+            photo = data[0];
+          }
+        "
+        class="avatar-block"
+        accept="image/jpeg, image/png"
+        label="Загрузить фотографию"
+      >
         <template #view="{ uploadedUrls }">
-          <BigAccountAvatar :avatar-url="uploadedUrls[0]?.dataUrl" :is-loading="false" />
+          <BigAccountAvatar
+            :avatar-url="uploadedUrls[0]?.dataUrl ?? account.data?.photo"
+            :is-loading="false"
+          />
         </template>
-        <template #msg>
+        <template #msg="{ errorMessage }">
           <div class="avatar-msg">
             <UiParagraph> Формат файла: JPEG/JPG/PNG </UiParagraph>
-            <UiParagraph> Размер не более 8МБ </UiParagraph>
+            <UiParagraph :class="errorMessage && 'error'"> Размер не более 8МБ </UiParagraph>
           </div>
         </template>
       </UiFileInput>
@@ -22,7 +37,6 @@
             autocomplete="family-name"
             label="Фамилия"
             name="last_name"
-
           />
           <UiInput
             id="firstName"
@@ -42,7 +56,11 @@
           />
         </div>
       </UiGradientBorder>
-      <UiGradientBorder class="contact-block-wrapper" :border-width="4" :border-radius="borderRadius">
+      <UiGradientBorder
+        class="contact-block-wrapper"
+        :border-width="4"
+        :border-radius="borderRadius"
+      >
         <div class="block contact-block">
           <UiInput
             id="phone"
@@ -100,7 +118,7 @@
       </UiGradientBorder>
       <div class="btn-wrapper">
         <UiButton @click.prevent="handleGoBack" variant="secondary">Назад</UiButton>
-        <UiButton>Сохранить изменения</UiButton>
+        <UiButton :error="!isValid">Сохранить изменения</UiButton>
       </div>
     </form>
   </div>
@@ -109,7 +127,7 @@
 <script lang="ts" setup>
 import { BigAccountAvatar, useAccount } from '@/entities/account';
 import { accountApi, eduOrgApi } from '@/shared/api';
-import { useMatchMedia } from '@/shared/lib';
+import { DataUrl, useMatchMedia } from '@/shared/lib';
 import { UiButton, UiFileInput, UiGradientBorder, UiInput, UiParagraph } from '@/shared/ui';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
@@ -120,6 +138,7 @@ const eduOrgName = ref<string>();
 const account = useAccount();
 const router = useRouter();
 
+const fileInputRef = ref<InstanceType<typeof UiFileInput>>();
 const handleGoBack = () => router.go(-1);
 
 watch(
@@ -136,13 +155,17 @@ const isMediaMatches = useMatchMedia('(max-width: 52em)');
 const borderRadius = computed(() => (isMediaMatches.value ? 20 : 40));
 
 const validationSchema = toTypedSchema(accountApi.updateAccountPayload);
-const { defineField, errors, handleSubmit, meta, controlledValues } = useForm<accountApi.UpdateAccountPayload>({
-  validationSchema,
-  initialValues: {
-    ...account.data,
-    professional_competencies: account.data?.professional_competencies ?? []
-  },
-});
+const { defineField, errors, handleSubmit, meta, controlledValues, validateField, setValues } =
+  useForm<accountApi.UpdateAccountPayload>({
+    validationSchema,
+    initialValues: {
+      ...account.data,
+      photo: DataUrl.createFromString(account.data?.photo ?? ''),
+      professional_competencies: account.data?.professional_competencies ?? [],
+    },
+  });
+
+const isValid = computed(() => Object.values(errors.value).flat().length === 0);
 
 const [photo, photoAttrs] = defineField('photo');
 const [lastName, lastNameAttrs] = defineField('last_name');
@@ -152,15 +175,27 @@ const [phone, phoneAttrs] = defineField('phone_number');
 const [email, emailAttrs] = defineField('email');
 const [tg, tgAttrs] = defineField('telegram');
 
-watch(() => account.data, (val) => {
-  if (val) {
-    controlledValues.value = val
+watch(
+  () => account.data,
+  (val) => {
+    console.log(val);
+    if (val) {
+      setValues({ ...val, photo: DataUrl.createFromString(val.photo ?? '') });
+    }
   }
-})
+);
+
+watch(
+  () => errors.value,
+  (val) => {
+    console.log(val);
+  }
+);
 
 const onSubmit = handleSubmit(async (data) => {
   await account.update(data);
-})
+  console.log(data);
+});
 </script>
 
 <style scoped>
@@ -222,5 +257,9 @@ const onSubmit = handleSubmit(async (data) => {
   display: flex;
   justify-content: center;
   gap: 1rem;
+}
+
+.error {
+  color: red;
 }
 </style>

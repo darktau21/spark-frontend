@@ -1,11 +1,11 @@
 <template>
   <div class="account-avatar" variant="tertiary-light">
     <div class="image">
-      <img v-show="!isLoading" :src="avatarUrl ?? avatarPlaceholder" />
+      <img loading="lazy" v-show="!isLoading" :src="avatarUrl ?? avatarPlaceholder" />
       <UiSkeleton v-show="isLoading" />
     </div>
     <div class="name">
-      <span v-if="!isLoading" class="name-text">{{ name ?? 'Аноним' }}</span>
+      <span v-if="!isLoading" class="name-text">{{ name || 'Аноним' }}</span>
       <UiSkeleton v-else class="name-skeleton" />
     </div>
   </div>
@@ -15,17 +15,19 @@ import { UiSkeleton } from '@/shared/ui';
 
 import avatarPlaceholder from './avatar-placeholder.webp';
 
-withDefaults(
-  defineProps<Partial<{
-    avatarUrl: null | string;
-    isLoading: boolean;
-    name: null | string;
-  }>>(),
+ withDefaults(
+  defineProps<
+    Partial<{
+      avatarUrl: null | string;
+      isLoading: boolean;
+      name: null | string;
+    }>
+  >(),
   {
     avatarUrl: avatarPlaceholder,
     isLoading: true,
     name: 'Аноним',
-  },
+  }
 );
 </script>
 
@@ -40,6 +42,7 @@ withDefaults(
 .image img {
   display: block;
   width: 100%;
+  height: 100%;
   object-position: center;
   object-fit: cover;
 }
