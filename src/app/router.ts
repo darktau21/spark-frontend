@@ -7,7 +7,7 @@ const routes: Readonly<RouteRecordRaw[]> = [
   {
     component: () => import('@/pages/HomePage.vue'),
     meta: {
-      title: 'Главная',
+      title: 'Test',
     },
     name: routeNames.home,
     path: '/',
