@@ -33,7 +33,7 @@ jobs:
           username: ${{ secrets.USER }}
           password: ${{ secrets.PASSWORD }}
           source: "./dist/*"
-          target: "/usr/src/app/src/app/dist/"
+          target: "/usr/src/app/src/app"
 
       - name: Execute remote SSH commands
         uses: appleboy/ssh-action@master
