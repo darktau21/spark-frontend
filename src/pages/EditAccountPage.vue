@@ -31,6 +31,7 @@
       <UiGradientBorder class="name-block-wrapper" :border-width="4" :border-radius="borderRadius">
         <div class="block name-block">
           <UiInput
+            class="lastName"
             id="lastName"
             v-bind="lastNameAttrs"
             v-model="lastName"
@@ -53,6 +54,14 @@
             autocomplete="additional-name"
             label="Отчество"
             name="patronymic"
+          />
+          <UiSelect
+            :options="roleOptions"
+            v-model="role"
+            v-bind="roleAttrs"
+            name="role"
+            label="Роль"
+            id="role"
           />
         </div>
       </UiGradientBorder>
@@ -90,29 +99,89 @@
       </UiGradientBorder>
       <UiGradientBorder class="edu-block-wrapper" :border-width="4" :border-radius="borderRadius">
         <div class="block edu-block">
-          <UiInput
-            id="phone"
-            v-bind="phoneAttrs"
-            v-model="phone"
-            autocomplete="tel"
-            label="Телефон"
-            name="phone_number"
+          <UiSelect
+            class="edu-org-input"
+            :options="eduOrgsOptions"
+            label="Образование"
+            id="eduOrg"
+            v-bind="eduOrgAttrs"
+            v-model="eduOrg"
+            name="educational_organization"
           />
           <UiInput
-            id="email"
-            v-bind="emailAttrs"
-            v-model="email"
-            :disabled="true"
-            autocomplete="off"
-            label="Электронная почта*"
-            name="email"
+            class="specialty-input"
+            id="specialty"
+            v-bind="specialtyAttrs"
+            v-model="specialty"
+            label="Специальность"
+            name="specialty"
           />
+          <UiMultipleSelect
+            id="professionalInterests"
+            label="Профессиональные интересы"
+            v-bind="professionalInterestsAttrs"
+            name="professional_interests"
+          >
+            <template #msg>
+              <UiParagraph class="prof-comp-msg" variant="p2">
+                Вы можете добавить до 10 интересов
+              </UiParagraph>
+            </template>
+            <template #options="{ options, handleDelete }">
+              <UiOption @click="handleDelete(o)" v-for="o in options" :key="o">
+                {{ o }}
+              </UiOption>
+            </template>
+          </UiMultipleSelect>
+        </div>
+      </UiGradientBorder>
+      <UiGradientBorder class="prof-block-wrapper" :border-width="4" :border-radius="borderRadius">
+        <div class="block prof-block">
           <UiInput
-            id="tg"
-            v-bind="tgAttrs"
-            v-model="tg"
-            label="Ссылка на Telegram"
-            name="telegram"
+            class="competencies-input"
+            id="competencies"
+            v-bind="competenciesAttrs"
+            v-model="competencies"
+            label="Компетенции"
+            name="competencies"
+          />
+          <UiMultipleSelect
+            autocomplete
+            id="professionalCompetencies"
+            label="Профессиональные навыки"
+            v-bind="professionalCompetenciesAttrs"
+            name="professional_competencies"
+            @input="handleCompetenciesInput"
+            :autocompleteOptions="competenciesAutocomplete"
+          >
+            <template #msg>
+              <UiParagraph class="prof-comp-msg" variant="p2">
+                Вы можете добавить до 10 навыков
+              </UiParagraph>
+            </template>
+            <template #options="{ options, handleDelete }">
+              <UiOption @click="handleDelete(o)" v-for="o in options" :key="o">
+                {{ o }}
+              </UiOption>
+            </template>
+          </UiMultipleSelect>
+        </div>
+      </UiGradientBorder>
+      <UiGradientBorder
+        class="achievements-block-wrapper"
+        :border-width="4"
+        :border-radius="borderRadius"
+      >
+        <div class="block achievements-block">
+          <UiTextArea 
+            id="achievements"
+            label="Достижения"
+            name="achievements"
+          />
+          <UiTextArea 
+            id="competitions"
+            label="Конкурсы"
+            name="competitions"
           />
         </div>
       </UiGradientBorder>
@@ -126,44 +195,45 @@
 
 <script lang="ts" setup>
 import { BigAccountAvatar, useAccount } from '@/entities/account';
-import { accountApi, eduOrgApi } from '@/shared/api';
+import { accountApi, eduOrgApi, hhApi } from '@/shared/api';
 import { DataUrl, useMatchMedia } from '@/shared/lib';
-import { UiButton, UiFileInput, UiGradientBorder, UiInput, UiParagraph } from '@/shared/ui';
+import {
+  UiButton,
+  UiFileInput,
+  UiGradientBorder,
+  UiInput,
+  UiMultipleSelect,
+  UiOption,
+  UiParagraph,
+  UiSelect,
+  UiTextArea,
+} from '@/shared/ui';
 import { toTypedSchema } from '@vee-validate/zod';
+import { useDebounceFn } from '@vueuse/core';
 import { useForm } from 'vee-validate';
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-const eduOrgName = ref<string>();
+const eduOrgList = ref<eduOrgApi.EduOrgList>([]);
 const account = useAccount();
 const router = useRouter();
 
 const fileInputRef = ref<InstanceType<typeof UiFileInput>>();
 const handleGoBack = () => router.go(-1);
 
-watch(
-  () => account.data?.educational_organization,
-  async (value) => {
-    if (!value) {
-      return;
-    }
-    eduOrgName.value = (await eduOrgApi.getOrg(value)).name;
-  }
-);
-
 const isMediaMatches = useMatchMedia('(max-width: 52em)');
 const borderRadius = computed(() => (isMediaMatches.value ? 20 : 40));
 
 const validationSchema = toTypedSchema(accountApi.updateAccountPayload);
-const { defineField, errors, handleSubmit, meta, controlledValues, validateField, setValues } =
-  useForm<accountApi.UpdateAccountPayload>({
-    validationSchema,
-    initialValues: {
-      ...account.data,
-      photo: DataUrl.createFromString(account.data?.photo ?? ''),
-      professional_competencies: account.data?.professional_competencies ?? [],
-    },
-  });
+const { defineField, errors, handleSubmit, setValues } = useForm<accountApi.UpdateAccountPayload>({
+  validationSchema,
+  initialValues: {
+    ...account.data,
+    photo: DataUrl.createFromString(account.data?.photo ?? ''),
+    professional_competencies: account.data?.professional_competencies ?? [],
+    professional_interests: account.data?.professional_interests ?? [],
+  },
+});
 
 const isValid = computed(() => Object.values(errors.value).flat().length === 0);
 
@@ -174,27 +244,43 @@ const [patronymic, patronymicAttrs] = defineField('patronymic');
 const [phone, phoneAttrs] = defineField('phone_number');
 const [email, emailAttrs] = defineField('email');
 const [tg, tgAttrs] = defineField('telegram');
+const [eduOrg, eduOrgAttrs] = defineField('educational_organization');
+const [specialty, specialtyAttrs] = defineField('specialty');
+const [_, professionalInterestsAttrs] = defineField('professional_interests');
+const [__, professionalCompetenciesAttrs] = defineField('professional_competencies');
+const [competencies, competenciesAttrs] = defineField('competencies');
+const [role, roleAttrs] = defineField('role');
+const roleOptions = accountApi.roles.map((r) => ({ label: accountApi.roleLabels[r], value: r }));
+const competenciesAutocomplete = ref<string[]>([]);
+
+onMounted(async () => {
+  eduOrgList.value = await eduOrgApi.getOrgs();
+});
+
+const debouncedFn = useDebounceFn(async (val: string) => {
+  competenciesAutocomplete.value = await hhApi.searchCompetencies(val);
+}, 1000);
+
+const handleCompetenciesInput = async (val: string) => {
+  debouncedFn(val);
+};
+
+const eduOrgsOptions = computed(() => [
+  ...eduOrgList.value.map((o) => ({ value: o.id, label: o.name })),
+  { label: 'Не указано', value: null },
+]);
 
 watch(
   () => account.data,
   (val) => {
-    console.log(val);
     if (val) {
       setValues({ ...val, photo: DataUrl.createFromString(val.photo ?? '') });
     }
   }
 );
 
-watch(
-  () => errors.value,
-  (val) => {
-    console.log(val);
-  }
-);
-
 const onSubmit = handleSubmit(async (data) => {
   await account.update(data);
-  console.log(data);
 });
 </script>
 
@@ -205,10 +291,10 @@ const onSubmit = handleSubmit(async (data) => {
 
 .account-form {
   display: grid;
+  align-items: start;
   grid-template-rows: repeat(4, auto);
   grid-template-columns: repeat(6, 1fr);
   gap: 2rem;
-  align-items: start;
 }
 
 @media screen and (max-width: 60em) {
@@ -231,6 +317,7 @@ const onSubmit = handleSubmit(async (data) => {
   display: flex;
   padding: 2rem;
   flex-direction: column;
+  position: relative;
 }
 
 @media screen and (max-width: 52em) {
@@ -243,12 +330,42 @@ const onSubmit = handleSubmit(async (data) => {
   grid-column: 3/5;
 }
 
+.name-block {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 1rem;
+}
+
+.name-block:deep(> div:first-child),
+.name-block:deep(> div:last-child) {
+  grid-column: 1/-1;
+}
+
+.edu-block {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 1rem;
+}
+
+.edu-block:deep(> div:last-child) {
+  grid-column: 1/-1;
+}
+
+.prof-comp-msg {
+  padding-bottom: 1rem;
+}
+
 .contact-block-wrapper {
   grid-column: 5/7;
 }
 
-.edu-block-wrapper {
+.edu-block-wrapper,
+.achievements-block-wrapper {
   grid-column: 1/4;
+}
+
+.prof-block-wrapper {
+  grid-column: 4/7;
 }
 
 .btn-wrapper {
@@ -260,6 +377,6 @@ const onSubmit = handleSubmit(async (data) => {
 }
 
 .error {
-  color: red;
+  color: rgb(255, 0, 0);
 }
 </style>

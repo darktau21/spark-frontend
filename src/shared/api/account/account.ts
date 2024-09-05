@@ -58,10 +58,9 @@ export async function deleteAccount() {
 export async function uploadAvatar(file: File) {
   const formData = new FormData();
   const compressedFile = await imageCompression(file, {
-    maxWidthOrHeight: 250,
-    initialQuality: 0.8,
+    maxWidthOrHeight: 1200,
+    initialQuality: 0.95,
   });
-  console.log(compressedFile, 'compFile', file);
   formData.append('photo', new File([compressedFile], file.name));
 
   const { data } = await api.patch<AccountSchema>('/users/me/', formData);

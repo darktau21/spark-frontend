@@ -2,13 +2,13 @@
   <UiGradientBorder :border-radius="borderRadius" :border-width="4">
     <div class="merits-info">
       <div :class="['info', !achievements && 'info-not-defined']">
-        <UiHeading variant="h2">Образование</UiHeading>
-        <UiParagraph v-show="!isLoading" class="info-value">{{ achievements ?? 'Не указано' }}</UiParagraph>
+        <UiHeading variant="h2">Достижения</UiHeading>
+        <UiParagraph v-show="!isLoading" class="info-value">{{ achievements || 'Не указано' }}</UiParagraph>
         <UiSkeleton v-show="isLoading"height="2rem"/>
       </div>
       <div :class="['info', !competitions && 'info-not-defined']">
-        <UiHeading variant="h2">Специальность</UiHeading>
-        <UiParagraph v-show="!isLoading" class="info-value">{{ competitions ?? 'Не указано' }}</UiParagraph>
+        <UiHeading variant="h2">Конкурсы</UiHeading>
+        <UiParagraph v-show="!isLoading" class="info-value">{{ competitions || 'Не указано' }}</UiParagraph>
         <UiSkeleton v-show="isLoading"height="2rem"/>
       </div>
       <div class="info">

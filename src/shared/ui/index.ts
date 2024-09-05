@@ -21,9 +21,17 @@ import UiTilesImage from './UiTilesImage/UiTilesImage.vue';
 import UiTwoSidesBlock from './UiTwoSidesBlock.vue';
 import UiFileInput from './UiFileInput.vue';
 import UiAccordion from './UiAccordion.vue';
+import UiSelect from './UiSelect.vue';
+import UiMultipleSelect from './UiMultipleSelect.vue';
+import UiOption from './UiOption.vue';
+import UiTextArea from './UiTextArea.vue';
 export * from './UiTabSelector';
 export * from './Copyrights';
 export {
+  UiOption,
+  UiTextArea,
+  UiMultipleSelect,
+  UiSelect,
   UiAccordion,
   UiFileInput,
   UiButton,

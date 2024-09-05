@@ -39,7 +39,12 @@ const contentBorderRadius = computed(() => `${props.borderRadius - props.borderW
 .gradient-border-content {
   background: white;
   border-radius: v-bind(contentBorderRadius);
-  overflow: hidden;
+  /* overflow: hidden; */
   max-width: 100%;
+  min-height: 100%;
+}
+
+.gradient-border-content > :first-child {
+  border-radius: v-bind(contentBorderRadius);
 }
 </style>

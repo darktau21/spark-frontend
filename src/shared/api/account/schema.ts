@@ -1,6 +1,14 @@
 import { DataUrl } from '@/shared/lib';
 import { z } from 'zod';
 
+export const roles = ['student', 'parent', 'teacher', 'director'] as const;
+export const roleLabels: Record<(typeof roles)[number], string> = {
+  director: 'Директор',
+  parent: 'Родитель',
+  student: 'Студент',
+  teacher: 'Учитель',
+} as const;
+
 export const accountSchema = z.object({
   achievements: z.string().nullable(),
   competencies: z.string().nullable(),
@@ -19,12 +27,29 @@ export const accountSchema = z.object({
     .string()
     .max(30, { message: 'Отчество должно быть не более 30 символов' })
     .nullable(),
-  phone_number: z.string().nullable(),
+  phone_number: z
+    .custom(
+      (p) => (typeof p === 'string' && !p) || (typeof p === 'string' && p.startsWith('+7')),
+      'Номер телефона должен начинаться с +7'
+    )
+    .nullable()
+    .optional(),
   photo: z.string().url().nullable(),
   professional_competencies: z.array(z.string()).nullable(),
-  professional_interests: z.string().nullable(),
+  professional_interests: z
+    .array(z.string())
+    .max(10, 'Можно добавить максимум 10 значений')
+    .nullable(),
   specialty: z.string().nullable(),
-  telegram: z.string().nullable(),
+  telegram: z
+    .custom(
+      (t) =>
+        (typeof t === 'string' && !t) || (typeof t === 'string' && t.startsWith('https://t.me/')),
+      'Ссылка на Telegram должна начинаться с https://t.me/'
+    )
+    .nullable()
+    .optional(),
+  role: z.enum(roles).default('student').nullable().optional(),
 });
 
 export type AccountSchema = z.infer<typeof accountSchema>;

@@ -4,17 +4,17 @@
       <UiHeading variant="h3">{{ label }}</UiHeading>
     </label>
     <div class="input-wrapper">
-      <input
+      <textarea
         v-bind="$attrs"
         :id
         ref="inputRef"
         v-model="inputValue"
+        rows="5"
         :class="[
           { 'input-valid': isValid, 'input-error': !isValid, 'with-slot': isSlotProvided },
           'input',
         ]"
         :name
-        :value="inputValue"
         @blur="handleBlur"
         @change="handleChange"
       />
@@ -91,6 +91,7 @@ const isValid = computed(() => !errorMessage.value);
 }
 
 .input {
+  resize: vertical;
   background-color: rgb(238, 238, 238);
   padding: 1rem 1.6rem;
   border-radius: 8px;
