@@ -5,14 +5,6 @@ import { useToast } from 'vue-toastification';
 
 const routes: Readonly<RouteRecordRaw[]> = [
   {
-    component: () => import('@/pages/HomePage.vue'),
-    meta: {
-      title: 'Главная',
-    },
-    name: routeNames.home,
-    path: '/',
-  },
-  {
     component: () => import('@/pages/LoginPage.vue'),
     meta: {
       blockAuth: true,
@@ -55,14 +47,6 @@ const routes: Readonly<RouteRecordRaw[]> = [
     },
     name: routeNames.test,
     path: '/test',
-  },
-  {
-    component: () => import('@/pages/EventsPage.vue'),
-    meta: {
-      title: 'Мероприятия',
-    },
-    name: routeNames.events,
-    path: '/events',
   },
   {
     component: () => import('@/pages/ServerErrorPage.vue'),

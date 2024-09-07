@@ -8,6 +8,7 @@ import {
   UiLogo,
   UiNavLink,
   UiNavMenu,
+  UiOuterLink,
   UiSideMenu,
   useSideMenu,
 } from '@/shared/ui';
@@ -22,9 +23,9 @@ const sideMenuState = useSideMenu();
     </template>
     <template #center>
       <UiNavMenu>
-        <UiNavLink :to="{ name: routeNames.home }">Главная</UiNavLink>
+        <UiOuterLink href="https://test-iskra.ru/">Главная</UiOuterLink>
         <UiNavLink :to="{ name: routeNames.test }">Тестирование</UiNavLink>
-        <UiNavLink :to="{ name: routeNames.events }">Мероприятия</UiNavLink>
+        <UiOuterLink href="https://test-iskra.ru/">Мероприятия</UiOuterLink>
       </UiNavMenu>
       <UiButton
         :active="sideMenuState.isOpen"
@@ -34,15 +35,15 @@ const sideMenuState = useSideMenu();
       >
         <UiIcon :height="30" :width="30" icon="menu" />
         <UiSideMenu title="Меню">
-          <UiNavLink :to="{ name: routeNames.home }" @click="sideMenuState.closeSideMenu"
-            >Главная</UiNavLink
-          >
-          <UiNavLink :to="{ name: routeNames.test }" @click="sideMenuState.closeSideMenu"
-            >Тестирование</UiNavLink
-          >
-          <UiNavLink :to="{ name: routeNames.events }" @click="sideMenuState.closeSideMenu"
-            >Мероприятия</UiNavLink
-          >
+          <UiOuterLink href="https://test-iskra.ru/" @click="sideMenuState.closeSideMenu">
+            Главная
+          </UiOuterLink>
+          <UiNavLink :to="{ name: routeNames.test }" @click="sideMenuState.closeSideMenu">
+            Тестирование
+          </UiNavLink>
+          <UiOuterLink href="https://test-iskra.ru/" @click="sideMenuState.closeSideMenu">
+            Мероприятия
+          </UiOuterLink>
         </UiSideMenu>
       </UiButton>
     </template>

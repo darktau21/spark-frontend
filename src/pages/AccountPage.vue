@@ -36,13 +36,13 @@
               </UiButton>
             </UiTab>
             <UiTab tab-id="unknown">
-              <UiButton class="select-diagram-btn" disabled> ------- </UiButton>
+              <UiButton class="select-diagram-btn" disabled> ---- </UiButton>
             </UiTab>
             <UiTab tab-id="unknown">
-              <UiButton class="select-diagram-btn" disabled> ------- </UiButton>
+              <UiButton class="select-diagram-btn" disabled> ---- </UiButton>
             </UiTab>
             <UiTab tab-id="unknown">
-              <UiButton class="select-diagram-btn" disabled> ------- </UiButton>
+              <UiButton class="select-diagram-btn" disabled> ---- </UiButton>
             </UiTab>
           </div>
           <UiGradientBorder :border-radius="borderRadius" :border-width="4">

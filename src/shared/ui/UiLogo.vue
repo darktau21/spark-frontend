@@ -25,10 +25,10 @@ const color = computed(() => COLORS_MAP[props.variant]);
 </script>
 
 <template>
-  <RouterLink :to="{ name: routeNames.home }" class="logo">
+  <a href="https://test-iskra.ru/" target="_blank" rel="noopener noreferrer" class="logo">
     <span class="logo-icon"><UiLogoSvg width="45" height="40" /></span>
     <span class="logo-text">ИСКРА</span>
-  </RouterLink>
+  </a>
 </template>
 
 <style scoped>

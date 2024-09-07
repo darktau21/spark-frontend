@@ -41,7 +41,6 @@ defineOptions({
   inheritAttrs: false,
 });
 
-
 const props = defineProps<{
   id: string;
   label?: string;
@@ -59,8 +58,8 @@ const focus = () => {
 };
 
 defineExpose({
-  focus
-})
+  focus,
+});
 
 const name = toRef(props, 'name');
 const slots = useSlots();
@@ -99,7 +98,10 @@ const isValid = computed(() => !errorMessage.value);
   border: none;
   outline: none;
   color: rgb(0, 0, 0);
-  transition: border 0.3s ease-in-out, outline 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  transition:
+    border 0.3s ease-in-out,
+    outline 0.3s ease-in-out,
+    background-color 0.3s ease-in-out;
   width: 100%;
 }
 

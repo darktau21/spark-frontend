@@ -19,7 +19,7 @@ import {
     </template>
 
     <div class="footer-links">
-      <UiNavLink variant="light" :to="{ name: routeNames.home }">Главная</UiNavLink>
+      <UiOuterLink variant="light" href="https://test-iskra.ru/">Главная</UiOuterLink>
       <UiNavLink variant="light" :to="{ name: routeNames.account }">Личный кабинет</UiNavLink>
       <UiNavLink variant="light" :to="{ name: routeNames.test }">Тестирование</UiNavLink>
     </div>
