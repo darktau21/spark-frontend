@@ -35,7 +35,10 @@ export const accountSchema = z.object({
     .nullable()
     .optional(),
   photo: z.string().url().nullable(),
-  professional_competencies: z.array(z.string()).nullable(),
+  professional_competencies: z
+    .array(z.string())
+    .max(10, 'Можно добавить максимум 10 значений')
+    .nullable(),
   professional_interests: z
     .array(z.string())
     .max(10, 'Можно добавить максимум 10 значений')
