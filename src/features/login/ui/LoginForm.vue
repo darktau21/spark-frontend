@@ -43,6 +43,7 @@ const restorePasswordLink = computed(() => ({
       v-model="email"
       :disabled="account.isLoading.login"
       autocomplete="email"
+      inputmode="email"
       label="Введите адрес эл. почты"
       name="email"
       placeholder="Email"

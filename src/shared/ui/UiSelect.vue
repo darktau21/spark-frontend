@@ -17,6 +17,7 @@
         @focus="handleFocus"
         @blur="handleBlur"
         v-model="localModel"
+        inputmode="search"
         :id
         @input="handleInput"
         @keydown="handleKeydown"

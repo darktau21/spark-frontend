@@ -76,6 +76,7 @@
             v-bind="phoneAttrs"
             v-model="phone"
             autocomplete="tel"
+            inputmode="tel"
             label="Телефон"
             name="phone_number"
           />
@@ -93,6 +94,7 @@
             v-bind="tgAttrs"
             v-model="tg"
             label="Ссылка на Telegram"
+            inputmode="url"
             name="telegram"
           />
         </div>

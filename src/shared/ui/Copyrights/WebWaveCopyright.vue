@@ -1,5 +1,10 @@
 <template>
-  <div class="webwave-copyright">
+  <a
+    class="webwave-copyright"
+    href="https://xn--g1ani7c.xn--p1ai/"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
     <span class="text"> Сделано в </span>
     <svg
       width="220"
@@ -32,7 +37,7 @@
         fill="white"
       />
     </svg>
-  </div>
+  </a>
 </template>
 <style scoped>
 .webwave-copyright {
@@ -43,6 +48,7 @@
   color: rgb(255, 255, 255);
   font-size: 1.8rem;
   font-family: Roboto, sans-serif;
+  text-decoration: none;
 }
 
 .text {

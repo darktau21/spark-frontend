@@ -51,6 +51,7 @@ const onSubmit = handleSubmit(async (values) => {
       v-model="email"
       :disabled="account.isLoading.register"
       autocomplete="email"
+      inputmode="email"
       label="Введите адрес эл. почты"
       name="email"
       placeholder="Email"

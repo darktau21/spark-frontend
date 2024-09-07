@@ -5,6 +5,7 @@
       id="restore-password-email"
       v-bind="emailAttrs"
       v-model="email"
+      inputmode="email"
       :disabled="account.isLoading.restorePassword"
       autocomplete="email"
       label="Введите адрес электронной почты, указанный при регистрации, для отправки ссылки по сбросу пароля"
