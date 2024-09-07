@@ -33,7 +33,7 @@ import {
     </div>
     <template #copyrights>
       <ClientCopyright />
-      <SotCopyright width="88" height="52" />
+      <SotCopyright :width="88" :height="52" />
       <WebWaveCopyright />
     </template>
   </UiFooter>
