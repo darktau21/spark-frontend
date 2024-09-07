@@ -121,6 +121,7 @@ const handleSelect = (opt: Option) => {
   selectedOption.value = opt;
   localModel.value = opt.label;
   model.value = opt.value;
+  inputRef.value?.blur();
 };
 
 const optionElements = useTemplateRef<HTMLLIElement[]>('optionElements');
