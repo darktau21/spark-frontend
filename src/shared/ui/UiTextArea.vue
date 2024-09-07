@@ -99,7 +99,7 @@ const isValid = computed(() => !errorMessage.value);
   border: none;
   outline: none;
   color: rgb(0, 0, 0);
-  transition: 0.3s ease-in-out;
+  transition: border 0.3s ease-in-out, outline 0.3s ease-in-out, background-color 0.3s ease-in-out;
   width: 100%;
 }
 
