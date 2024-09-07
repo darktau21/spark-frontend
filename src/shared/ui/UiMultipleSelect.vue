@@ -15,6 +15,7 @@
             :class="[{ 'input-valid': isValid, 'input-error': !isValid }, 'input']"
             :name
             inputmode="search"
+            autocomplete="off"
             enterkeyhint="enter"
             :value="localInputModel"
             @input="

@@ -8,7 +8,7 @@ import 'vue-toastification/dist/index.css';
 import 'vue-tel-input/vue-tel-input.css';
 import App from './App.vue';
 import './index.css';
-import { router } from './router';
+import { router } from '../shared/lib/router';
 import vueDebounce from 'vue-debounce';
 
 export function initApp() {

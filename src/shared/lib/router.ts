@@ -5,6 +5,12 @@ import { useToast } from 'vue-toastification';
 
 const routes: Readonly<RouteRecordRaw[]> = [
   {
+    path: '/',
+    redirect: {
+      name: routeNames.test,
+    },
+  },
+  {
     component: () => import('@/pages/LoginPage.vue'),
     meta: {
       blockAuth: true,
@@ -109,7 +115,6 @@ router.beforeEach(async (to) => {
   if (!blockAuth) {
     return;
   }
-
   if (storage.get('authToken')) {
     return { name: routeNames.account, replace: true };
   }

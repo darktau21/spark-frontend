@@ -1,5 +1,6 @@
 import { DataUrl } from '@/shared/lib';
 import { z } from 'zod';
+import { certificateList } from '../certificate/schema';
 
 export const roles = ['student', 'parent', 'teacher', 'director'] as const;
 export const roleLabels: Record<(typeof roles)[number], string> = {
@@ -14,7 +15,7 @@ export const accountSchema = z.object({
   competencies: z.string().nullable(),
   competitions: z.string().nullable(),
   educational_organization: z.number().nullable(),
-  certificates: z.array(z.string()),
+  certificates: certificateList.nullable(),
   email: z.string().email(),
   first_name: z
     .string()
