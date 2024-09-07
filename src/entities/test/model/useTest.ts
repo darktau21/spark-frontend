@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { useRouter } from 'vue-router';
 import { TYPE, useToast } from 'vue-toastification';
 import questions from './questions.json';
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { testApi } from '@/shared/api';
 import { routeNames, storage } from '@/shared/lib';
 import { wait } from '@/shared/lib/wait';
@@ -150,6 +150,18 @@ export const useTest = defineStore(TEST_STORE_KEY, () => {
     clear();
   };
 
+  const handlePageLeave = (e: BeforeUnloadEvent) => {
+    if (state.value === 'inProgress') {
+      e.preventDefault();
+    }
+  };
+  onMounted(() => {
+    window.addEventListener('beforeunload', handlePageLeave);
+  });
+
+  onBeforeUnmount(() => {
+    window.removeEventListener('beforeunload', handlePageLeave);
+  });
   getTests();
 
   return {
