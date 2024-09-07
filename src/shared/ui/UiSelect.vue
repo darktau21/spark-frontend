@@ -129,7 +129,6 @@ const optionElements = useTemplateRef<HTMLLIElement[]>('optionElements');
 const scrollToHighlighted = async () => {
   await nextTick();
   const highlightedElement = optionElements.value?.[highlightedIndex.value];
-  console.log(highlightedElement);
   if (highlightedElement) {
     highlightedElement.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
@@ -151,10 +150,8 @@ watch(
   () => props.options,
   () => {
     if (isSelectOpen.value) {
-      console.log('return');
       return;
     }
-    console.log(model.value);
     setSelectedOption(model.value);
   }
 );
@@ -184,8 +181,6 @@ const handleKeydown = (e: KeyboardEvent) => {
     highlightedIndex.value = (highlightedIndex.value + 1) % props.options.length;
     scrollToHighlighted();
   } else if (e.key === 'ArrowUp') {
-    console.log(highlightedIndex.value);
-    console.log(props.options.length);
     e.preventDefault();
     highlightedIndex.value =
       (highlightedIndex.value - 1 + props.options.length) % props.options.length;

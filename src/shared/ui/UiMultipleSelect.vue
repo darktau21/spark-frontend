@@ -101,7 +101,6 @@ const handleAutocompleteClick = (val: string) => {
   if (!Array.isArray(inputValue.value)) {
     inputValue.value = [];
   }
-  console.log(val);
   inputValue.value.push(val);
   handleChange(inputValue.value);
   localInputModel.value = '';

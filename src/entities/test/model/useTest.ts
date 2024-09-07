@@ -91,7 +91,6 @@ export const useTest = defineStore(TEST_STORE_KEY, () => {
   const prev = () => {
     if (isFirst.value) {
       state.value = 'start';
-      console.log('state start');
       return;
     }
     if (state.value === 'end') {
@@ -162,6 +161,7 @@ export const useTest = defineStore(TEST_STORE_KEY, () => {
   onBeforeUnmount(() => {
     window.removeEventListener('beforeunload', handlePageLeave);
   });
+
   getTests();
 
   return {
@@ -177,5 +177,6 @@ export const useTest = defineStore(TEST_STORE_KEY, () => {
     save,
     saveLocal,
     isAllQuestionsCompleted,
+    getTests,
   };
 });

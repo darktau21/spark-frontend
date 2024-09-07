@@ -86,7 +86,6 @@ const handleEnd = async  () => {
 
 const handleAnswerClick = async (e: Event) => {
   const target = e.target as HTMLInputElement;
-  console.log(target.checked)
   if (target.checked) {
     target.dispatchEvent(new Event('change'))
   }

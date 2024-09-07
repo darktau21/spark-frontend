@@ -47,9 +47,9 @@
           </div>
           <UiGradientBorder :border-radius="borderRadius" :border-width="4">
             <UiTabWindow tab-id="psychotype">
-              <div v-if="testRes">
+              <div v-if="test.testRes">
                 <div class="diagram">
-                  <TestDiagram :results="testRes?.answers" :prev-results="prevTestRes?.answers" />
+                  <TestDiagram :results="test.testRes?.answers" :prev-results="test.prevTestRes?.answers" />
                 </div>
                 <UiAccordion>
                   <template #button="{ toggle, isOpened }">
@@ -196,8 +196,8 @@ import { storeToRefs } from 'pinia';
 import { computed, ref, watch } from 'vue';
 
 const eduOrgName = ref<string>();
-const { data, isLoading } = storeToRefs(useAccount());
-const { testRes, prevTestRes } = storeToRefs(useTest());
+const { data, isLoading, isAuthorized } = storeToRefs(useAccount());
+const test = useTest();
 const fullName = computed(
   () =>
     `${data.value?.last_name ?? ''} ${data.value?.first_name ?? ''} ${data.value?.patronymic ?? ''}`.trim() ||
@@ -205,15 +205,18 @@ const fullName = computed(
 );
 
 const updateEduOrgName = async (value?: number | null) => {
-  console.log('eduOrgNameChange');
   if (!value) {
     return;
   }
   eduOrgName.value = (await eduOrgApi.getOrg(value)).name;
 };
 
-watch(() => data.value?.educational_organization, updateEduOrgName);
-updateEduOrgName(data.value?.educational_organization);
+watch(() => data.value?.educational_organization, updateEduOrgName, {immediate: true});
+watch(isAuthorized, (val) => {
+  if (val) {
+    test.getTests()
+  }
+})
 const isMediaMatches = useMatchMedia('(max-width: 52em)');
 const borderRadius = computed(() => (isMediaMatches.value ? 20 : 60));
 </script>
