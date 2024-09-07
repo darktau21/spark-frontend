@@ -22,7 +22,8 @@ type Icon =
   | 'phone'
   | 'mail'
   | 'tg'
-  | 'arrow';
+  | 'arrow'
+  | 'plus';
 
 withDefaults(
   defineProps<{

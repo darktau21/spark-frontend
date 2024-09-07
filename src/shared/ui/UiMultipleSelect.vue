@@ -6,36 +6,59 @@
     <slot name="msg" />
     <div class="input-wrapper">
       <div class="autocomplete-wrapper">
-        <input
-          :disabled="Boolean(errorMessage)"
-          v-bind="$attrs"
-          :id
-          ref="inputRef"
-          :class="[{ 'input-valid': isValid, 'input-error': !isValid }, 'input']"
-          :name
-          :value="localInputModel"
-          @input="
-            (event) => {
-              const val = (event.target as HTMLInputElement)?.value ?? ''
-              localInputModel = val;
-              emit('input', val);
-            }
-          "
-          @keydown.enter.prevent.stop
-          @keyup.enter.prevent.stop="handleAdd"
-          @focus="isAutocompleteOpened = true"
-          @blur="isAutocompleteOpened = false"
-        />
-        <div @click.prevent.stop @mousedown.prevent.stop class="autocomplete" v-if="autocomplete" v-show="isAutocompleteOpened">
+        <div class="input-btn-wrapper">
+          <input
+            :disabled="Boolean(errorMessage)"
+            v-bind="$attrs"
+            :id
+            ref="inputRef"
+            :class="[{ 'input-valid': isValid, 'input-error': !isValid }, 'input']"
+            :name
+            inputmode="search"
+            enterkeyhint="enter"
+            :value="localInputModel"
+            @input="
+              (event) => {
+                const val = (event.target as HTMLInputElement)?.value ?? '';
+                localInputModel = val;
+                emit('input', val);
+              }
+            "
+            @keydown.enter.prevent.stop
+            @keyup.enter.prevent.stop="handleAdd"
+            @focus="isAutocompleteOpened = true"
+            @blur="isAutocompleteOpened = false"
+          />
+          <Transition name="fade">
+            <button
+              @mousedown.prevent
+              @click.prevent.stop="handleAdd"
+              v-show="localInputModel.length > 0"
+              class="icon"
+            >
+              <UiIcon icon="plus" />
+            </button>
+          </Transition>
+        </div>
+        <div
+          @click.prevent.stop
+          @mousedown.prevent.stop
+          class="autocomplete"
+          v-if="autocomplete"
+          v-show="isAutocompleteOpened"
+        >
           <div class="options-autocomplete" v-show="(autocompleteOptions?.length ?? 0) > 0">
-            <UiOption @click.prevent.stop="handleAutocompleteClick(o)" :showClose="false" v-for="o in autocompleteOptions" :key="o">
+            <UiOption
+              @click.prevent.stop="handleAutocompleteClick(o)"
+              :showClose="false"
+              v-for="o in autocompleteOptions"
+              :key="o"
+            >
               {{ o }}
             </UiOption>
           </div>
           <div class="not-found" v-show="(autocompleteOptions?.length ?? 0) <= 0">
-            <UiParagraph>
-              Ничего не найдено
-            </UiParagraph>
+            <UiParagraph> Ничего не найдено </UiParagraph>
           </div>
         </div>
       </div>
@@ -58,6 +81,7 @@ import { computed, ref, toRef, useSlots } from 'vue';
 import UiHeading from './UiHeading.vue';
 import UiParagraph from './UiParagraph.vue';
 import UiOption from './UiOption.vue';
+import UiIcon from './UiIcon';
 
 defineOptions({
   inheritAttrs: false,
@@ -104,8 +128,8 @@ const handleAutocompleteClick = (val: string) => {
   inputValue.value.push(val);
   handleChange(inputValue.value);
   localInputModel.value = '';
-  emit('input', '')
-}
+  emit('input', '');
+};
 
 const handleDelete = (option: string) => {
   inputValue.value = inputValue.value?.filter((o) => o !== option);
@@ -145,6 +169,30 @@ const emit = defineEmits<{
 
 .input-wrapper {
   position: relative;
+}
+
+.input-btn-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: none;
+}
+
+@media screen and (hover: hover) {
+  .icon:hover {
+    color: rgb(140, 140, 140);
+  }
 }
 
 .autocomplete-wrapper {
@@ -246,5 +294,17 @@ const emit = defineEmits<{
   gap: 1rem;
   flex-wrap: wrap;
   padding: 1rem;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
+}
+.fade-enter-to,
+.fade-leave {
+  opacity: 1;
 }
 </style>
