@@ -12,7 +12,17 @@
 <script setup lang="ts">
 import sprite from './sprite.svg';
 
-type Icon = 'checkbox' | 'checkbox-checked' | 'close' | 'eye-closed' | 'eye-opened' | 'menu' | 'phone' | 'mail' | 'tg';
+type Icon =
+  | 'checkbox'
+  | 'checkbox-checked'
+  | 'close'
+  | 'eye-closed'
+  | 'eye-opened'
+  | 'menu'
+  | 'phone'
+  | 'mail'
+  | 'tg'
+  | 'arrow';
 
 withDefaults(
   defineProps<{

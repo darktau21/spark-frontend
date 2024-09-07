@@ -55,5 +55,8 @@
       </clipPath>
     </defs>
   </symbol>
+  <symbol id="arrow" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M13.8105 8.0957L10.0009 11.9052L6.19141 8.0957" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
 
 </svg>

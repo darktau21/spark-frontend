@@ -100,12 +100,14 @@
       <UiGradientBorder class="edu-block-wrapper" :border-width="4" :border-radius="borderRadius">
         <div class="block edu-block">
           <UiSelect
+            searchable
             class="edu-org-input"
             :options="eduOrgsOptions"
             label="Образование"
             id="eduOrg"
             v-bind="eduOrgAttrs"
             v-model="eduOrg"
+            @search="debouncedEduOrgsList"
             name="educational_organization"
           />
           <UiInput
@@ -173,16 +175,8 @@
         :border-radius="borderRadius"
       >
         <div class="block achievements-block">
-          <UiTextArea 
-            id="achievements"
-            label="Достижения"
-            name="achievements"
-          />
-          <UiTextArea 
-            id="competitions"
-            label="Конкурсы"
-            name="competitions"
-          />
+          <UiTextArea id="achievements" label="Достижения" name="achievements" />
+          <UiTextArea id="competitions" label="Конкурсы" name="competitions" />
         </div>
       </UiGradientBorder>
       <div class="btn-wrapper">
@@ -214,7 +208,7 @@ import { useForm } from 'vee-validate';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-const eduOrgList = ref<eduOrgApi.EduOrgList>([]);
+const eduOrgList = ref<eduOrgApi.EduOrgPaginatedResponse['results']>([]);
 const account = useAccount();
 const router = useRouter();
 
@@ -253,8 +247,17 @@ const [role, roleAttrs] = defineField('role');
 const roleOptions = accountApi.roles.map((r) => ({ label: accountApi.roleLabels[r], value: r }));
 const competenciesAutocomplete = ref<string[]>([]);
 
+const handleEduOrgsList = async (search?: string, toggleLoading?: (isLoading: boolean) => void) => {
+  toggleLoading?.(true);
+  const res = await eduOrgApi.getOrgs({ search, limit: 20 });
+  eduOrgList.value = res.results;
+  toggleLoading?.(false);
+};
+
+const debouncedEduOrgsList = useDebounceFn(handleEduOrgsList, 1000);
+
 onMounted(async () => {
-  eduOrgList.value = await eduOrgApi.getOrgs();
+  await handleEduOrgsList();
 });
 
 const debouncedFn = useDebounceFn(async (val: string) => {
@@ -266,8 +269,8 @@ const handleCompetenciesInput = async (val: string) => {
 };
 
 const eduOrgsOptions = computed(() => [
-  ...eduOrgList.value.map((o) => ({ value: o.id, label: o.name })),
   { label: 'Не указано', value: null },
+  ...eduOrgList.value.map((o) => ({ value: o.id, label: o.name })),
 ]);
 
 watch(
@@ -276,6 +279,22 @@ watch(
     if (val) {
       setValues({ ...val, photo: DataUrl.createFromString(val.photo ?? '') });
     }
+  }
+);
+
+watch(
+  () => account.data?.educational_organization,
+  async (val) => {
+    if (!val) {
+      return;
+    }
+    const org = await eduOrgApi.getOrg(val);
+    if (eduOrgList.value.find((e) => e.id === org.id)) {
+      return;
+    }
+    eduOrgList.value = [org, ...eduOrgList.value];
+  }, {
+    immediate: true,
   }
 );
 

@@ -204,16 +204,16 @@ const fullName = computed(
     'Анонимов Аноним Анонимович'
 );
 
-watch(
-  () => data.value?.educational_organization,
-  async (value) => {
-    if (!value) {
-      return;
-    }
-    eduOrgName.value = (await eduOrgApi.getOrg(value)).name;
+const updateEduOrgName = async (value?: number | null) => {
+  console.log('eduOrgNameChange');
+  if (!value) {
+    return;
   }
-);
+  eduOrgName.value = (await eduOrgApi.getOrg(value)).name;
+};
 
+watch(() => data.value?.educational_organization, updateEduOrgName);
+updateEduOrgName(data.value?.educational_organization);
 const isMediaMatches = useMatchMedia('(max-width: 52em)');
 const borderRadius = computed(() => (isMediaMatches.value ? 20 : 60));
 </script>

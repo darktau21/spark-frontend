@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { createPaginatedResponse } from '../schema';
 
 export const eduOrgSchema = z.object({
   id: z.number(),
@@ -6,10 +7,7 @@ export const eduOrgSchema = z.object({
 });
 export type EduOrg = z.infer<typeof eduOrgSchema>;
 
-export const eduOrgList = z.array(eduOrgSchema);
-export type EduOrgList = z.infer<typeof eduOrgList>;
+export const eduOrgPaginatedResponse = createPaginatedResponse(eduOrgSchema);
+export type EduOrgPaginatedResponse = z.infer<typeof eduOrgPaginatedResponse>;
 
-export const eduOrgListParams = z.object({
-  search: z.string(),
-});
-export type EduOrgListParams = z.infer<typeof eduOrgListParams>;
+export type EduOrgParams = { limit?: number; offset?: number; search?: string };
