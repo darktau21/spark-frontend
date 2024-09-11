@@ -102,7 +102,7 @@ const {
   errorMessage,
   value: inputValue,
   handleChange,
-} = useField(props.name, undefined, {
+} = useField<string[]>(props.name, undefined, {
   initialValue: [],
   validateOnValueUpdate: true,
 });
