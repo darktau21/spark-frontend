@@ -12,7 +12,7 @@ const TEST_STORE_KEY = 'store:test';
 export const useTest = defineStore(TEST_STORE_KEY, () => {
   const toast = useToast();
   const router = useRouter();
-  // Определяем вопросы с фиксированными значениями
+  const isTestSubmitting = ref(false);
   const testRes = ref<testApi.TestResponse>();
   const prevTestRes = ref<testApi.TestResponse>();
   const state = ref<'start' | 'inProgress' | 'end'>('start');
@@ -117,10 +117,10 @@ export const useTest = defineStore(TEST_STORE_KEY, () => {
         toast.error('Невозможно сохранить тест, так как не на все вопросы даны ответы');
         return;
       }
+      isTestSubmitting.value = true;
       updateSums();
       const loader = toast.info('Сохранение результата теста', { timeout: false });
       await testApi.saveTest({ answers: sums.value });
-      await wait(5000);
       router.push({ name: routeNames.account });
       clear();
       await getTests();
@@ -132,9 +132,12 @@ export const useTest = defineStore(TEST_STORE_KEY, () => {
         },
       });
     } catch (e) {
-      toast.warning(
-        'Произошла ошибка отправки теста, перезагрузите страницу, чтобы отправить результат повторно'
+      toast.clear();
+      toast.error(
+        'Произошла ошибка отправки теста, попробуйте снова'
       );
+    } finally {
+      isTestSubmitting.value = false;
     }
   };
   const saveLocal = () => {
@@ -142,11 +145,13 @@ export const useTest = defineStore(TEST_STORE_KEY, () => {
       toast.error('Невозможно сохранить тест, так как не на все вопросы даны ответы');
       return;
     }
+    isTestSubmitting.value = true;
     updateSums();
     storage.set('testResults', sums.value);
     toast.info('Результаты теста сохранены, войдите для просмотра');
     router.push({ name: routeNames.login });
     clear();
+    isTestSubmitting.value = false;
   };
 
   const handlePageLeave = (e: BeforeUnloadEvent) => {
@@ -178,5 +183,6 @@ export const useTest = defineStore(TEST_STORE_KEY, () => {
     saveLocal,
     isAllQuestionsCompleted,
     getTests,
+    isTestSubmitting
   };
 });

@@ -33,7 +33,7 @@
       </div>
       <div class="test_btns">
         <UiButton @click="test.prev" variant="secondary">Назад</UiButton>
-        <UiButton v-show="test.isLast" @click="handleEnd" :disabled="!test.isAllQuestionsCompleted" >Завершить тестирование</UiButton>
+        <UiButton v-show="test.isLast" @click="handleEnd" :disabled="!test.isAllQuestionsCompleted || test.isTestSubmitting" >Завершить тестирование</UiButton>
       </div>
     </div>
 

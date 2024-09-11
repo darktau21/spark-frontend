@@ -118,7 +118,7 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
     try {
       await accountApi.deleteAccount();
 
-      toast.warning('Аккаунт удален 😢');
+      toast.warning('Аккаунт удален');
     } catch (error) {
       const parse = useAxiosErrorToast('Ошибка смены пароля');
       parse(error);

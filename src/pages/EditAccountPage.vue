@@ -1,6 +1,9 @@
 <template>
   <div class="edit-account-page">
-    <h1>Редактирование личного кабинета</h1>
+    <header class="header">
+      <h1>Редактирование личного кабинета</h1>
+      <DeleteAccount />
+    </header>
     <form class="account-form" @submit="onSubmit">
       <UiFileInput
         ref="fileInputRef"
@@ -124,6 +127,7 @@
             id="professionalInterests"
             label="Профессиональные интересы"
             v-bind="professionalInterestsAttrs"
+            v-model="professionalInterests"
             name="professional_interests"
           >
             <template #msg>
@@ -154,6 +158,7 @@
             id="professionalCompetencies"
             label="Профессиональные навыки"
             v-bind="professionalCompetenciesAttrs"
+            v-model="professionalCompetencies"
             name="professional_competencies"
             @input="handleCompetenciesInput"
             :autocompleteOptions="competenciesAutocomplete"
@@ -191,8 +196,9 @@
 
 <script lang="ts" setup>
 import { BigAccountAvatar, useAccount } from '@/entities/account';
+import { DeleteAccount } from '@/features/deleteAccount';
 import { accountApi, eduOrgApi, hhApi } from '@/shared/api';
-import { DataUrl, useMatchMedia } from '@/shared/lib';
+import { DataUrl, routeNames, useMatchMedia } from '@/shared/lib';
 import {
   UiButton,
   UiFileInput,
@@ -242,8 +248,10 @@ const [email, emailAttrs] = defineField('email');
 const [tg, tgAttrs] = defineField('telegram');
 const [eduOrg, eduOrgAttrs] = defineField('educational_organization');
 const [specialty, specialtyAttrs] = defineField('specialty');
-const [_, professionalInterestsAttrs] = defineField('professional_interests');
-const [__, professionalCompetenciesAttrs] = defineField('professional_competencies');
+const [professionalInterests, professionalInterestsAttrs] = defineField('professional_interests');
+const [professionalCompetencies, professionalCompetenciesAttrs] = defineField(
+  'professional_competencies'
+);
 const [competencies, competenciesAttrs] = defineField('competencies');
 const [role, roleAttrs] = defineField('role');
 const roleOptions = accountApi.roles.map((r) => ({ label: accountApi.roleLabels[r], value: r }));
@@ -295,13 +303,15 @@ watch(
       return;
     }
     eduOrgList.value = [org, ...eduOrgList.value];
-  }, {
+  },
+  {
     immediate: true,
   }
 );
 
 const onSubmit = handleSubmit(async (data) => {
   await account.update(data);
+  router.push({ name: routeNames.account });
 });
 </script>
 
@@ -312,7 +322,7 @@ const onSubmit = handleSubmit(async (data) => {
 
 .account-form {
   display: grid;
-  align-items: start;
+  align-items: stretch;
   grid-template-rows: repeat(4, auto);
   grid-template-columns: repeat(6, 1fr);
   gap: 2rem;
@@ -399,5 +409,14 @@ const onSubmit = handleSubmit(async (data) => {
 
 .error {
   color: rgb(255, 0, 0);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-bottom: 1.6rem;
 }
 </style>

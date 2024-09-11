@@ -93,7 +93,6 @@ const props = defineProps<{
   id: string;
   label?: string;
   name: string;
-  value?: string[];
   class?: string;
   autocompleteOptions?: string[];
   autocomplete?: boolean;
@@ -104,7 +103,7 @@ const {
   value: inputValue,
   handleChange,
 } = useField(props.name, undefined, {
-  initialValue: props.value,
+  initialValue: [],
   validateOnValueUpdate: true,
 });
 

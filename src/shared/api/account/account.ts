@@ -26,7 +26,10 @@ export const register = handleSchemaError(async (body: RegisterPayload) => {
 
 export const getMe = handleSchemaError(async () => {
   const { data } = await api.get<AccountSchema>('/users/me/');
-  return accountSchema.parse(data);
+  const info = accountSchema.parse(data);
+  info.professional_competencies = Array.isArray(info.professional_competencies) ? info.professional_competencies : [];
+  info.professional_interests = Array.isArray(info.professional_interests) ? info.professional_interests : [];
+  return info;
 });
 
 export const updateMe = handleSchemaError(async (body: UpdateAccountPayload) => {

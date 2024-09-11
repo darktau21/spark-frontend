@@ -132,7 +132,7 @@ const isValid = computed(() => !errorMessage.value);
 }
 
 .error {
-  height: 1.6rem;
+  min-height: 1.6rem;
   margin-top: 0.8rem;
   color: rgb(255, 0, 0);
 }

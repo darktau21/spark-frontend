@@ -30,8 +30,8 @@ export const accountSchema = z.object({
     .nullable(),
   phone_number: z
     .custom(
-      (p) => (typeof p === 'string' && !p) || (typeof p === 'string' && p.startsWith('+7')),
-      'Номер телефона должен начинаться с +7'
+      (p) => (typeof p === 'string' && !p) || (typeof p === 'string' && p.startsWith('+7') && /^\+7\d{10}$/.test(p)),
+      'Номер телефона должен быть в формате +79991112233'
     )
     .nullable()
     .optional(),
