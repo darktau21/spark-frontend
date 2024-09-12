@@ -65,15 +65,7 @@ export const registerPayload = z
       .string({ message: 'Обязательное поле' })
       .min(8, { message: 'Пароль должен быть не менее 8 символов' })
       .max(32, { message: 'Пароль должен быть не более 32 символов' }),
-    re_password: z
-      .string({ message: 'Обязательное поле' })
-      .min(8, { message: 'Пароль должен быть не менее 8 символов' })
-      .max(32, { message: 'Пароль должен быть не более 32 символов' }),
   })
-  .refine((data) => data.password === data.re_password, {
-    message: 'Пароли не совпадают',
-    path: ['re_password'],
-  });
 
 export type RegisterPayload = z.infer<typeof registerPayload>;
 

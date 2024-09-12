@@ -21,3 +21,7 @@ export const certificatePayload = z.object({
 });
 
 export const certificateList = z.array(certificateSchema);
+
+export type Certificate = z.infer<typeof certificateSchema>;
+export type CertificatePayload = z.infer<typeof certificatePayload>;
+export type CertificateList = z.infer<typeof certificateList>

@@ -1,0 +1,1 @@
+export { useCertificates } from './model/useCertificates'

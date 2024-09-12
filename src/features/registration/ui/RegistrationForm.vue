@@ -22,7 +22,6 @@ const { defineField, errors, handleSubmit, meta } = useForm<accountApi.RegisterP
 
 const [email, emailAttrs] = defineField('email');
 const [password, passwordAttrs] = defineField('password');
-const [rePassword, rePasswordAttrs] = defineField('re_password');
 
 const account = useAccount();
 const isAgreementChecked = ref(false);
@@ -65,15 +64,6 @@ const onSubmit = handleSubmit(async (values) => {
       label="Пароль"
       name="password"
       placeholder="Не менее 8 символов"
-    />
-    <UiPasswordInput
-      id="re_password"
-      v-bind="rePasswordAttrs"
-      v-model="rePassword"
-      :disabled="account.isLoading.register"
-      autocomplete="new-password"
-      label="Повторите пароль"
-      name="re_password"
     />
     <UiCheckBox id="agreement" v-model="isAgreementChecked" name="agreement">
       <UiParagraph variant="p2"
