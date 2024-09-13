@@ -23,7 +23,8 @@ type Icon =
   | 'mail'
   | 'tg'
   | 'arrow'
-  | 'plus';
+  | 'plus'
+  | "trash";
 
 withDefaults(
   defineProps<{

@@ -35,6 +35,9 @@ const contentBorderRadius = computed(() => `${props.borderRadius - props.borderW
   border-radius: v-bind(borderRadius);
   padding: v-bind(borderWidth);
   max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-items: stretch;
 }
 .gradient-border-content {
   background: white;
@@ -42,6 +45,7 @@ const contentBorderRadius = computed(() => `${props.borderRadius - props.borderW
   /* overflow: hidden; */
   max-width: 100%;
   min-height: 100%;
+  flex: 1 0 100%;
 }
 
 .gradient-border-content > :first-child {

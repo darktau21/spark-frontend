@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { DataUrl } from '../lib/DataUrl';
-import UiButton from './UiButton.vue';
 import { useField } from 'vee-validate';
+import { ref } from 'vue';
+import { DataUrl } from '../lib/DataUrl';
 
-const uploadedUrls = ref<DataUrl[]>([]);
+const uploadedUrls = defineModel<DataUrl[]>({default: []});
 const inputRef = ref<HTMLInputElement>();
 
 const emit = defineEmits<{
@@ -15,7 +14,6 @@ const props = defineProps<{
   multiple?: boolean;
   id?: string;
   name: string;
-  label: string;
   accept?: string;
   maxSize?: number;
 }>();
@@ -39,17 +37,17 @@ const onChange = async (e: Event) => {
   const input = e.target as HTMLInputElement;
   const filesArray = Array.from(input.files ?? []);
   const urls = await Promise.all(filesArray.map(async (f) => await DataUrl.create(f)));
-  handleChange(props.multiple ? urls : urls[0]);
+  handleChange(props.multiple ? [...urls, ...uploadedUrls.value] : urls[0]);
   const res = await validate();
-  uploadedUrls.value = res.valid ? urls : [];
+  uploadedUrls.value = res.valid ? [...urls, ...uploadedUrls.value] : uploadedUrls.value;
 };
+
+const remove = (file?: string) => uploadedUrls.value = uploadedUrls.value.filter((f) => f.dataUrl !== file);
 </script>
 
 <template>
-  <div class="file-input-wrapper">
-    <slot name="view" :uploadedUrls />
-    <slot name="msg" :errorMessage />
-    <UiButton @click.prevent="handleClick" variant="secondary">{{ label }}</UiButton>
+    <slot :uploadedUrls :errorMessage :handleClick :remove />
+    <slot name="msg" />
     <input
       v-bind="$attrs"
       :accept
@@ -62,16 +60,11 @@ const onChange = async (e: Event) => {
       type="file"
       class="file-input"
     />
-  </div>
 </template>
 <style scoped>
-.file-input-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
+.wrapper {
+  min-height: 100%;
 }
-
 .file-input {
   display: none;
 }

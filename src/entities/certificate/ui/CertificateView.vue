@@ -1,25 +1,14 @@
 <template>
-  <div class="wrapper" @click="emit('delete', link)">
+  <div class="wrapper">
     <embed class="view"  :src="link" width="280" height="150" />
-    <div class="delete">
-      <UiIcon :width="40" :height="40" icon="trash"/>
-    </div>
-    <span class="name">{{ name }}</span>
   </div>
 </template>
 <script setup lang="ts">
-import type { DataUrl } from '@/shared/lib';
-import { UiIcon } from '@/shared/ui';
 
 defineProps<{
-  name?: string;
   link: string;
-  type?: string;
 }>();
 
-const emit = defineEmits<{
-  delete: [link?: string];
-}>();
 </script>
 <style scoped>
 .wrapper {
@@ -29,7 +18,6 @@ const emit = defineEmits<{
   height: 150px;
   background-color: rgba(128, 128, 128, 0.2);
   border-radius: 20px;
-  cursor: pointer;
 }
 
 .view {

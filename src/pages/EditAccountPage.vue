@@ -14,20 +14,22 @@
             photo = data[0];
           }
         "
-        class="avatar-block"
         accept="image/jpeg, image/png"
         label="Загрузить фотографию"
       >
-        <template #view="{ uploadedUrls }">
-          <BigAccountAvatar
-            :avatar-url="uploadedUrls[0]?.dataUrl ?? account.data?.photo"
-            :is-loading="false"
-          />
-        </template>
-        <template #msg="{ errorMessage }">
-          <div class="avatar-msg">
-            <UiParagraph> Формат файла: JPEG/JPG/PNG </UiParagraph>
-            <UiParagraph :class="errorMessage && 'error'"> Размер не более 8МБ </UiParagraph>
+        <template #default="{ uploadedUrls, errorMessage, handleClick }">
+          <div class="avatar avatar-block">
+            <BigAccountAvatar
+              :avatar-url="uploadedUrls[0]?.dataUrl ?? account.data?.photo"
+              :is-loading="false"
+            />
+            <div class="avatar-msg">
+              <UiParagraph> Формат файла: JPEG/JPG/PNG </UiParagraph>
+              <UiParagraph :class="errorMessage && 'error'"> Размер не более 8МБ </UiParagraph>
+            </div>
+            <UiButton variant="secondary" @click.prevent="handleClick"
+              >Загрузить фотографию</UiButton
+            >
           </div>
         </template>
       </UiFileInput>
@@ -186,6 +188,44 @@
           <UiTextArea id="competitions" label="Конкурсы" name="competitions" />
         </div>
       </UiGradientBorder>
+      <UiGradientBorder class="cert-block-wrapper" :border-width="4" :border-radius="borderRadius">
+        <UiFileInput
+          id="certificates"
+          accept="image/png,application/pdf,image/jpeg"
+          name="certificates"
+          v-model="certificates"
+          multiple
+        >
+          <template #default="{ uploadedUrls, errorMessage, handleClick, remove }">
+            <div class="block cert-block">
+              <UiHeading variant="h3">Сертификаты</UiHeading>
+              <div class="cert-msg">
+                <UiParagraph> Загрузите файлы формата JPEG/JPG/PNG/PDF. </UiParagraph>
+                <UiParagraph :class="errorMessage && 'error'">
+                  Вы можете добавить не более 10 файлов.
+                </UiParagraph>
+              </div>
+              <div class="certs">
+                <CertificateEmbed
+                  :key="cert.dataUrl"
+                  v-for="cert in uploadedUrls"
+                  :link="cert.dataUrl"
+                  :name="cert.name"
+                  @delete="
+                    (link) =>
+                      account.data?.certificates?.find((c) => c.certificate === cert.file)
+                        ? onDelete(cert)
+                        : remove(link)
+                  "
+                />
+              </div>
+              <UiButton class="upload-cert" variant="secondary" @click.prevent="handleClick">
+                Загрузить сертификат
+              </UiButton>
+            </div>
+          </template>
+        </UiFileInput>
+      </UiGradientBorder>
       <div class="btn-wrapper">
         <UiButton @click.prevent="handleGoBack" variant="secondary">Назад</UiButton>
         <UiButton :error="!isValid">Сохранить изменения</UiButton>
@@ -196,13 +236,15 @@
 
 <script lang="ts" setup>
 import { BigAccountAvatar, useAccount } from '@/entities/account';
+import { CertificateEmbed, useCertificates } from '@/entities/certificate';
 import { DeleteAccount } from '@/features/deleteAccount';
-import { accountApi, eduOrgApi, hhApi } from '@/shared/api';
+import { accountApi, certApi, eduOrgApi, hhApi } from '@/shared/api';
 import { DataUrl, routeNames, useMatchMedia } from '@/shared/lib';
 import {
   UiButton,
   UiFileInput,
   UiGradientBorder,
+  UiHeading,
   UiInput,
   UiMultipleSelect,
   UiOption,
@@ -231,6 +273,8 @@ const { defineField, errors, handleSubmit, setValues } = useForm<accountApi.Upda
   validationSchema,
   initialValues: {
     ...account.data,
+    certificates:
+      account.data?.certificates?.map((c) => DataUrl.createFromString(c.certificate)) ?? [],
     photo: DataUrl.createFromString(account.data?.photo ?? ''),
     professional_competencies: account.data?.professional_competencies ?? [],
     professional_interests: account.data?.professional_interests ?? [],
@@ -252,6 +296,7 @@ const [professionalInterests, professionalInterestsAttrs] = defineField('profess
 const [professionalCompetencies, professionalCompetenciesAttrs] = defineField(
   'professional_competencies'
 );
+const [certificates, certificatesAttrs] = defineField('certificates');
 const [competencies, competenciesAttrs] = defineField('competencies');
 const [role, roleAttrs] = defineField('role');
 const roleOptions = accountApi.roles.map((r) => ({ label: accountApi.roleLabels[r], value: r }));
@@ -287,7 +332,12 @@ watch(
   () => account.data,
   (val) => {
     if (val) {
-      setValues({ ...val, photo: DataUrl.createFromString(val.photo ?? '') });
+      setValues({
+        ...val,
+        photo: DataUrl.createFromString(val.photo ?? ''),
+        certificates:
+          account.data?.certificates?.map((c) => DataUrl.createFromString(c.certificate)) ?? [],
+      });
     }
   }
 );
@@ -311,8 +361,25 @@ watch(
 
 const onSubmit = handleSubmit(async (data) => {
   await account.update(data);
+  await Promise.all(
+    (data.certificates ?? []).map(async (c) => {
+      if (c.file instanceof File) {
+        await certApi.uploadCertificate(c.file);
+        await account.refetchData();
+      }
+    })
+  );
   router.push({ name: routeNames.account });
 });
+
+const onDelete = async (url: DataUrl) => {
+  const userCert = account.data?.certificates?.find((c) => c.certificate === url.dataUrl);
+  if (userCert) {
+    await certApi.deleteCertificate(userCert.id);
+    await account.refetchData();
+    return;
+  }
+};
 </script>
 
 <style scoped>
@@ -338,6 +405,13 @@ const onSubmit = handleSubmit(async (data) => {
 
 .avatar-msg {
   text-align: center;
+}
+
+.avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
 }
 
 .avatar-block {
@@ -397,6 +471,36 @@ const onSubmit = handleSubmit(async (data) => {
 
 .prof-block-wrapper {
   grid-column: 4/7;
+}
+
+.cert-block-wrapper {
+  grid-column: 4/7;
+}
+
+.cert-block {
+  height: 100%;
+  display: grid;
+  gap: 1rem;
+  grid-template-rows: max-content max-content 1fr max-content;
+}
+
+.certs {
+  flex: 1 0 100%;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.cert-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.upload-cert {
+  justify-self: flex-end;
 }
 
 .btn-wrapper {

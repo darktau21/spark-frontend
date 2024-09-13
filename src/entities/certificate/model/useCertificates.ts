@@ -21,12 +21,20 @@ export const useCertificates = defineStore(CERTIFICATES_STORE_KEY, () => {
     await loadCertificates(account.isAuthorized);
   }
 
+  const remove = async (id: number) => {
+    await certApi.deleteCertificate(id);
+    await loadCertificates(account.isAuthorized);
+
+  }
+
 
 
   watch([account.isAuthorized, account.data] as const, async ([isAuth]) => await loadCertificates(isAuth), { immediate: true })
 
   return {
     uploadCertificate,
-    loadCertificates
+    loadCertificates,
+    remove,
+    certificates
   }
 });

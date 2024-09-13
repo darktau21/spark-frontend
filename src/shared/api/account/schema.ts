@@ -126,6 +126,7 @@ export type RestorePasswordConfirmPayload = z.infer<typeof restorePasswordConfir
 export const updateAccountPayload = accountSchema
   .omit({
     photo: true,
+    certificates: true,
   })
   .extend({
     photo: z.custom<DataUrl>(
@@ -139,6 +140,14 @@ export const updateAccountPayload = accountSchema
         message: 'Размер файла должен быть не более 8 МБ',
       }
     ),
+    certificates: z.array(z.custom<DataUrl>(
+      (file) => {
+        return (
+          (file instanceof DataUrl && !file.size) ||
+          (file instanceof DataUrl)
+        );
+      }
+    )).max(10, 'Можно добавить до 10 сертификатов'),
   })
   .partial();
 

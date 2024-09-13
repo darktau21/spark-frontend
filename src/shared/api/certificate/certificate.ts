@@ -3,8 +3,10 @@ import { certificateList, certificateSchema } from './schema';
 
 export async function uploadCertificate(file: File) {
   const body = new FormData();
-  body.append('certificate', file);
-  const { data } = await api.postForm('/users/certificates/');
+  const newFile = new File([file], file.name);
+  body.append('certificate', newFile);
+  console.log(file);
+  const { data } = await api.postForm('/users/certificates/', body);
   return certificateSchema.parse(data);
 }
 

@@ -11,13 +11,18 @@
         <UiParagraph v-show="!isLoading" class="info-value">{{ competitions || 'Не указано' }}</UiParagraph>
         <UiSkeleton v-show="isLoading"height="2rem"/>
       </div>
-      <div class="info">
-        <slot/>
+      <div :class="['info', !certificates && 'info-not-defined']">
+        <UiHeading variant="h2">Сертификаты</UiHeading>
+        <UiParagraph v-show="!certificates" class="info-value">Не указано</UiParagraph>
+        <div class="certificates">
+          <CertificateView v-for="cert in certificates" :key="cert" :link="cert"/>
+        </div>
       </div>
     </div>
   </UiGradientBorder>
 </template>
 <script setup lang="ts">
+import { CertificateView } from '@/entities/certificate';
 import { useMatchMedia } from '@/shared/lib';
 import { UiGradientBorder, UiHeading, UiParagraph, UiSkeleton } from '@/shared/ui';
 import { computed } from 'vue';
@@ -25,6 +30,7 @@ import { computed } from 'vue';
 withDefaults(defineProps<Partial<{
   achievements: string | null;
   competitions: string | null;
+  certificates: string[] | null;
   isLoading: boolean;
 }>>(), {});
 
@@ -51,5 +57,11 @@ const borderRadius = computed(() => (isMediaMatches.value ? 20 : 60));
 }
 .info-not-defined {
   color: rgb(156, 159, 169);
+}
+.certificates {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
 }
 </style>
