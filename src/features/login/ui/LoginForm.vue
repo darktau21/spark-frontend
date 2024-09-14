@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAccount } from '@/entities/account';
+import { useTest } from '@/entities/test';
 import { accountApi } from '@/shared/api';
 import { routeNames } from '@/shared/lib';
 import { UiButton, UiCheckBox, UiHeading, UiInput, UiNavLink, UiPasswordInput } from '@/shared/ui';
@@ -7,6 +8,7 @@ import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { computed, ref } from 'vue';
 
+const test = useTest();
 const validationSchema = toTypedSchema(accountApi.loginPayload);
 const { defineField, errors, handleSubmit, meta } = useForm<accountApi.LoginPayload>({
   validationSchema,
@@ -26,6 +28,7 @@ const remember = ref(false);
 
 const onSubmit = handleSubmit(async (values) => {
   await account.login(values, remember.value);
+  await test.postLocal();
 });
 
 const restorePasswordLink = computed(() => ({

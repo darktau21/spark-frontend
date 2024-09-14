@@ -1,11 +1,10 @@
+import { testApi } from '@/shared/api';
+import { routeNames, storage } from '@/shared/lib';
 import { defineStore } from 'pinia';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { TYPE, useToast } from 'vue-toastification';
 import questions from './questions.json';
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
-import { testApi } from '@/shared/api';
-import { routeNames, storage } from '@/shared/lib';
-import { wait } from '@/shared/lib/wait';
 
 const TEST_STORE_KEY = 'store:test';
 
@@ -119,18 +118,10 @@ export const useTest = defineStore(TEST_STORE_KEY, () => {
       }
       isTestSubmitting.value = true;
       updateSums();
-      const loader = toast.info('Сохранение результата теста', { timeout: false });
       await testApi.saveTest({ answers: sums.value });
       router.push({ name: routeNames.account });
       clear();
       await getTests();
-      toast.update(loader, {
-        content: 'Результаты теста успешно сохранены',
-        options: {
-          type: TYPE.SUCCESS,
-          timeout: 5000,
-        },
-      });
     } catch (e) {
       toast.clear();
       toast.error(
@@ -153,6 +144,15 @@ export const useTest = defineStore(TEST_STORE_KEY, () => {
     clear();
     isTestSubmitting.value = false;
   };
+  const postLocal = async () => {
+    const savedResults = storage.get('testResults');
+    if (!savedResults) {
+      return;
+    }
+    await testApi.saveTest({ answers: savedResults });
+    await getTests();
+    storage.remove('testResults');
+  }
 
   const handlePageLeave = (e: BeforeUnloadEvent) => {
     if (state.value === 'inProgress') {
@@ -181,6 +181,7 @@ export const useTest = defineStore(TEST_STORE_KEY, () => {
     isLast,
     save,
     saveLocal,
+    postLocal,
     isAllQuestionsCompleted,
     getTests,
     isTestSubmitting

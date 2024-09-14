@@ -1,4 +1,4 @@
-import { accountApi, api, testApi } from '@/shared/api';
+import { accountApi, api } from '@/shared/api';
 import { routeNames, storage, useAxiosErrorToast } from '@/shared/lib';
 import { defineStore } from 'pinia';
 import { onMounted, ref } from 'vue';
@@ -43,12 +43,6 @@ export const useAccount = defineStore(ACCOUNT_STORE_KEY, () => {
       await refetchData();
       toast.success('Вы успешно авторизовались');
       storage.set('rememberMe', remember);
-      const testResults = storage.get('testResults');
-      if (testResults) {
-        await testApi.saveTest({ answers: testResults });
-        toast.success('Результаты теста успешно сохранены');
-        storage.remove('testResults');
-      }
       router.push({ name: routeNames.account, replace: true });
     } catch (error) {
       const parse = useAxiosErrorToast('Ошибка авторизации');
